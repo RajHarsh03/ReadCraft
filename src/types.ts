@@ -39,6 +39,19 @@ export interface Tech {
   color: string;
 }
 
+/** Section identifiers, in their default render order. */
+export type SectionId =
+  "profile" | "headline" | "focus" | "tech" | "metrics" | "pinned";
+
+export const SECTION_IDS: SectionId[] = [
+  "profile",
+  "headline",
+  "focus",
+  "tech",
+  "metrics",
+  "pinned",
+];
+
 export interface ProfileState {
   basics: ProfileBasics;
   headline: Headline;
@@ -47,5 +60,7 @@ export interface ProfileState {
   metrics: Metrics;
   pinned: PinnedProject[];
   /** Enabled state per section id, drives both editor toggles and preview. */
-  enabled: Record<string, boolean>;
+  enabled: Record<SectionId, boolean>;
+  /** Top-to-bottom order sections render in. Drives preview and export. */
+  order: SectionId[];
 }

@@ -3,6 +3,7 @@ import { Icon } from "../../components/ui/Icon";
 import { SectionCard } from "../../components/ui/SectionCard";
 import { Field, TextField, ToggleRow } from "../../components/ui/Field";
 import { Toggle } from "../../components/ui/Toggle";
+import { usernameError } from "../../lib/username";
 
 const TECH_CATEGORIES = ["Languages", "Frameworks", "Cloud", "Databases"];
 
@@ -49,6 +50,7 @@ export function SectionsEditor() {
             label="GitHub Username"
             prefix="@"
             value={state.basics.username}
+            error={usernameError(state.basics.username)}
             onChange={(v) =>
               dispatch({ type: "setBasics", patch: { username: v } })
             }

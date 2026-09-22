@@ -5,7 +5,8 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import type { ProfileState, Tech } from "./types";
+import type { PinnedProject, ProfileState, SectionId, Tech } from "./types";
+import { SECTION_IDS } from "./types";
 
 /* -------------------------------------------------------------------------- */
 /*  Seed data — mirrors the reference design (Alex Rivera)                    */
@@ -69,6 +70,7 @@ function createInitialState(username = "alexrivera"): ProfileState {
       metrics: true,
       pinned: true,
     },
+    order: [...SECTION_IDS],
   };
 }
 
@@ -82,8 +84,26 @@ type Action =
   | { type: "setFocus"; patch: Partial<ProfileState["focus"]> }
   | { type: "setMetrics"; patch: Partial<ProfileState["metrics"]> }
   | { type: "addTech"; tech: Tech }
+  | { type: "updateTech"; name: string; patch: Partial<Tech> }
   | { type: "removeTech"; name: string }
-  | { type: "toggleSection"; id: string; value: boolean };
+  | { type: "toggleSection"; id: SectionId; value: boolean }
+  | { type: "reorderSection"; id: SectionId; direction: -1 | 1 }
+  | { type: "setOrder"; order: SectionId[] }
+  | { type: "addProject"; project: PinnedProject }
+  | { type: "updateProject"; id: string; patch: Partial<PinnedProject> }
+  | { type: "removeProject"; id: string }
+  | { type: "moveProject"; id: string; direction: -1 | 1 }
+  | { type: "hydrate"; state: ProfileState }
+  | { type: "reset"; username?: string };
+
+/** Swap the item at `index` with its neighbor in `direction`, immutably. */
+function moveInArray<T>(items: T[], index: number, direction: -1 | 1): T[] {
+  const target = index + direction;
+  if (index < 0 || target < 0 || target >= items.length) return items;
+  const next = [...items];
+  [next[index], next[target]] = [next[target], next[index]];
+  return next;
+}
 
 function reducer(state: ProfileState, action: Action): ProfileState {
   switch (action.type) {
@@ -104,6 +124,13 @@ function reducer(state: ProfileState, action: Action): ProfileState {
         return state;
       }
       return { ...state, tech: [...state.tech, action.tech] };
+    case "updateTech":
+      return {
+        ...state,
+        tech: state.tech.map((t) =>
+          t.name === action.name ? { ...t, ...action.patch } : t
+        ),
+      };
     case "removeTech":
       return {
         ...state,
@@ -114,6 +141,44 @@ function reducer(state: ProfileState, action: Action): ProfileState {
         ...state,
         enabled: { ...state.enabled, [action.id]: action.value },
       };
+    case "reorderSection":
+      return {
+        ...state,
+        order: moveInArray(
+          state.order,
+          state.order.indexOf(action.id),
+          action.direction
+        ),
+      };
+    case "setOrder":
+      return { ...state, order: action.order };
+    case "addProject":
+      return { ...state, pinned: [...state.pinned, action.project] };
+    case "updateProject":
+      return {
+        ...state,
+        pinned: state.pinned.map((p) =>
+          p.id === action.id ? { ...p, ...action.patch } : p
+        ),
+      };
+    case "removeProject":
+      return {
+        ...state,
+        pinned: state.pinned.filter((p) => p.id !== action.id),
+      };
+    case "moveProject":
+      return {
+        ...state,
+        pinned: moveInArray(
+          state.pinned,
+          state.pinned.findIndex((p) => p.id === action.id),
+          action.direction
+        ),
+      };
+    case "hydrate":
+      return action.state;
+    case "reset":
+      return createInitialState(action.username ?? state.basics.username);
     default:
       return state;
   }

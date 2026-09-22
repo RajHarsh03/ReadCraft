@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useProfile } from "../../store";
 import { Icon } from "../../components/ui/Icon";
 import { cn } from "../../lib/cn";
 import { generateMarkdown } from "../../lib/markdown";
+import {
+  buildReadmeDocument,
+  type MetricKind,
+  type ReadmeBlock,
+} from "../../lib/document";
 
 type Tab = "preview" | "markdown";
 
@@ -108,89 +113,88 @@ function TabButton({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Rendered GFM document                                                     */
+/*  Rendered document — one block renderer per document block kind            */
 /* -------------------------------------------------------------------------- */
 
 function RenderedDocument() {
   const { state } = useProfile();
-  const { basics, headline, focus, tech, metrics, pinned, enabled } = state;
+  const { blocks } = buildReadmeDocument(state);
 
   return (
     <div className="rc-elevated relative z-10 flex w-full max-w-3xl flex-col gap-6 rounded-[12px] border border-outline-variant/80 bg-surface-container-lowest p-4 sm:p-8">
-      {/* Profile header */}
-      {enabled.profile && (
-        <div className="flex flex-col gap-1 pb-2">
-          <div className="flex flex-wrap items-center justify-between gap-1">
-            <h1 className="text-headline-xl font-bold tracking-tight text-on-surface">
-              Hi there, I'm {basics.fullName}{" "}
-              <span className="inline-block animate-bounce">👋</span>
-            </h1>
+      {blocks.length === 0 ? (
+        <p className="text-body-md text-on-surface-variant">
+          Enable a section to start building your README.
+        </p>
+      ) : (
+        blocks.map((block, i) => (
+          <BlockView key={`${block.kind}-${i}`} block={block} />
+        ))
+      )}
+    </div>
+  );
+}
+
+function BlockView({ block }: { block: ReadmeBlock }) {
+  switch (block.kind) {
+    case "identity":
+      return (
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <h1 className="text-headline-xl font-bold tracking-tight text-on-surface">
+            {block.greeting}{" "}
+            <span className="inline-block animate-bounce">👋</span>
+          </h1>
+          {block.handle && (
             <span className="rounded bg-surface-container px-2 py-0.5 text-code-sm text-on-surface-variant">
-              @{basics.username}
+              {block.handle}
             </span>
-          </div>
-          {enabled.headline && (
-            <>
-              <p className="text-code-lg font-medium text-primary-container">
-                {headline.primary}
-                {basics.company && (
-                  <>
-                    {" "}
-                    <span className="font-normal text-on-surface-variant">
-                      at
-                    </span>{" "}
-                    {basics.company}
-                  </>
-                )}
-              </p>
-              {headline.bio && (
-                <p className="max-w-2xl pt-1 text-body-md leading-relaxed text-on-surface-variant">
-                  {headline.bio}
-                  {basics.location && ` Based in ${basics.location}.`}
-                </p>
-              )}
-            </>
           )}
         </div>
-      )}
-
-      {/* Status bullets */}
-      {enabled.focus &&
-        (focus.working || focus.learning || focus.askMeAbout) && (
-          <div className="flex flex-col gap-1 rounded-[8px] bg-surface-container-low p-4">
-            {focus.working && (
-              <Bullet emoji="🔭">
-                I'm currently working on{" "}
-                <strong className="font-semibold text-on-surface">
-                  {focus.working}
-                </strong>
-              </Bullet>
-            )}
-            {focus.learning && (
-              <Bullet emoji="🌱">
-                I'm currently learning{" "}
-                <strong className="font-semibold text-on-surface">
-                  {focus.learning}
-                </strong>
-              </Bullet>
-            )}
-            {focus.askMeAbout && (
-              <Bullet emoji="💬">
-                Ask me about{" "}
-                <span className="text-on-surface-variant">
-                  {focus.askMeAbout}
-                </span>
-              </Bullet>
-            )}
-          </div>
-        )}
-
-      {/* Tech stack */}
-      {enabled.tech && tech.length > 0 && (
+      );
+    case "headline":
+      return (
         <div className="flex flex-col gap-1">
-          <Heading>Tech Stack & Tooling</Heading>
+          {block.title && (
+            <p className="text-code-lg font-medium text-primary-container">
+              {block.title}
+            </p>
+          )}
+          {block.bio && (
+            <p className="max-w-2xl text-body-md leading-relaxed text-on-surface-variant">
+              {block.bio}
+            </p>
+          )}
+        </div>
+      );
+    case "focus":
+      return (
+        <div className="flex flex-col gap-1 rounded-[8px] bg-surface-container-low p-4">
+          {block.items.map((item) => (
+            <div
+              key={item.emoji}
+              className="flex items-start gap-1.5 text-body-md"
+            >
+              <span className="select-none">{item.emoji}</span>
+              <span className="text-on-surface">
+                {item.prefix}{" "}
+                {item.strong ? (
+                  <strong className="font-semibold text-on-surface">
+                    {item.value}
+                  </strong>
+                ) : (
+                  <span className="text-on-surface-variant">{item.value}</span>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    case "tech":
+      return (
+        <div className="flex flex-col gap-1">
+          <Heading>Tech Stack &amp; Tooling</Heading>
           <div className="flex flex-wrap gap-2 pt-1">
-            {tech.map((t) => (
+            {block.items.map((t) => (
               <div
                 key={t.name}
                 className="flex items-center gap-1.5 rounded bg-surface-container px-2.5 py-1 shadow-sm"
@@ -206,145 +210,15 @@ function RenderedDocument() {
             ))}
           </div>
         </div>
-      )}
-
-      {/* GitHub metrics */}
-      {enabled.metrics &&
-        (metrics.showStatsCard ||
-          metrics.showStreak ||
-          metrics.showGraph ||
-          metrics.showTopLanguages ||
-          metrics.showSnake) && (
-          <div className="flex flex-col gap-2 pt-1">
-            <Heading>GitHub Activity & Streak</Heading>
-            {(metrics.showStatsCard || metrics.showStreak) && (
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                {metrics.showStatsCard && (
-                  <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
-                    <div className="flex items-center justify-between pb-1">
-                      <span className="text-code-sm font-semibold text-on-surface">
-                        {basics.fullName.split(" ")[0]}'s GitHub Stats
-                      </span>
-                      <Icon
-                        name="star"
-                        size={16}
-                        className="text-primary-container"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5 pt-1 text-code-sm">
-                      <StatRow k="Total Stars Earned:" v="2,284" />
-                      <StatRow k="Total Commits (2025):" v="1,892" />
-                      <StatRow k="Total PRs Merged:" v="347" />
-                      <StatRow k="Contributed to:" v="48 Repos" />
-                    </div>
-                  </div>
-                )}
-                {metrics.showStreak && (
-                  <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
-                    <div className="flex items-center justify-between pb-1">
-                      <span className="text-code-sm font-semibold text-on-surface">
-                        Contribution Streak
-                      </span>
-                      <Icon
-                        name="local_fire_department"
-                        size={16}
-                        className="text-[#f97316]"
-                      />
-                    </div>
-                    <div className="grid grid-cols-3 pt-2 text-center">
-                      <Streak value="42" label="Current" />
-                      <Streak value="178" label="Longest" accent />
-                      <Streak value="1,892" label="Total" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {metrics.showGraph && (
-              <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-code-sm font-semibold text-on-surface">
-                    Contribution Graph
-                  </span>
-                  <Icon
-                    name="show_chart"
-                    size={16}
-                    className="text-primary-container"
-                  />
-                </div>
-                <svg
-                  className="h-16 w-full text-primary-container/70"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 300 60"
-                  aria-hidden
-                >
-                  <path
-                    d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26 L300,60 L0,60 Z"
-                    fill="currentColor"
-                    fillOpacity="0.1"
-                  />
-                </svg>
-                <span className="text-label-sm text-on-surface-variant">
-                  Rendered from a contribution-graph card service in the
-                  exported Markdown.
-                </span>
-              </div>
-            )}
-
-            {metrics.showTopLanguages && (
-              <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-2">
-                <div className="flex items-center justify-between text-code-sm">
-                  <span className="text-on-surface-variant">
-                    Top Languages Breakdown
-                  </span>
-                  <span className="font-medium text-primary-container">
-                    Rust 48.2% · TS 34.6% · Go 17.2%
-                  </span>
-                </div>
-                <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
-                  <div
-                    className="h-full bg-[#f97316]"
-                    style={{ width: "48.2%" }}
-                  />
-                  <div
-                    className="h-full bg-primary-container"
-                    style={{ width: "34.6%" }}
-                  />
-                  <div
-                    className="h-full bg-[#00add8]"
-                    style={{ width: "17.2%" }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {metrics.showSnake && (
-              <div className="flex items-center justify-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-code-sm text-on-surface-variant">
-                <Icon
-                  name="animation"
-                  size={16}
-                  className="text-primary-container"
-                />
-                Contribution snake animation
-              </div>
-            )}
-          </div>
-        )}
-
-      {/* Pinned repos */}
-      {enabled.pinned && pinned.length > 0 && (
+      );
+    case "metrics":
+      return <MetricsView cards={block.cards} />;
+    case "projects":
+      return (
         <div className="flex flex-col gap-2 pt-1">
           <Heading>Pinned Repositories</Heading>
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            {pinned.map((p) => (
+            {block.items.map((p) => (
               <div
                 key={p.id}
                 className="flex flex-col gap-1 rounded-[8px] bg-surface-container-low p-3"
@@ -369,33 +243,136 @@ function RenderedDocument() {
             ))}
           </div>
         </div>
+      );
+  }
+}
+
+function MetricsView({ cards }: { cards: MetricKind[] }) {
+  const has = (kind: MetricKind) => cards.includes(kind);
+  return (
+    <div className="flex flex-col gap-2 pt-1">
+      <Heading>GitHub Activity &amp; Streak</Heading>
+
+      {(has("stats") || has("streak")) && (
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+          {has("stats") && (
+            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-code-sm font-semibold text-on-surface">
+                  GitHub Stats
+                </span>
+                <Icon
+                  name="star"
+                  size={16}
+                  className="text-primary-container"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5 pt-1 text-code-sm">
+                <StatRow k="Total Stars Earned:" v="2,284" />
+                <StatRow k="Total Commits (2025):" v="1,892" />
+                <StatRow k="Total PRs Merged:" v="347" />
+                <StatRow k="Contributed to:" v="48 Repos" />
+              </div>
+            </div>
+          )}
+          {has("streak") && (
+            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-code-sm font-semibold text-on-surface">
+                  Contribution Streak
+                </span>
+                <Icon
+                  name="local_fire_department"
+                  size={16}
+                  className="text-[#f97316]"
+                />
+              </div>
+              <div className="grid grid-cols-3 pt-2 text-center">
+                <Streak value="42" label="Current" />
+                <Streak value="178" label="Longest" accent />
+                <Streak value="1,892" label="Total" />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {has("graph") && (
+        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-code-sm font-semibold text-on-surface">
+              Contribution Graph
+            </span>
+            <Icon
+              name="show_chart"
+              size={16}
+              className="text-primary-container"
+            />
+          </div>
+          <svg
+            className="h-16 w-full text-primary-container/70"
+            fill="none"
+            preserveAspectRatio="none"
+            viewBox="0 0 300 60"
+            aria-hidden
+          >
+            <path
+              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26 L300,60 L0,60 Z"
+              fill="currentColor"
+              fillOpacity="0.1"
+            />
+          </svg>
+          <span className="text-label-sm text-on-surface-variant">
+            Rendered from a contribution-graph card service in the exported
+            Markdown.
+          </span>
+        </div>
+      )}
+
+      {has("topLanguages") && (
+        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-2">
+          <div className="flex items-center justify-between text-code-sm">
+            <span className="text-on-surface-variant">
+              Top Languages Breakdown
+            </span>
+            <span className="font-medium text-primary-container">
+              Rust 48.2% · TS 34.6% · Go 17.2%
+            </span>
+          </div>
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
+            <div className="h-full bg-[#f97316]" style={{ width: "48.2%" }} />
+            <div
+              className="h-full bg-primary-container"
+              style={{ width: "34.6%" }}
+            />
+            <div className="h-full bg-[#00add8]" style={{ width: "17.2%" }} />
+          </div>
+        </div>
+      )}
+
+      {has("snake") && (
+        <div className="flex items-center justify-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-code-sm text-on-surface-variant">
+          <Icon name="animation" size={16} className="text-primary-container" />
+          Contribution snake animation
+        </div>
       )}
     </div>
   );
 }
 
-function Heading({ children }: { children: React.ReactNode }) {
+function Heading({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-1.5">
       <span className="text-code-sm font-bold text-primary-container">###</span>
       <h3 className="text-headline-sm font-semibold text-on-surface">
         {children}
       </h3>
-    </div>
-  );
-}
-
-function Bullet({
-  emoji,
-  children,
-}: {
-  emoji: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-1.5 text-body-md">
-      <span className="select-none">{emoji}</span>
-      <span className="text-on-surface">{children}</span>
     </div>
   );
 }

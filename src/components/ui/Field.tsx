@@ -13,7 +13,12 @@ interface FieldProps {
   mono?: boolean;
   /** Optional left adornment, e.g. "@". */
   prefix?: string;
+  /** Inline validation message; when set, the field shows an error state. */
+  error?: string | null;
 }
+
+const errorRing =
+  "border-error/70 ring-2 ring-error/25 focus:border-error/70 focus:ring-error/25";
 
 export function Field({
   label,
@@ -22,28 +27,42 @@ export function Field({
   placeholder,
   mono,
   prefix,
+  error,
 }: FieldProps) {
+  const invalid = Boolean(error);
   return (
     <div className="flex flex-col gap-1">
       <label className="text-label-sm text-on-surface-variant">{label}</label>
       {prefix ? (
-        <div className="flex items-center rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 shadow-inner shadow-black/10 focus-within:border-border-strong focus-within:ring-2 focus-within:ring-primary-container/25">
+        <div
+          className={cn(
+            "flex items-center rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 shadow-inner shadow-black/10 focus-within:border-border-strong focus-within:ring-2 focus-within:ring-primary-container/25",
+            invalid && errorRing
+          )}
+        >
           <span className="text-code-sm text-on-surface-variant">{prefix}</span>
           <input
             className="ml-1 w-full bg-transparent text-code-sm text-on-surface focus:outline-none"
             value={value}
             placeholder={placeholder}
+            aria-invalid={invalid || undefined}
             onChange={(e) => onChange(e.target.value)}
           />
         </div>
       ) : (
         <input
-          className={cn(inputBase, mono ? "text-code-sm" : "text-body-md")}
+          className={cn(
+            inputBase,
+            mono ? "text-code-sm" : "text-body-md",
+            invalid && errorRing
+          )}
           value={value}
           placeholder={placeholder}
+          aria-invalid={invalid || undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       )}
+      {error && <span className="text-body-sm text-error">{error}</span>}
     </div>
   );
 }
