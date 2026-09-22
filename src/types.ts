@@ -1,0 +1,51 @@
+/** ReadCraft profile model — shared by the editor and the live preview. */
+
+export interface ProfileBasics {
+  fullName: string;
+  username: string;
+  location: string;
+  company: string;
+}
+
+export interface Headline {
+  primary: string;
+  bio: string;
+}
+
+export interface Focus {
+  working: string;
+  learning: string;
+  askMeAbout: string;
+}
+
+export interface Metrics {
+  showStatsCard: boolean;
+  showStreak: boolean;
+  showGraph: boolean;
+  showSnake: boolean;
+  showTopLanguages: boolean;
+}
+
+export interface PinnedProject {
+  id: string;
+  name: string;
+  stars: string;
+  description: string;
+}
+
+/** A tech badge with an associated language colour dot. */
+export interface Tech {
+  name: string;
+  color: string;
+}
+
+export interface ProfileState {
+  basics: ProfileBasics;
+  headline: Headline;
+  focus: Focus;
+  tech: Tech[];
+  metrics: Metrics;
+  pinned: PinnedProject[];
+  /** Enabled state per section id, drives both editor toggles and preview. */
+  enabled: Record<string, boolean>;
+}

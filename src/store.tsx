@@ -1,0 +1,143 @@
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useReducer,
+  type ReactNode,
+} from "react";
+import type { ProfileState, Tech } from "./types";
+
+/* -------------------------------------------------------------------------- */
+/*  Seed data — mirrors the reference design (Alex Rivera)                    */
+/* -------------------------------------------------------------------------- */
+
+function createInitialState(username = "alexrivera"): ProfileState {
+  return {
+    basics: {
+      fullName: "Alex Rivera",
+      username,
+      location: "San Francisco, CA",
+      company: "Acme Labs",
+    },
+    headline: {
+      primary: "Senior Systems & UI Engineer",
+      bio: "Architecting distributed interfaces, high-concurrency tooling, and developer productivity systems.",
+    },
+    focus: {
+      working: "Low-latency WebAssembly graphics pipeline at Acme",
+      learning: "Rust async actors and eBPF kernel observability",
+      askMeAbout: "Design systems architecture, React compiler internals, or CLI engines",
+    },
+    tech: [
+      { name: "TypeScript", color: "#f59e0b" },
+      { name: "Rust", color: "#f97316" },
+      { name: "Go", color: "#00add8" },
+      { name: "React", color: "#61dafb" },
+      { name: "TailwindCSS", color: "#38bdf8" },
+      { name: "PostgreSQL", color: "#336791" },
+      { name: "Docker", color: "#2496ed" },
+    ],
+    metrics: {
+      showStatsCard: true,
+      showStreak: true,
+      showGraph: true,
+      showSnake: false,
+      showTopLanguages: true,
+    },
+    pinned: [
+      {
+        id: "p1",
+        name: "hyper-canvas",
+        stars: "1.4k",
+        description:
+          "Hardware-accelerated web graphics layout kernel written in Rust & WebAssembly.",
+      },
+      {
+        id: "p2",
+        name: "reactor-kit",
+        stars: "842",
+        description:
+          "Zero-runtime reactive UI primitives with full accessibility and token exports.",
+      },
+    ],
+    enabled: {
+      profile: true,
+      headline: true,
+      focus: true,
+      tech: true,
+      metrics: true,
+      pinned: true,
+    },
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Actions                                                                   */
+/* -------------------------------------------------------------------------- */
+
+type Action =
+  | { type: "setBasics"; patch: Partial<ProfileState["basics"]> }
+  | { type: "setHeadline"; patch: Partial<ProfileState["headline"]> }
+  | { type: "setFocus"; patch: Partial<ProfileState["focus"]> }
+  | { type: "setMetrics"; patch: Partial<ProfileState["metrics"]> }
+  | { type: "addTech"; tech: Tech }
+  | { type: "removeTech"; name: string }
+  | { type: "toggleSection"; id: string; value: boolean };
+
+function reducer(state: ProfileState, action: Action): ProfileState {
+  switch (action.type) {
+    case "setBasics":
+      return { ...state, basics: { ...state.basics, ...action.patch } };
+    case "setHeadline":
+      return { ...state, headline: { ...state.headline, ...action.patch } };
+    case "setFocus":
+      return { ...state, focus: { ...state.focus, ...action.patch } };
+    case "setMetrics":
+      return { ...state, metrics: { ...state.metrics, ...action.patch } };
+    case "addTech":
+      if (state.tech.some((t) => t.name.toLowerCase() === action.tech.name.toLowerCase())) {
+        return state;
+      }
+      return { ...state, tech: [...state.tech, action.tech] };
+    case "removeTech":
+      return { ...state, tech: state.tech.filter((t) => t.name !== action.name) };
+    case "toggleSection":
+      return {
+        ...state,
+        enabled: { ...state.enabled, [action.id]: action.value },
+      };
+    default:
+      return state;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Context                                                                   */
+/* -------------------------------------------------------------------------- */
+
+interface Store {
+  state: ProfileState;
+  dispatch: React.Dispatch<Action>;
+}
+
+const ProfileContext = createContext<Store | null>(null);
+
+export function ProfileProvider({
+  username,
+  children,
+}: {
+  username: string;
+  children: ReactNode;
+}) {
+  const [state, dispatch] = useReducer(reducer, username, createInitialState);
+  const value = useMemo(() => ({ state, dispatch }), [state]);
+  return (
+    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
+  );
+}
+
+export function useProfile(): Store {
+  const ctx = useContext(ProfileContext);
+  if (!ctx) throw new Error("useProfile must be used within ProfileProvider");
+  return ctx;
+}
