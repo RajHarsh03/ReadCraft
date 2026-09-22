@@ -26,8 +26,10 @@ export function generateMarkdown(state: ProfileState): string {
   }
 
   if (enabled.focus) {
-    if (focus.working) lines.push(`- 🔭 I'm currently working on **${focus.working}**`);
-    if (focus.learning) lines.push(`- 🌱 I'm currently learning **${focus.learning}**`);
+    if (focus.working)
+      lines.push(`- 🔭 I'm currently working on **${focus.working}**`);
+    if (focus.learning)
+      lines.push(`- 🌱 I'm currently learning **${focus.learning}**`);
     if (focus.askMeAbout) lines.push(`- 💬 Ask me about ${focus.askMeAbout}`);
     if (focus.working || focus.learning || focus.askMeAbout) lines.push("");
   }
@@ -37,29 +39,43 @@ export function generateMarkdown(state: ProfileState): string {
     lines.push(tech.map((t) => `\`${t.name}\``).join(" "), "");
   }
 
-  if (enabled.metrics) {
+  const anyMetric =
+    metrics.showStatsCard ||
+    metrics.showStreak ||
+    metrics.showGraph ||
+    metrics.showTopLanguages ||
+    metrics.showSnake;
+
+  if (enabled.metrics && anyMetric) {
+    const user = basics.username;
     lines.push("### GitHub Activity & Streak", "");
     if (metrics.showStatsCard) {
       lines.push(
-        `![${basics.username}'s GitHub stats](https://github-readme-stats.vercel.app/api?username=${basics.username})`,
+        `![${user}'s GitHub stats](https://github-readme-stats.vercel.app/api?username=${user})`,
         ""
       );
     }
     if (metrics.showStreak) {
       lines.push(
-        `![Streak](https://streak-stats.demolab.com?user=${basics.username})`,
+        `![Streak](https://streak-stats.demolab.com?user=${user})`,
+        ""
+      );
+    }
+    if (metrics.showGraph) {
+      lines.push(
+        `![Contribution graph](https://github-readme-activity-graph.vercel.app/graph?username=${user})`,
         ""
       );
     }
     if (metrics.showTopLanguages) {
       lines.push(
-        `![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=${basics.username})`,
+        `![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=${user})`,
         ""
       );
     }
     if (metrics.showSnake) {
       lines.push(
-        `![Snake](https://github.com/${basics.username}/${basics.username}/blob/output/snake.svg)`,
+        `![Snake](https://github.com/${user}/${user}/blob/output/snake.svg)`,
         ""
       );
     }

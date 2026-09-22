@@ -1,4 +1,3 @@
-import { cn } from "../../lib/cn";
 import { Icon } from "../ui/Icon";
 import { Logo } from "../ui/Logo";
 
@@ -20,20 +19,26 @@ export function TopNav() {
         </div>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {NAV_ITEMS.map((item, i) => (
-            <a
-              key={item}
-              href="#"
-              className={cn(
-                "rounded-lg px-4 py-1 text-label-md transition-colors",
-                i === 0
-                  ? "bg-primary-container font-semibold text-on-primary-container shadow-[0_6px_18px_-8px_rgb(247_167_24_/_0.9)]"
-                  : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
-              )}
-            >
-              {item}
-            </a>
-          ))}
+          {NAV_ITEMS.map((item, i) =>
+            i === 0 ? (
+              <span
+                key={item}
+                aria-current="page"
+                className="rounded-lg bg-primary-container px-4 py-1 text-label-md font-semibold text-on-primary-container shadow-[0_6px_18px_-8px_rgb(247_167_24_/_0.9)]"
+              >
+                {item}
+              </span>
+            ) : (
+              <span
+                key={item}
+                aria-disabled="true"
+                title="Coming soon"
+                className="cursor-not-allowed rounded-lg px-4 py-1 text-label-md text-on-surface-variant/50"
+              >
+                {item}
+              </span>
+            )
+          )}
         </nav>
 
         <div className="flex items-center gap-3">

@@ -48,10 +48,11 @@
   --color-error-container: #93000a;
 
   /* Fonts */
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo",
-    "Consolas", monospace;
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas",
+    monospace;
 
   /* Radius scale — tight, engineered */
   --radius-rc: 0.375rem; /* 6px base for controls */
@@ -84,8 +85,16 @@ body {
 .rc-app-shell {
   min-height: 100%;
   background:
-    radial-gradient(1000px 480px at 50% -180px, rgb(53 93 143 / 0.2), transparent 70%),
-    radial-gradient(720px 440px at 100% 55%, rgb(247 167 24 / 0.055), transparent 72%),
+    radial-gradient(
+      1000px 480px at 50% -180px,
+      rgb(53 93 143 / 0.2),
+      transparent 70%
+    ),
+    radial-gradient(
+      720px 440px at 100% 55%,
+      rgb(247 167 24 / 0.055),
+      transparent 72%
+    ),
     var(--color-surface);
 }
 
@@ -98,11 +107,15 @@ body {
 }
 
 .rc-nav-surface {
-  box-shadow: 0 1px 0 rgb(255 255 255 / 0.025), 0 10px 30px rgb(0 0 0 / 0.18);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.025),
+    0 10px 30px rgb(0 0 0 / 0.18);
 }
 
 .rc-elevated {
-  box-shadow: 0 24px 70px -30px rgb(0 0 0 / 0.78), inset 0 1px rgb(255 255 255 / 0.035);
+  box-shadow:
+    0 24px 70px -30px rgb(0 0 0 / 0.78),
+    inset 0 1px rgb(255 255 255 / 0.035);
 }
 
 .rc-amber-glow {
@@ -110,7 +123,11 @@ body {
 }
 
 .rc-editor-pane {
-  background: linear-gradient(180deg, rgb(18 24 34 / 0.98), rgb(12 16 23 / 0.96));
+  background: linear-gradient(
+    180deg,
+    rgb(18 24 34 / 0.98),
+    rgb(12 16 23 / 0.96)
+  );
 }
 
 /* Tabular figures + slashed zero for all monospace (DESIGN.md requirement) */
@@ -118,7 +135,9 @@ code,
 kbd,
 .font-mono,
 [class*="font-mono"] {
-  font-feature-settings: "tnum" 1, "zero" 1;
+  font-feature-settings:
+    "tnum" 1,
+    "zero" 1;
 }
 
 :focus-visible {

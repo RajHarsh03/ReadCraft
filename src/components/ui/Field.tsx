@@ -90,8 +90,12 @@ export function ToggleRow({
   return (
     <div className="flex items-center justify-between rounded-[6px] bg-surface-container-lowest p-2">
       <div className="flex flex-col">
-        <span className="text-body-md font-medium text-on-surface">{title}</span>
-        <span className="text-body-sm text-on-surface-variant">{description}</span>
+        <span className="text-body-md font-medium text-on-surface">
+          {title}
+        </span>
+        <span className="text-body-sm text-on-surface-variant">
+          {description}
+        </span>
       </div>
       {children}
     </div>

@@ -77,8 +77,12 @@ function SubHeader() {
         </div>
         <div className="hidden h-4 w-px bg-surface-container-highest sm:block" />
         <div className="hidden items-center gap-1.5 rounded border border-outline-variant/70 bg-surface-container px-2 py-0.5 sm:flex">
-          <span className="text-code-sm font-bold text-primary-container">#</span>
-          <span className="text-code-sm text-on-surface">readme-{fileSlug}.md</span>
+          <span className="text-code-sm font-bold text-primary-container">
+            #
+          </span>
+          <span className="text-code-sm text-on-surface">
+            readme-{fileSlug}.md
+          </span>
         </div>
       </div>
 

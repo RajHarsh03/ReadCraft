@@ -3,14 +3,25 @@ import { Icon } from "../components/ui/Icon";
 import { Logo } from "../components/ui/Logo";
 
 const FEATURES = [
-  { icon: "verified_user", tint: "text-primary", label: "No GitHub token required" },
+  {
+    icon: "verified_user",
+    tint: "text-primary",
+    label: "No GitHub token required",
+  },
   { icon: "bolt", tint: "text-tertiary", label: "100% Client-side Markdown" },
   { icon: "terminal", tint: "text-secondary", label: "Exports raw .md or SVG" },
 ];
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];
 
-const NAV_ITEMS = ["Showcase", "Templates", "Documentation", "Open App"];
+type NavItem = { label: string; state: "current" | "action" | "soon" };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "Showcase", state: "current" },
+  { label: "Templates", state: "soon" },
+  { label: "Documentation", state: "soon" },
+  { label: "Open App", state: "action" },
+];
 
 interface UsernameEntryProps {
   onGenerate: (username: string) => void;
@@ -38,19 +49,41 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
             </span>
           </div>
           <nav className="hidden items-center gap-1 md:flex">
-            {NAV_ITEMS.map((item, i) => (
-              <a
-                key={item}
-                href="#"
-                className={
-                  i === 0
-                    ? "rounded-lg bg-primary-container px-3 py-1 text-label-md font-semibold text-on-primary-container shadow-[0_6px_18px_-8px_rgb(247_167_24_/_0.9)]"
-                    : "rounded px-3 py-1 text-label-md text-on-surface-variant transition-colors hover:text-on-surface"
-                }
-              >
-                {item}
-              </a>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              if (item.state === "current") {
+                return (
+                  <span
+                    key={item.label}
+                    aria-current="page"
+                    className="rounded-lg bg-primary-container px-3 py-1 text-label-md font-semibold text-on-primary-container shadow-[0_6px_18px_-8px_rgb(247_167_24_/_0.9)]"
+                  >
+                    {item.label}
+                  </span>
+                );
+              }
+              if (item.state === "action") {
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => onGenerate("alexrivera")}
+                    className="rounded px-3 py-1 text-label-md text-on-surface-variant transition-colors hover:text-on-surface"
+                  >
+                    {item.label}
+                  </button>
+                );
+              }
+              return (
+                <span
+                  key={item.label}
+                  aria-disabled="true"
+                  title="Coming soon"
+                  className="cursor-not-allowed rounded px-3 py-1 text-label-md text-on-surface-variant/50"
+                >
+                  {item.label}
+                </span>
+              );
+            })}
           </nav>
           <div className="flex items-center gap-3">
             <button
@@ -70,13 +103,26 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
 
       <main className="relative overflow-hidden pt-14">
         {/* Ambient dev grid + markdown watermarks */}
-        <div aria-hidden className="rc-landing-grid pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          aria-hidden
+          className="rc-landing-grid pointer-events-none absolute inset-0 overflow-hidden"
+        >
           <div className="absolute -top-12 left-1/2 h-[360px] w-[720px] -translate-x-1/2 rounded-full bg-tertiary/10 blur-[140px]" />
-          <span className="absolute left-8 top-16 text-label-md text-outline-variant/40">### profile_init.md</span>
-          <span className="absolute right-12 top-28 text-label-md text-outline-variant/40">&gt; stream: ready</span>
-          <span className="absolute left-16 top-64 text-label-md text-outline-variant/30">- - -</span>
-          <span className="absolute bottom-40 right-24 text-label-md text-outline-variant/30">bash</span>
-          <span className="absolute bottom-16 left-28 text-label-md text-outline-variant/40"># dev_identity.json</span>
+          <span className="absolute left-8 top-16 text-label-md text-outline-variant/40">
+            ### profile_init.md
+          </span>
+          <span className="absolute right-12 top-28 text-label-md text-outline-variant/40">
+            &gt; stream: ready
+          </span>
+          <span className="absolute left-16 top-64 text-label-md text-outline-variant/30">
+            - - -
+          </span>
+          <span className="absolute bottom-40 right-24 text-label-md text-outline-variant/30">
+            bash
+          </span>
+          <span className="absolute bottom-16 left-28 text-label-md text-outline-variant/40">
+            # dev_identity.json
+          </span>
         </div>
 
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 pb-24 pt-12">
@@ -88,11 +134,15 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                 README Compiler
               </span>
               <span className="text-label-sm text-outline-variant">/</span>
-              <span className="text-label-sm font-semibold text-primary">v1.4</span>
+              <span className="text-label-sm font-semibold text-primary">
+                v1.4
+              </span>
             </div>
             <div className="mb-3 flex items-center justify-center gap-3">
               <Logo size={36} />
-              <h1 className="bg-gradient-to-r from-on-surface via-on-surface to-secondary bg-clip-text text-headline-xl font-bold tracking-tight text-transparent">ReadCraft</h1>
+              <h1 className="bg-gradient-to-r from-on-surface via-on-surface to-secondary bg-clip-text text-headline-xl font-bold tracking-tight text-transparent">
+                ReadCraft
+              </h1>
             </div>
             <p className="max-w-xl text-headline-md text-secondary drop-shadow-sm">
               Craft a GitHub profile README worthy of your code.
@@ -150,7 +200,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
 
             {/* Quick presets */}
             <div className="mt-4 flex items-center justify-center gap-2">
-              <span className="text-label-sm text-outline-variant">Quick sample:</span>
+              <span className="text-label-sm text-outline-variant">
+                Quick sample:
+              </span>
               {SAMPLES.map((s) => (
                 <button
                   key={s}
@@ -193,7 +245,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               {/* Mock rendered README */}
               <div className="space-y-6 bg-surface-container-lowest/80 p-8">
                 <div className="relative overflow-hidden rounded-[8px] bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-low p-6">
-                  <span className="absolute right-3 top-2 text-code-sm text-outline-variant/30"># profile</span>
+                  <span className="absolute right-3 top-2 text-code-sm text-outline-variant/30">
+                    # profile
+                  </span>
                   <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-container/20 text-headline-lg font-bold text-primary">
                       RC
@@ -208,15 +262,22 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                         </span>
                       </div>
                       <p className="mt-0.5 text-body-md text-secondary">
-                        Building distributed databases, high-throughput pipelines & modern developer tools.
+                        Building distributed databases, high-throughput
+                        pipelines & modern developer tools.
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-1.5 text-code-sm text-on-surface-variant sm:flex-col">
                       <span className="flex items-center gap-1 rounded bg-surface-container-high px-2 py-1">
-                        <Icon name="star" size={13} className="text-primary" /> 14.8k stars
+                        <Icon name="star" size={13} className="text-primary" />{" "}
+                        14.8k stars
                       </span>
                       <span className="flex items-center gap-1 rounded bg-surface-container-high px-2 py-1">
-                        <Icon name="fork_right" size={13} className="text-tertiary" /> 2.1k forks
+                        <Icon
+                          name="fork_right"
+                          size={13}
+                          className="text-tertiary"
+                        />{" "}
+                        2.1k forks
                       </span>
                     </div>
                   </div>
@@ -224,23 +285,49 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="relative rounded-[8px] bg-surface-container p-4">
-                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30">&gt;</span>
+                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30">
+                      &gt;
+                    </span>
                     <div className="mb-2 text-label-sm uppercase tracking-wider text-secondary">
                       Metrics Snapshot
                     </div>
                     <div className="space-y-2 text-code-sm">
                       <Row k="Commits (2025)" v="2,481" />
-                      <Row k="Pull Requests" v="312 merged" vClass="text-primary" />
-                      <Row k="Contributed Repos" v="43" vClass="text-tertiary" />
+                      <Row
+                        k="Pull Requests"
+                        v="312 merged"
+                        vClass="text-primary"
+                      />
+                      <Row
+                        k="Contributed Repos"
+                        v="43"
+                        vClass="text-tertiary"
+                      />
                     </div>
-                    <svg className="mt-3 h-7 w-full text-primary/80" fill="none" preserveAspectRatio="none" viewBox="0 0 200 30">
-                      <path d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
-                      <path d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8 L200,30 L0,30 Z" fill="currentColor" fillOpacity="0.12" />
+                    <svg
+                      className="mt-3 h-7 w-full text-primary/80"
+                      fill="none"
+                      preserveAspectRatio="none"
+                      viewBox="0 0 200 30"
+                    >
+                      <path
+                        d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                      />
+                      <path
+                        d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8 L200,30 L0,30 Z"
+                        fill="currentColor"
+                        fillOpacity="0.12"
+                      />
                     </svg>
                   </div>
 
                   <div className="relative rounded-[8px] bg-surface-container p-4 md:col-span-2">
-                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30"># stack</span>
+                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30">
+                      # stack
+                    </span>
                     <div className="mb-2 text-label-sm uppercase tracking-wider text-secondary">
                       Primary Arsenal
                     </div>
@@ -266,11 +353,21 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                     </div>
                     <div className="mt-3 flex items-center justify-between pt-2 text-code-sm text-on-surface-variant">
                       <div className="flex items-center gap-1.5 truncate">
-                        <Icon name="bookmark" size={15} className="text-primary" />
-                        <span className="font-semibold text-on-surface">hyper-kv</span>
-                        <span className="text-body-sm text-secondary">— Fast in-memory key-value engine</span>
+                        <Icon
+                          name="bookmark"
+                          size={15}
+                          className="text-primary"
+                        />
+                        <span className="font-semibold text-on-surface">
+                          hyper-kv
+                        </span>
+                        <span className="text-body-sm text-secondary">
+                          — Fast in-memory key-value engine
+                        </span>
                       </div>
-                      <span className="rounded bg-primary/10 px-2 py-0.5 text-label-sm text-primary">v0.9.4</span>
+                      <span className="rounded bg-primary/10 px-2 py-0.5 text-label-sm text-primary">
+                        v0.9.4
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -282,7 +379,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
             <div className="mt-4 flex items-center justify-between px-2 text-code-sm text-outline-variant/60">
               <span className="flex items-center gap-1">
                 <Icon name="auto_awesome" size={14} />
-                Auto-synced via public GitHub Events API
+                Built from public GitHub data
               </span>
               <span>output: 100% standard markdown</span>
             </div>
@@ -293,7 +390,15 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   );
 }
 
-function Row({ k, v, vClass = "text-on-surface" }: { k: string; v: string; vClass?: string }) {
+function Row({
+  k,
+  v,
+  vClass = "text-on-surface",
+}: {
+  k: string;
+  v: string;
+  vClass?: string;
+}) {
   return (
     <div className="flex items-center justify-between text-code-sm">
       <span className="text-on-surface-variant">{k}</span>

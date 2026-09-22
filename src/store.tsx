@@ -26,7 +26,8 @@ function createInitialState(username = "alexrivera"): ProfileState {
     focus: {
       working: "Low-latency WebAssembly graphics pipeline at Acme",
       learning: "Rust async actors and eBPF kernel observability",
-      askMeAbout: "Design systems architecture, React compiler internals, or CLI engines",
+      askMeAbout:
+        "Design systems architecture, React compiler internals, or CLI engines",
     },
     tech: [
       { name: "TypeScript", color: "#f59e0b" },
@@ -95,12 +96,19 @@ function reducer(state: ProfileState, action: Action): ProfileState {
     case "setMetrics":
       return { ...state, metrics: { ...state.metrics, ...action.patch } };
     case "addTech":
-      if (state.tech.some((t) => t.name.toLowerCase() === action.tech.name.toLowerCase())) {
+      if (
+        state.tech.some(
+          (t) => t.name.toLowerCase() === action.tech.name.toLowerCase()
+        )
+      ) {
         return state;
       }
       return { ...state, tech: [...state.tech, action.tech] };
     case "removeTech":
-      return { ...state, tech: state.tech.filter((t) => t.name !== action.name) };
+      return {
+        ...state,
+        tech: state.tech.filter((t) => t.name !== action.name),
+      };
     case "toggleSection":
       return {
         ...state,
@@ -136,6 +144,9 @@ export function ProfileProvider({
   );
 }
 
+// The provider component and this hook are intentionally co-located; splitting
+// them would add indirection for no runtime benefit. (Restructured in Phase 1.)
+// eslint-disable-next-line react-refresh/only-export-components
 export function useProfile(): Store {
   const ctx = useContext(ProfileContext);
   if (!ctx) throw new Error("useProfile must be used within ProfileProvider");

@@ -21,7 +21,9 @@ export function SectionsEditor() {
             Document Sections ({activeCount})
           </span>
         </div>
-        <span className="text-code-sm text-on-surface-variant">Live Synced</span>
+        <span className="text-code-sm text-on-surface-variant">
+          Live Synced
+        </span>
       </div>
 
       {/* 1. Profile Basics */}
@@ -31,31 +33,41 @@ export function SectionsEditor() {
         description="Identity, handles & coordinates"
         defaultOpen
         enabled={state.enabled.profile}
-        onToggle={(v) => dispatch({ type: "toggleSection", id: "profile", value: v })}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "profile", value: v })
+        }
       >
         <div className="grid grid-cols-2 gap-2">
           <Field
             label="Full Name"
             value={state.basics.fullName}
-            onChange={(v) => dispatch({ type: "setBasics", patch: { fullName: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setBasics", patch: { fullName: v } })
+            }
           />
           <Field
             label="GitHub Username"
             prefix="@"
             value={state.basics.username}
-            onChange={(v) => dispatch({ type: "setBasics", patch: { username: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setBasics", patch: { username: v } })
+            }
           />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Field
             label="Location"
             value={state.basics.location}
-            onChange={(v) => dispatch({ type: "setBasics", patch: { location: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setBasics", patch: { location: v } })
+            }
           />
           <Field
             label="Company / Lab"
             value={state.basics.company}
-            onChange={(v) => dispatch({ type: "setBasics", patch: { company: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setBasics", patch: { company: v } })
+            }
           />
         </div>
       </SectionCard>
@@ -67,12 +79,16 @@ export function SectionsEditor() {
         description="Primary taglines and summary"
         defaultOpen
         enabled={state.enabled.headline}
-        onToggle={(v) => dispatch({ type: "toggleSection", id: "headline", value: v })}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "headline", value: v })
+        }
       >
         <Field
           label="Primary Headline"
           value={state.headline.primary}
-          onChange={(v) => dispatch({ type: "setHeadline", patch: { primary: v } })}
+          onChange={(v) =>
+            dispatch({ type: "setHeadline", patch: { primary: v } })
+          }
         />
         <TextField
           label="Markdown Lead Bio"
@@ -87,25 +103,33 @@ export function SectionsEditor() {
         title="Current Focus & Goals"
         description="Dynamic GFM bullet generator"
         enabled={state.enabled.focus}
-        onToggle={(v) => dispatch({ type: "toggleSection", id: "focus", value: v })}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "focus", value: v })
+        }
       >
         <Field
           label="🔭 I'm currently working on..."
           mono
           value={state.focus.working}
-          onChange={(v) => dispatch({ type: "setFocus", patch: { working: v } })}
+          onChange={(v) =>
+            dispatch({ type: "setFocus", patch: { working: v } })
+          }
         />
         <Field
           label="🌱 I'm currently learning..."
           mono
           value={state.focus.learning}
-          onChange={(v) => dispatch({ type: "setFocus", patch: { learning: v } })}
+          onChange={(v) =>
+            dispatch({ type: "setFocus", patch: { learning: v } })
+          }
         />
         <Field
           label="💬 Ask me about..."
           mono
           value={state.focus.askMeAbout}
-          onChange={(v) => dispatch({ type: "setFocus", patch: { askMeAbout: v } })}
+          onChange={(v) =>
+            dispatch({ type: "setFocus", patch: { askMeAbout: v } })
+          }
         />
       </SectionCard>
 
@@ -116,7 +140,9 @@ export function SectionsEditor() {
         description="Skill matrix pills & icon sets"
         defaultOpen
         enabled={state.enabled.tech}
-        onToggle={(v) => dispatch({ type: "toggleSection", id: "tech", value: v })}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "tech", value: v })
+        }
       >
         <div className="flex items-center gap-1 rounded-[6px] bg-surface-container-lowest p-1">
           {TECH_CATEGORIES.map((cat, i) => (
@@ -172,38 +198,63 @@ export function SectionsEditor() {
         description="Widgets configuration switches"
         defaultOpen
       >
-        <ToggleRow title="Show GitHub Stats Card" description="Overview of stars, PRs, and top contributions">
+        <ToggleRow
+          title="Show GitHub Stats Card"
+          description="Overview of stars, PRs, and top contributions"
+        >
           <Toggle
             checked={state.metrics.showStatsCard}
-            onChange={(v) => dispatch({ type: "setMetrics", patch: { showStatsCard: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setMetrics", patch: { showStatsCard: v } })
+            }
             label="Show GitHub Stats Card"
           />
         </ToggleRow>
-        <ToggleRow title="Show Contribution Streak" description="Display current and longest commit streak">
+        <ToggleRow
+          title="Show Contribution Streak"
+          description="Display current and longest commit streak"
+        >
           <Toggle
             checked={state.metrics.showStreak}
-            onChange={(v) => dispatch({ type: "setMetrics", patch: { showStreak: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setMetrics", patch: { showStreak: v } })
+            }
             label="Show Contribution Streak"
           />
         </ToggleRow>
-        <ToggleRow title="Show Contribution Graph" description="Dynamic commit heat-map widget">
+        <ToggleRow
+          title="Show Contribution Graph"
+          description="Dynamic commit heat-map widget"
+        >
           <Toggle
             checked={state.metrics.showGraph}
-            onChange={(v) => dispatch({ type: "setMetrics", patch: { showGraph: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setMetrics", patch: { showGraph: v } })
+            }
             label="Show Contribution Graph"
           />
         </ToggleRow>
-        <ToggleRow title="Snake Animation" description="Retro game eating commit contributions">
+        <ToggleRow
+          title="Snake Animation"
+          description="Retro game eating commit contributions"
+        >
           <Toggle
             checked={state.metrics.showSnake}
-            onChange={(v) => dispatch({ type: "setMetrics", patch: { showSnake: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setMetrics", patch: { showSnake: v } })
+            }
             label="Snake Animation"
           />
         </ToggleRow>
-        <ToggleRow title="Top Languages Card" description="Automatic language breakdown bar">
+        <ToggleRow
+          title="Top Languages Card"
+          description="Automatic language breakdown bar"
+        >
           <Toggle
             checked={state.metrics.showTopLanguages}
-            onChange={(v) => dispatch({ type: "setMetrics", patch: { showTopLanguages: v } })}
+            onChange={(v) =>
+              dispatch({ type: "setMetrics", patch: { showTopLanguages: v } })
+            }
             label="Top Languages Card"
           />
         </ToggleRow>
@@ -215,15 +266,26 @@ export function SectionsEditor() {
         title="Pinned Projects"
         description="Curated repository highlights"
         enabled={state.enabled.pinned}
-        onToggle={(v) => dispatch({ type: "toggleSection", id: "pinned", value: v })}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "pinned", value: v })
+        }
       >
         {state.pinned.map((p) => (
-          <div key={p.id} className="flex flex-col gap-1 rounded-[6px] bg-surface-container-lowest p-2">
+          <div
+            key={p.id}
+            className="flex flex-col gap-1 rounded-[6px] bg-surface-container-lowest p-2"
+          >
             <div className="flex items-center justify-between">
-              <span className="text-code-sm font-bold text-primary">{p.name}</span>
-              <span className="text-code-sm text-on-surface-variant">★ {p.stars}</span>
+              <span className="text-code-sm font-bold text-primary">
+                {p.name}
+              </span>
+              <span className="text-code-sm text-on-surface-variant">
+                ★ {p.stars}
+              </span>
             </div>
-            <span className="text-body-sm text-on-surface-variant">{p.description}</span>
+            <span className="text-body-sm text-on-surface-variant">
+              {p.description}
+            </span>
           </div>
         ))}
       </SectionCard>
@@ -231,14 +293,20 @@ export function SectionsEditor() {
       {/* 7. Reorder indicator */}
       <div className="flex items-center justify-between rounded-[6px] bg-surface-container-lowest p-2">
         <div className="flex items-center gap-1.5">
-          <Icon name="drag_indicator" size={16} className="text-on-surface-variant" />
+          <Icon
+            name="drag_indicator"
+            size={16}
+            className="text-on-surface-variant"
+          />
           <span className="text-label-sm uppercase text-on-surface-variant">
             Reorder & Layout Flow
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-primary-container" />
-          <span className="text-code-sm text-primary">{activeCount} Active Modules</span>
+          <span className="text-code-sm text-primary">
+            {activeCount} Active Modules
+          </span>
         </div>
       </div>
     </div>

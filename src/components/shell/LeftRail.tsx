@@ -1,4 +1,3 @@
-import { cn } from "../../lib/cn";
 import { Icon } from "../ui/Icon";
 
 const PRIMARY_NAV = [
@@ -19,21 +18,28 @@ export function LeftRail() {
           </span>
         </div>
         <nav className="flex flex-col gap-1 px-2">
-          {PRIMARY_NAV.map((item) => (
-            <a
-              key={item.label}
-              href="#"
-              className={cn(
-                "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-label-md transition-colors",
-                item.active
-                  ? "border border-border-strong/70 bg-surface-container-high font-semibold text-primary shadow-[inset_3px_0_0_var(--color-primary-container)]"
-                  : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-              )}
-            >
-              <Icon name={item.icon} size={18} />
-              <span>{item.label}</span>
-            </a>
-          ))}
+          {PRIMARY_NAV.map((item) =>
+            item.active ? (
+              <span
+                key={item.label}
+                aria-current="page"
+                className="flex items-center gap-2.5 rounded-lg border border-border-strong/70 bg-surface-container-high px-2.5 py-2 text-label-md font-semibold text-primary shadow-[inset_3px_0_0_var(--color-primary-container)]"
+              >
+                <Icon name={item.icon} size={18} />
+                <span>{item.label}</span>
+              </span>
+            ) : (
+              <span
+                key={item.label}
+                aria-disabled="true"
+                title="Coming soon"
+                className="flex cursor-not-allowed items-center gap-2.5 rounded-lg px-2.5 py-2 text-label-md text-on-surface-variant/50"
+              >
+                <Icon name={item.icon} size={18} />
+                <span>{item.label}</span>
+              </span>
+            )
+          )}
         </nav>
       </div>
 
@@ -42,13 +48,14 @@ export function LeftRail() {
           <span>Engine</span>
           <span className="text-primary">GFM Ready</span>
         </div>
-        <a
-          href="#"
-          className="flex items-center gap-2.5 rounded px-2.5 py-1 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+        <span
+          aria-disabled="true"
+          title="Coming soon"
+          className="flex cursor-not-allowed items-center gap-2.5 rounded px-2.5 py-1 text-label-md text-on-surface-variant/50"
         >
           <Icon name="tune" size={18} />
           <span>Preferences</span>
-        </a>
+        </span>
       </div>
     </aside>
   );

@@ -80,7 +80,11 @@ export function SectionCard({
         </div>
       </div>
 
-      {open && <div className="mt-3 flex flex-col gap-2 border-t border-outline-variant/70 pt-3">{children}</div>}
+      {open && (
+        <div className="mt-3 flex flex-col gap-2 border-t border-outline-variant/70 pt-3">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
