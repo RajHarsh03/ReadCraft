@@ -12,9 +12,9 @@ export function PreviewPanel() {
   const [tab, setTab] = useState<Tab>("preview");
 
   return (
-    <div className="flex h-full flex-col bg-surface">
+    <div className="flex h-full flex-col bg-surface/80">
       {/* Tab switch bar */}
-      <div className="z-10 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 py-1.5">
+      <div className="z-10 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest/90 px-4 py-1.5 backdrop-blur-xl">
         <div className="flex items-center gap-1">
           <TabButton icon="visibility" label="Preview" active={tab === "preview"} onClick={() => setTab("preview")} />
           <TabButton icon="code" label="Markdown" active={tab === "markdown"} onClick={() => setTab("markdown")} />
@@ -27,6 +27,7 @@ export function PreviewPanel() {
 
       {/* Canvas */}
       <div className="relative flex flex-1 justify-center overflow-y-auto bg-surface-dim p-4 lg:p-8">
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgb(42_78_119_/_0.16),_transparent_48%)]" />
         {/* Markdown syntax watermarks */}
         <div aria-hidden className="pointer-events-none absolute inset-0 select-none">
           <span className="absolute left-8 top-8 text-code-lg font-bold text-surface-container-high/40">#</span>
@@ -87,7 +88,7 @@ function RenderedDocument() {
   const { basics, headline, focus, tech, metrics, pinned, enabled } = state;
 
   return (
-    <div className="relative z-10 flex w-full max-w-3xl flex-col gap-6 rounded-[12px] bg-surface-container-lowest p-4 shadow-2xl sm:p-8">
+    <div className="rc-elevated relative z-10 flex w-full max-w-3xl flex-col gap-6 rounded-[12px] border border-outline-variant/80 bg-surface-container-lowest p-4 sm:p-8">
       {/* Profile header */}
       {enabled.profile && (
         <div className="flex flex-col gap-1 pb-2">

@@ -1,8 +1,8 @@
 import { cn } from "../../lib/cn";
 
 const inputBase =
-  "w-full rounded-[6px] bg-surface-container-lowest px-2.5 py-1.5 text-on-surface " +
-  "placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary-container";
+  "w-full rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 text-on-surface shadow-inner shadow-black/10 " +
+  "placeholder:text-outline focus:border-border-strong focus:outline-none focus:ring-2 focus:ring-primary-container/25";
 
 interface FieldProps {
   label: string;
@@ -27,7 +27,7 @@ export function Field({
     <div className="flex flex-col gap-1">
       <label className="text-label-sm text-on-surface-variant">{label}</label>
       {prefix ? (
-        <div className="flex items-center rounded-[6px] bg-surface-container-lowest px-2.5 py-1.5 focus-within:ring-1 focus-within:ring-primary-container">
+        <div className="flex items-center rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 shadow-inner shadow-black/10 focus-within:border-border-strong focus-within:ring-2 focus-within:ring-primary-container/25">
           <span className="text-code-sm text-on-surface-variant">{prefix}</span>
           <input
             className="ml-1 w-full bg-transparent text-code-sm text-on-surface focus:outline-none"
