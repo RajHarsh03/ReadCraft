@@ -5,7 +5,13 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import type { PinnedProject, ProfileState, SectionId, Tech } from "./types";
+import type {
+  GitHubImport,
+  PinnedProject,
+  ProfileState,
+  SectionId,
+  Tech,
+} from "./types";
 import { SECTION_IDS } from "./types";
 
 /* -------------------------------------------------------------------------- */
@@ -94,7 +100,20 @@ type Action =
   | { type: "removeProject"; id: string }
   | { type: "moveProject"; id: string; direction: -1 | 1 }
   | { type: "hydrate"; state: ProfileState }
+  | { type: "importGitHub"; payload: GitHubImport }
   | { type: "reset"; username?: string };
+
+/** Merge technologies, de-duplicating by case-insensitive name. */
+function mergeTech(existing: Tech[], incoming: Tech[]): Tech[] {
+  const merged = [...existing];
+  for (const tech of incoming) {
+    const dup = merged.some(
+      (t) => t.name.toLowerCase() === tech.name.toLowerCase()
+    );
+    if (!dup) merged.push(tech);
+  }
+  return merged;
+}
 
 /** Swap the item at `index` with its neighbor in `direction`, immutably. */
 function moveInArray<T>(items: T[], index: number, direction: -1 | 1): T[] {
@@ -177,6 +196,19 @@ function reducer(state: ProfileState, action: Action): ProfileState {
       };
     case "hydrate":
       return action.state;
+    case "importGitHub": {
+      const { basics, bioIfEmpty, techToMerge, projects } = action.payload;
+      return {
+        ...state,
+        basics: { ...state.basics, ...basics },
+        headline: {
+          ...state.headline,
+          bio: state.headline.bio.trim() ? state.headline.bio : bioIfEmpty,
+        },
+        tech: mergeTech(state.tech, techToMerge),
+        pinned: projects.length ? projects : state.pinned,
+      };
+    }
     case "reset":
       return createInitialState(action.username ?? state.basics.username);
     default:

@@ -4,6 +4,7 @@ import { SectionCard } from "../../components/ui/SectionCard";
 import { Field, TextField, ToggleRow } from "../../components/ui/Field";
 import { Toggle } from "../../components/ui/Toggle";
 import { usernameError } from "../../lib/username";
+import { GitHubConnectionCard } from "./GitHubConnectionCard";
 
 const TECH_CATEGORIES = ["Languages", "Frameworks", "Cloud", "Databases"];
 
@@ -14,6 +15,9 @@ export function SectionsEditor() {
 
   return (
     <div className="flex flex-col gap-2">
+      {/* GitHub connection + import */}
+      <GitHubConnectionCard />
+
       {/* Editor header */}
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-1.5">

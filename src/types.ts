@@ -39,6 +39,17 @@ export interface Tech {
   color: string;
 }
 
+/** Payload applied when importing fetched GitHub data into the document. */
+export interface GitHubImport {
+  basics: Partial<ProfileBasics>;
+  /** Bio to use only if the current bio is empty (never overwrites edits). */
+  bioIfEmpty: string;
+  /** Technologies to merge in (deduped by name). */
+  techToMerge: Tech[];
+  /** Featured projects; replaces the current list when non-empty. */
+  projects: PinnedProject[];
+}
+
 /** Section identifiers, in their default render order. */
 export type SectionId =
   "profile" | "headline" | "focus" | "tech" | "metrics" | "pinned";
