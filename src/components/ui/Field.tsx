@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { cn } from "../../lib/cn";
 
 const inputBase =
@@ -28,10 +29,17 @@ export function Field({
   prefix,
   error,
 }: FieldProps) {
+  const id = useId();
+  const errorId = `${id}-error`;
   const invalid = Boolean(error);
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-label-sm text-on-surface-variant">{label}</label>
+      <label
+        htmlFor={id}
+        className="text-label-sm text-on-surface-variant"
+      >
+        {label}
+      </label>
       {prefix ? (
         <div
           className={cn(
@@ -39,17 +47,22 @@ export function Field({
             invalid && errorRing
           )}
         >
-          <span className="text-code-sm text-on-surface-variant">{prefix}</span>
+          <span className="text-code-sm text-on-surface-variant" aria-hidden>
+            {prefix}
+          </span>
           <input
+            id={id}
             className="ml-1 w-full bg-transparent text-code-sm text-on-surface focus:outline-none"
             value={value}
             placeholder={placeholder}
             aria-invalid={invalid || undefined}
+            aria-describedby={invalid ? errorId : undefined}
             onChange={(e) => onChange(e.target.value)}
           />
         </div>
       ) : (
         <input
+          id={id}
           className={cn(
             inputBase,
             mono ? "text-code-sm" : "text-body-md",
@@ -58,10 +71,15 @@ export function Field({
           value={value}
           placeholder={placeholder}
           aria-invalid={invalid || undefined}
+          aria-describedby={invalid ? errorId : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       )}
-      {error && <span className="text-body-sm text-error">{error}</span>}
+      {error && (
+        <span id={errorId} className="text-body-sm text-error">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
@@ -81,10 +99,14 @@ export function TextField({
   rows = 2,
   placeholder,
 }: TextFieldProps) {
+  const id = useId();
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-label-sm text-on-surface-variant">{label}</label>
+      <label htmlFor={id} className="text-label-sm text-on-surface-variant">
+        {label}
+      </label>
       <textarea
+        id={id}
         rows={rows}
         className={cn(inputBase, "resize-none text-body-md")}
         value={value}

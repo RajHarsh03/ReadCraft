@@ -132,6 +132,7 @@ function ProjectRow({
             className={inputClass}
             value={project.name}
             placeholder="Project name"
+            aria-label="Project name"
             onChange={(e) => onChange({ name: e.target.value })}
           />
           <div className="flex w-24 shrink-0 items-center gap-1 rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2 focus-within:border-primary-container">
@@ -140,6 +141,7 @@ function ProjectRow({
               className="w-full bg-transparent py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:outline-none focus-visible:outline-none"
               value={project.stars}
               placeholder="1.4k"
+              aria-label="Star count"
               onChange={(e) => onChange({ stars: e.target.value })}
             />
           </div>
@@ -149,6 +151,7 @@ function ProjectRow({
           className={`${inputClass} resize-none`}
           value={project.description}
           placeholder="Short description"
+          aria-label="Project description"
           onChange={(e) => onChange({ description: e.target.value })}
         />
       </div>

@@ -317,6 +317,7 @@ function MetricsView({
   const bundle = state.status === "success" ? state.bundle : null;
   const stats = bundle ? deriveGitHubStats(bundle) : null;
   const languages = bundle?.languages ?? [];
+  const streak = bundle?.streak ?? null;
 
   return (
     <div className="flex flex-col gap-2 pt-1">
@@ -369,9 +370,19 @@ function MetricsView({
                 />
               </div>
               <div className="grid grid-cols-3 pt-2 text-center">
-                <Streak value="42" label="Current" />
-                <Streak value="178" label="Longest" accent />
-                <Streak value="1,892" label="Total" />
+                <Streak
+                  value={streak ? formatCount(streak.currentStreak) : "42"}
+                  label="Current"
+                />
+                <Streak
+                  value={streak ? formatCount(streak.longestStreak) : "178"}
+                  label="Longest"
+                  accent
+                />
+                <Streak
+                  value={streak ? formatCount(streak.total) : "1,892"}
+                  label="Total"
+                />
               </div>
             </div>
           )}

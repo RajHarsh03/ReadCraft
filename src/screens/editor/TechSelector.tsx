@@ -82,6 +82,7 @@ export function TechSelector() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search technologies…"
+          aria-label="Search technologies"
           className="w-full bg-transparent text-code-sm text-on-surface placeholder:text-outline focus:outline-none focus-visible:outline-none"
         />
         {query && (
@@ -214,6 +215,7 @@ function CustomTechForm({
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Technology name"
+          aria-label="Custom technology name"
           className="flex-1 rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
         />
         <input
@@ -229,6 +231,7 @@ function CustomTechForm({
         onChange={(e) => setBadgeUrl(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
         placeholder="Badge image URL (optional)"
+        aria-label="Custom badge image URL"
         className="rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
       />
       {duplicate && (

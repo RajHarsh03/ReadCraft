@@ -339,10 +339,24 @@ kbd,
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Neutralize decorative transform-based motion (waving hand, hover lift,
+     spinners) so nothing keeps moving as a status cue. */
+  .animate-bounce,
+  .animate-spin,
+  .animate-pulse {
+    animation: none !important;
   }
 }

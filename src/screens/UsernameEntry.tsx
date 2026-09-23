@@ -162,6 +162,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                   <input
                     autoComplete="off"
                     spellCheck={false}
+                    aria-label="GitHub username"
                     className="w-full bg-transparent text-code-lg font-semibold tracking-tight text-on-surface placeholder:font-normal placeholder:text-outline-variant/60 focus:outline-none"
                     placeholder="torvalds"
                     value={value}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useProfile } from "../../store";
 import { useGitHub } from "../../hooks/useGitHub";
 import { mapBundleToImport, type GitHubBundle } from "../../lib/github";
@@ -6,13 +6,25 @@ import { Icon } from "../../components/ui/Icon";
 
 /**
  * The GitHub connection panel. Auto-loads the current username's public data
- * and surfaces loading, success, and error states. Import is explicit, and
- * manual editing always remains available so an API failure never blocks work.
+ * and imports it into the document automatically once fetched, so entering a
+ * username is all it takes. Manual editing always remains available, and an
+ * API failure never blocks work.
  */
 export function GitHubConnectionCard() {
   const { state: profile, dispatch } = useProfile();
   const username = profile.basics.username;
   const { state, refetch } = useGitHub(username);
+
+  // Auto-import fetched data once per username. A ref guards against
+  // re-importing on every render (or when the user edits after import).
+  const importedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (state.status !== "success") return;
+    const login = state.bundle.profile.login.toLowerCase();
+    if (importedFor.current === login) return;
+    importedFor.current = login;
+    dispatch({ type: "importGitHub", payload: mapBundleToImport(state.bundle) });
+  }, [state, dispatch]);
 
   return (
     <div className="rounded-[6px] border border-outline-variant bg-surface-container p-4 shadow-sm">
@@ -70,17 +82,7 @@ export function GitHubConnectionCard() {
             </button>
           </div>
         )}
-        {state.status === "success" && (
-          <ConnectionSuccess
-            bundle={state.bundle}
-            onImport={() =>
-              dispatch({
-                type: "importGitHub",
-                payload: mapBundleToImport(state.bundle),
-              })
-            }
-          />
-        )}
+        {state.status === "success" && <ConnectionSuccess bundle={state.bundle} />}
       </div>
     </div>
   );
@@ -93,25 +95,13 @@ function ConnectionSkeleton() {
       <div className="flex flex-1 flex-col gap-2">
         <div className="h-3 w-1/3 rounded bg-surface-container-high" />
         <div className="h-2.5 w-1/4 rounded bg-surface-container-high" />
-        <div className="mt-1 flex gap-1.5">
-          <div className="h-4 w-14 rounded bg-surface-container-high" />
-          <div className="h-4 w-14 rounded bg-surface-container-high" />
-          <div className="h-4 w-14 rounded bg-surface-container-high" />
-        </div>
       </div>
     </div>
   );
 }
 
-function ConnectionSuccess({
-  bundle,
-  onImport,
-}: {
-  bundle: GitHubBundle;
-  onImport: () => void;
-}) {
-  const [imported, setImported] = useState(false);
-  const { profile, languages, totalPublic } = bundle;
+function ConnectionSuccess({ bundle }: { bundle: GitHubBundle }) {
+  const { profile, totalPublic } = bundle;
 
   return (
     <div className="flex flex-col gap-3">
@@ -144,33 +134,9 @@ function ConnectionSuccess({
         </div>
       </div>
 
-      {languages.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {languages.slice(0, 6).map((l) => (
-            <span
-              key={l.language}
-              className="rounded bg-surface-container-high px-2 py-0.5 text-label-sm text-on-surface"
-            >
-              {l.language} {l.percent}%
-            </span>
-          ))}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={() => {
-          onImport();
-          setImported(true);
-        }}
-        className="flex items-center justify-center gap-1.5 rounded-[6px] bg-primary-container px-3 py-2 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
-      >
-        <Icon name={imported ? "check" : "download"} size={16} />
-        {imported ? "Imported — data applied" : "Import into README"}
-      </button>
-      <p className="text-body-sm text-on-surface-variant">
-        Import fills your name, top languages, and featured
-        repositories. Your existing bio and edits are preserved.
+      <p className="flex items-center gap-1.5 text-body-sm text-on-surface-variant">
+        <Icon name="check_circle" size={15} className="text-primary-container" />
+        Profile data loaded and applied. Your bio and edits are preserved.
       </p>
     </div>
   );

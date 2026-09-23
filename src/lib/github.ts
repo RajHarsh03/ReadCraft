@@ -46,6 +46,12 @@ export interface LanguageStat {
   percent: number;
 }
 
+export interface StreakStats {
+  total: number;
+  currentStreak: number;
+  longestStreak: number;
+}
+
 export type GitHubErrorKind =
   | "invalid_username"
   | "not_found"
@@ -126,11 +132,18 @@ export function fetchLanguages(username: string): Promise<LanguageStat[]> {
   );
 }
 
+export function fetchStreak(username: string): Promise<StreakStats> {
+  const u = encodeURIComponent(normalizeUsername(username));
+  return get<StreakStats>(`/api/github/${u}/streak`);
+}
+
 export interface GitHubBundle {
   profile: GitHubProfile;
   repositories: GitHubRepo[];
   totalPublic: number;
   languages: LanguageStat[];
+  /** Contribution streak, or null if the streak source was unavailable. */
+  streak: StreakStats | null;
 }
 
 /** Fetch everything the connection panel needs in parallel. */
@@ -138,16 +151,20 @@ export async function fetchGitHubBundle(
   username: string,
   repoLimit = 6
 ): Promise<GitHubBundle> {
-  const [profile, repos, languages] = await Promise.all([
+  const [profile, repos, languages, streak] = await Promise.all([
     fetchProfile(username),
     fetchRepositories(username, repoLimit),
     fetchLanguages(username),
+    // The streak comes from a separate public source; never let its failure
+    // block the core profile data — fall back to null instead.
+    fetchStreak(username).catch(() => null),
   ]);
   return {
     profile,
     repositories: repos.repositories,
     totalPublic: repos.totalPublic,
     languages,
+    streak,
   };
 }
 

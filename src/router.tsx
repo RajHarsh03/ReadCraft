@@ -19,7 +19,8 @@ export type Route =
   | { name: "builder"; username: string }
   | { name: "templates" }
   | { name: "badges" }
-  | { name: "docs" };
+  | { name: "docs" }
+  | { name: "notfound" };
 
 export type RouteName = Route["name"];
 
@@ -38,6 +39,8 @@ export function routeToHash(route: Route): string {
       return "#/badges";
     case "docs":
       return "#/docs";
+    case "notfound":
+      return "#/404";
   }
 }
 
@@ -55,7 +58,10 @@ export function parseHash(hash: string): Route {
   if (clean.startsWith("/templates")) return { name: "templates" };
   if (clean.startsWith("/badges")) return { name: "badges" };
   if (clean.startsWith("/docs")) return { name: "docs" };
-  return { name: "landing" };
+  // Empty hash (or bare "/") is the landing page; any other unknown path is a
+  // genuine not-found so mistyped links get a clear recovery screen.
+  if (clean === "" || clean === "/") return { name: "landing" };
+  return { name: "notfound" };
 }
 
 interface RouterApi {
