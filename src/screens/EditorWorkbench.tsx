@@ -9,6 +9,11 @@ import { generateMarkdown } from "../lib/markdown";
 import { copyText, downloadTextFile, safeSlug } from "../lib/export";
 import { useToast } from "../components/ui/Toast";
 import { getTemplate, PENDING_TEMPLATE_KEY } from "../lib/templates";
+import {
+  PENDING_BADGE_KEY,
+  badgeImageUrl,
+  type BadgeSpec,
+} from "../lib/badges";
 
 interface EditorWorkbenchProps {
   username: string;
@@ -20,7 +25,7 @@ interface EditorWorkbenchProps {
 export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
   return (
     <ProfileProvider username={username}>
-      <PendingTemplate />
+      <PendingHandoff />
       <div className="rc-app-shell min-h-screen text-on-surface">
         <TopNav onHome={onHome} />
         <LeftRail />
@@ -34,10 +39,10 @@ export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
 }
 
 /**
- * Applies a template chosen on the standalone Templates page (handed over via
- * sessionStorage), once, when the builder mounts. Renders nothing.
+ * Applies anything handed over from a standalone page (a chosen template or a
+ * badge) via sessionStorage, once, when the builder mounts. Renders nothing.
  */
-function PendingTemplate() {
+function PendingHandoff() {
   const { dispatch } = useProfile();
   const toast = useToast();
   const applied = useRef(false);
@@ -45,18 +50,44 @@ function PendingTemplate() {
   useEffect(() => {
     if (applied.current) return;
     applied.current = true;
-    let id: string | null = null;
+
+    // Pending template
     try {
-      id = sessionStorage.getItem(PENDING_TEMPLATE_KEY);
-      if (id) sessionStorage.removeItem(PENDING_TEMPLATE_KEY);
+      const id = sessionStorage.getItem(PENDING_TEMPLATE_KEY);
+      if (id) {
+        sessionStorage.removeItem(PENDING_TEMPLATE_KEY);
+        const template = getTemplate(id);
+        if (template) {
+          dispatch({ type: "applyTemplate", template });
+          toast.success(`Applied the ${template.name} template.`);
+        }
+      }
     } catch {
-      id = null;
+      // ignore
     }
-    if (!id) return;
-    const template = getTemplate(id);
-    if (template) {
-      dispatch({ type: "applyTemplate", template });
-      toast.success(`Applied the ${template.name} template.`);
+
+    // Pending badge → add to the Tech section as an image badge.
+    try {
+      const raw = sessionStorage.getItem(PENDING_BADGE_KEY);
+      if (raw) {
+        sessionStorage.removeItem(PENDING_BADGE_KEY);
+        const spec = JSON.parse(raw) as BadgeSpec;
+        const name =
+          [spec.label, spec.message].filter(Boolean).join(" ").trim() ||
+          "Badge";
+        dispatch({
+          type: "addTech",
+          tech: {
+            name,
+            color: `#${spec.color.replace(/^#/, "")}`,
+            badgeUrl: badgeImageUrl(spec),
+          },
+        });
+        dispatch({ type: "toggleSection", id: "tech", value: true });
+        toast.success("Badge added to your Tech Stack.");
+      }
+    } catch {
+      // ignore
     }
   }, [dispatch, toast]);
 

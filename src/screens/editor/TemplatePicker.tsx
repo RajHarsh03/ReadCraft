@@ -2,16 +2,8 @@ import { useProfile } from "../../store";
 import { useToast } from "../../components/ui/Toast";
 import { Icon } from "../../components/ui/Icon";
 import { TEMPLATES, templateLayout, type Template } from "../../lib/templates";
+import { SECTION_META } from "../../lib/sections";
 import type { SectionId } from "../../types";
-
-const SECTION_LABEL: Record<SectionId, string> = {
-  profile: "Profile",
-  headline: "Headline",
-  focus: "Focus",
-  tech: "Tech",
-  metrics: "Metrics",
-  pinned: "Projects",
-};
 
 /**
  * In-builder template picker. Applying a template only changes the layout
@@ -82,7 +74,7 @@ export function TemplatePicker() {
                   key={id}
                   className="rounded bg-surface-container-high px-1.5 py-0.5 text-label-sm text-on-surface-variant"
                 >
-                  {SECTION_LABEL[id]}
+                  {SECTION_META[id].label}
                 </span>
               ))}
             </div>

@@ -23,6 +23,34 @@ import { templateLayout, type Template } from "./lib/templates";
 /*  Seed data — mirrors the reference design (Alex Rivera)                    */
 /* -------------------------------------------------------------------------- */
 
+/** Generate a stable-enough unique id for a new list item. */
+function newId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `id-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/** The default "suggested" pinned projects, used for the seed and for restore. */
+function suggestedProjects(): PinnedProject[] {
+  return [
+    {
+      id: newId(),
+      name: "hyper-canvas",
+      stars: "1.4k",
+      description:
+        "Hardware-accelerated web graphics layout kernel written in Rust & WebAssembly.",
+    },
+    {
+      id: newId(),
+      name: "reactor-kit",
+      stars: "842",
+      description:
+        "Zero-runtime reactive UI primitives with full accessibility and token exports.",
+    },
+  ];
+}
+
 function createInitialState(username = "alexrivera"): ProfileState {
   return {
     basics: {
@@ -57,22 +85,7 @@ function createInitialState(username = "alexrivera"): ProfileState {
       showSnake: false,
       showTopLanguages: true,
     },
-    pinned: [
-      {
-        id: "p1",
-        name: "hyper-canvas",
-        stars: "1.4k",
-        description:
-          "Hardware-accelerated web graphics layout kernel written in Rust & WebAssembly.",
-      },
-      {
-        id: "p2",
-        name: "reactor-kit",
-        stars: "842",
-        description:
-          "Zero-runtime reactive UI primitives with full accessibility and token exports.",
-      },
-    ],
+    pinned: suggestedProjects(),
     enabled: {
       profile: true,
       headline: true,
@@ -104,6 +117,7 @@ type Action =
   | { type: "updateProject"; id: string; patch: Partial<PinnedProject> }
   | { type: "removeProject"; id: string }
   | { type: "moveProject"; id: string; direction: -1 | 1 }
+  | { type: "restoreSuggestedProjects" }
   | { type: "hydrate"; state: ProfileState }
   | { type: "importGitHub"; payload: GitHubImport }
   | { type: "applyTemplate"; template: Template }
@@ -200,6 +214,8 @@ function reducer(state: ProfileState, action: Action): ProfileState {
           action.direction
         ),
       };
+    case "restoreSuggestedProjects":
+      return { ...state, pinned: suggestedProjects() };
     case "applyTemplate": {
       // Layout only: change which sections show and their order. Content
       // (basics, headline, focus, tech, pinned) is intentionally preserved.

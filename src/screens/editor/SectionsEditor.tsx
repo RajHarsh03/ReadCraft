@@ -6,8 +6,9 @@ import { Toggle } from "../../components/ui/Toggle";
 import { usernameError } from "../../lib/username";
 import { GitHubConnectionCard } from "./GitHubConnectionCard";
 import { TemplatePicker } from "./TemplatePicker";
-
-const TECH_CATEGORIES = ["Languages", "Frameworks", "Cloud", "Databases"];
+import { TechSelector } from "./TechSelector";
+import { ProjectsEditor } from "./ProjectsEditor";
+import { SectionOrderEditor } from "./SectionOrderEditor";
 
 /** The 40% left column: "Document Sections" accordion editor. */
 export function SectionsEditor() {
@@ -242,45 +243,17 @@ export function SectionsEditor() {
           dispatch({ type: "toggleSection", id: "pinned", value: v })
         }
       >
-        {state.pinned.map((p) => (
-          <div
-            key={p.id}
-            className="flex flex-col gap-1 rounded-[6px] bg-surface-container-lowest p-2"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-code-sm font-bold text-primary">
-                {p.name}
-              </span>
-              <span className="text-code-sm text-on-surface-variant">
-                ★ {p.stars}
-              </span>
-            </div>
-            <span className="text-body-sm text-on-surface-variant">
-              {p.description}
-            </span>
-          </div>
-        ))}
+        <ProjectsEditor />
       </SectionCard>
 
-      {/* 7. Reorder indicator */}
-      <div className="flex items-center justify-between rounded-[6px] bg-surface-container-lowest p-2">
-        <div className="flex items-center gap-1.5">
-          <Icon
-            name="drag_indicator"
-            size={16}
-            className="text-on-surface-variant"
-          />
-          <span className="text-label-sm uppercase text-on-surface-variant">
-            Reorder & Layout Flow
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary-container" />
-          <span className="text-code-sm text-primary">
-            {activeCount} Active Modules
-          </span>
-        </div>
-      </div>
+      {/* 7. Section order & visibility */}
+      <SectionCard
+        icon="reorder"
+        title="Reorder & Layout"
+        description={`${activeCount} of ${state.order.length} sections shown`}
+      >
+        <SectionOrderEditor />
+      </SectionCard>
     </div>
   );
 }

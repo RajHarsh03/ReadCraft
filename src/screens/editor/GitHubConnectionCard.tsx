@@ -169,7 +169,7 @@ function ConnectionSuccess({
         {imported ? "Imported — data applied" : "Import into README"}
       </button>
       <p className="text-body-sm text-on-surface-variant">
-        Import fills your name, company, location, top languages, and featured
+        Import fills your name, top languages, and featured
         repositories. Your existing bio and edits are preserved.
       </p>
     </div>

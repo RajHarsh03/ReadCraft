@@ -64,7 +64,13 @@ function renderBlock(block: ReadmeBlock, encoded: string): string {
       return [
         "### Tech Stack & Tooling",
         "",
-        block.items.map((t) => code(t.name)).join(" "),
+        block.items
+          .map((t) =>
+            t.badgeUrl
+              ? `![${t.name}](${encodeURI(t.badgeUrl)})`
+              : code(t.name)
+          )
+          .join(" "),
       ].join("\n");
     case "metrics":
       return [

@@ -199,10 +199,14 @@ function BlockView({ block }: { block: ReadmeBlock }) {
                 key={t.name}
                 className="flex items-center gap-1.5 rounded bg-surface-container px-2.5 py-1 shadow-sm"
               >
-                <span
-                  className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: t.color }}
-                />
+                {t.badgeUrl ? (
+                  <img src={t.badgeUrl} alt="" className="h-3.5 w-3.5 rounded-sm" />
+                ) : (
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: t.color }}
+                  />
+                )}
                 <span className="text-code-sm font-medium text-on-surface">
                   {t.name}
                 </span>

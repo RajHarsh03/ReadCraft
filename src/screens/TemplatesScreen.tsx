@@ -1,16 +1,7 @@
 import { PageShell } from "../components/shell/PageShell";
 import { useRouter } from "../router";
 import { TEMPLATES, PENDING_TEMPLATE_KEY } from "../lib/templates";
-import type { SectionId } from "../types";
-
-const SECTION_LABEL: Record<SectionId, string> = {
-  profile: "Profile",
-  headline: "Headline",
-  focus: "Focus",
-  tech: "Tech",
-  metrics: "Metrics",
-  pinned: "Projects",
-};
+import { SECTION_META } from "../lib/sections";
 
 /** Templates gallery. Choosing one opens the builder with it applied. */
 export function TemplatesScreen() {
@@ -50,7 +41,7 @@ export function TemplatesScreen() {
                   key={id}
                   className="rounded bg-surface-container px-2 py-1 text-label-sm text-on-surface-variant"
                 >
-                  {SECTION_LABEL[id]}
+                  {SECTION_META[id].label}
                 </div>
               ))}
             </div>
