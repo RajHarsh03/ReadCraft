@@ -82,7 +82,7 @@ export function TemplatePicker() {
         );
       })}
       <p className="mt-1 text-body-sm text-on-surface-variant">
-        Templates only rearrange sections — your content is never changed.
+        Templates only rearrange sections - your content is never changed.
       </p>
     </div>
   );

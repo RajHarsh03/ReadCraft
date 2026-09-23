@@ -20,7 +20,7 @@ import { clearDraft, loadDraft, saveDraft } from "./lib/persistence";
 import { templateLayout, type Template } from "./lib/templates";
 
 /* -------------------------------------------------------------------------- */
-/*  Seed data — mirrors the reference design (Alex Rivera)                    */
+/*  Seed data - mirrors the reference design (Alex Rivera)                    */
 /* -------------------------------------------------------------------------- */
 
 /** Generate a stable-enough unique id for a new list item. */

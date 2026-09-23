@@ -5,7 +5,7 @@ interface LogoProps {
 
 /**
  * The ReadCraft mark: an amber Satisfy-script "#", slightly tilted with a soft
- * glow. No tile or background — the glyph stands on its own and sits snugly
+ * glow. No tile or background - the glyph stands on its own and sits snugly
  * next to the wordmark.
  */
 export function Logo({ size = 32, className }: LogoProps) {

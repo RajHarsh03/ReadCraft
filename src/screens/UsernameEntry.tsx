@@ -25,7 +25,7 @@ const CAPABILITIES = [
   {
     icon: "hub",
     title: "Real GitHub data",
-    body: "Pull your public profile, top languages, and best repositories with one click — no token needed.",
+    body: "Pull your public profile, top languages, and best repositories with one click - no token needed.",
   },
   {
     icon: "visibility",
@@ -224,7 +224,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                   <span className="h-2.5 w-2.5 rounded-full bg-surface-bright" />
                   <span className="ml-2 flex items-center gap-1.5 text-code-sm text-on-surface-variant">
                     <Icon name="markdown" size={14} />
-                    README.md — Live Preview
+                    README.md - Live Preview
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -358,7 +358,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                           hyper-kv
                         </span>
                         <span className="text-body-sm text-secondary">
-                          — Fast in-memory key-value engine
+                          - Fast in-memory key-value engine
                         </span>
                       </div>
                       <span className="rounded bg-primary/10 px-2 py-0.5 text-label-sm text-primary">

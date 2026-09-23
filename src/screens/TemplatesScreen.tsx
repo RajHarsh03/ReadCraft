@@ -19,7 +19,7 @@ export function TemplatesScreen() {
   return (
     <PageShell
       title="Templates"
-      description="Pick a layout to start from. Templates only arrange sections — you can fine-tune everything in the builder afterwards."
+      description="Pick a layout to start from. Templates only arrange sections - you can fine-tune everything in the builder afterwards."
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TEMPLATES.map((template) => (

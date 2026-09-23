@@ -119,7 +119,7 @@ function TabButton({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Rendered document — one block renderer per document block kind            */
+/*  Rendered document - one block renderer per document block kind            */
 /* -------------------------------------------------------------------------- */
 
 function RenderedDocument() {
@@ -312,7 +312,7 @@ function MetricsView({
   const has = (kind: MetricKind) => cards.includes(kind);
   // Pull the user's real public data. When unavailable (no username, loading,
   // or an error) cards fall back to placeholder numbers so the layout and
-  // design never change — only the values do.
+  // design never change - only the values do.
   const { state } = useGitHub(username);
   const bundle = state.status === "success" ? state.bundle : null;
   const stats = bundle ? deriveGitHubStats(bundle) : null;

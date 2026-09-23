@@ -162,7 +162,7 @@ function ResizableWorkbench() {
         <SectionsEditor />
       </aside>
 
-      {/* Draggable divider — desktop only */}
+      {/* Draggable divider - desktop only */}
       <div
         role="separator"
         aria-orientation="vertical"

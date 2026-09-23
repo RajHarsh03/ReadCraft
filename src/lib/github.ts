@@ -156,7 +156,7 @@ export async function fetchGitHubBundle(
     fetchRepositories(username, repoLimit),
     fetchLanguages(username),
     // The streak comes from a separate public source; never let its failure
-    // block the core profile data — fall back to null instead.
+    // block the core profile data - fall back to null instead.
     fetchStreak(username).catch(() => null),
   ]);
   return {
@@ -246,8 +246,8 @@ export function mapBundleToImport(
  * Only values the public GitHub REST API actually provides are included:
  * follower/following/repo counts come straight from the profile, and the star
  * total is summed over the fetched repositories (hence "top repos", not an
- * all-time all-repo figure). Metrics the REST API cannot supply — total
- * commits, merged PRs, and contribution streaks — are deliberately absent so
+ * all-time all-repo figure). Metrics the REST API cannot supply - total
+ * commits, merged PRs, and contribution streaks - are deliberately absent so
  * the UI never presents a fabricated number as real.
  */
 export interface GitHubStats {

@@ -13,7 +13,7 @@ import { encodeUsername } from "./username";
  * Render a README document to GitHub-Flavored Markdown.
  *
  * This renderer only formats blocks; it never decides which sections appear or
- * in what order — that is owned by `buildReadmeDocument`. The preview renders
+ * in what order - that is owned by `buildReadmeDocument`. The preview renders
  * the same document, so preview and export stay in lockstep.
  */
 
@@ -76,7 +76,7 @@ function renderBlock(block: ReadmeBlock, encoded: string): string {
         "### Pinned Repositories",
         "",
         ...block.items.map(
-          (p) => `- **${p.name}** (★ ${p.stars}) — ${p.description}`
+          (p) => `- **${p.name}** (★ ${p.stars}) - ${p.description}`
         ),
       ].join("\n");
   }

@@ -4,7 +4,7 @@ import { SECTION_IDS } from "../types";
 /**
  * A template is a *layout* preset: which sections are enabled and the order
  * they appear in. Templates never touch the user's content (name, bio, tech,
- * projects) — applying one only rearranges/toggles sections, so it is safe to
+ * projects) - applying one only rearranges/toggles sections, so it is safe to
  * switch templates at any time.
  */
 export interface Template {
@@ -25,7 +25,7 @@ export const TEMPLATES: Template[] = [
   {
     id: "minimal",
     name: "Minimal",
-    description: "Just the essentials — who you are and what you build.",
+    description: "Just the essentials - who you are and what you build.",
     layout: ["profile", "headline", "tech"],
   },
   {

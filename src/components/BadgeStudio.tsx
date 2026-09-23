@@ -46,7 +46,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
   const copy = async () => {
     const ok = await copyText(markdown);
     toast[ok ? "success" : "error"](
-      ok ? "Badge Markdown copied." : "Couldn't copy — select and copy manually."
+      ok ? "Badge Markdown copied." : "Couldn't copy - select and copy manually."
     );
   };
 

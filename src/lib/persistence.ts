@@ -8,7 +8,7 @@ import { SECTION_IDS } from "../types";
  * a corrupt, partial, or older payload is coerced back into a complete
  * ProfileState (merged over the caller's defaults) rather than throwing, so a
  * bad entry can never break app startup. Writes fail silently when storage is
- * unavailable (private mode, quota) — the in-memory draft keeps working.
+ * unavailable (private mode, quota) - the in-memory draft keeps working.
  */
 
 const STORAGE_KEY = "readcraft:draft";

@@ -1,4 +1,4 @@
-/** ReadCraft profile model — shared by the editor and the live preview. */
+/** ReadCraft profile model - shared by the editor and the live preview. */
 
 export interface ProfileBasics {
   fullName: string;

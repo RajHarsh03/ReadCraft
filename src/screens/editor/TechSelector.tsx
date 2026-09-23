@@ -46,7 +46,7 @@ export function TechSelector() {
       <div className="flex flex-wrap gap-1.5">
         {state.tech.length === 0 && (
           <span className="text-body-sm text-on-surface-variant">
-            No technologies yet — search or browse below.
+            No technologies yet - search or browse below.
           </span>
         )}
         {state.tech.map((t) => (
