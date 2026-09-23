@@ -9,7 +9,7 @@ const FEATURES = [
     label: "No GitHub token required",
   },
   { icon: "bolt", tint: "text-tertiary", label: "100% Client-side Markdown" },
-  { icon: "terminal", tint: "text-secondary", label: "Exports raw .md or SVG" },
+  { icon: "terminal", tint: "text-secondary", label: "Instant Exports raw .md" },
 ];
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];

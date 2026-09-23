@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TopNav } from "../components/shell/TopNav";
 import { LeftRail } from "../components/shell/LeftRail";
-import { Logo } from "../components/ui/Logo";
 import { Button } from "../components/ui/Button";
 import { ProfileProvider, useProfile } from "../store";
 import { SectionsEditor } from "./editor/SectionsEditor";
@@ -21,20 +20,120 @@ export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
       <div className="rc-app-shell min-h-screen text-on-surface">
         <TopNav onHome={onHome} />
         <LeftRail />
-        <div className="pt-14 lg:pl-64">
+        <div className="pt-14 lg:pl-52">
           <SubHeader />
-          {/* Two-column workbench: 40% editor / 60% preview */}
-          <div className="flex min-h-[calc(100vh-6.5rem)] flex-col lg:flex-row">
-            <aside className="rc-editor-pane max-h-[calc(100vh-6.5rem)] w-full overflow-y-auto border-r border-outline-variant p-4 lg:w-[40%]">
-              <SectionsEditor />
-            </aside>
-            <main className="w-full lg:w-[60%]">
-              <PreviewPanel />
-            </main>
-          </div>
+          <ResizableWorkbench />
         </div>
       </div>
     </ProfileProvider>
+  );
+}
+
+/** Minimum / maximum editor width as a percentage of the workbench. */
+const MIN_EDITOR_PCT = 25;
+const MAX_EDITOR_PCT = 70;
+
+/**
+ * The two-pane workbench with a draggable divider. On desktop the editor and
+ * preview widths are user-resizable; on smaller screens the panes stack and
+ * the divider is hidden.
+ */
+function ResizableWorkbench() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [editorPct, setEditorPct] = useState(40);
+  const [dragging, setDragging] = useState(false);
+  // Resizing only applies on the desktop side-by-side layout (Tailwind lg).
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.innerWidth >= 1024
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const onPointerMove = useCallback(
+    (event: PointerEvent) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const pct = ((event.clientX - rect.left) / rect.width) * 100;
+      setEditorPct(Math.min(MAX_EDITOR_PCT, Math.max(MIN_EDITOR_PCT, pct)));
+    },
+    []
+  );
+
+  const onPointerUp = useCallback(() => setDragging(false), []);
+
+  // While dragging, listen on the window so the cursor can leave the handle.
+  useEffect(() => {
+    if (!dragging) return;
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    // Keep the resize cursor and prevent text selection during the drag.
+    const prevCursor = document.body.style.cursor;
+    const prevSelect = document.body.style.userSelect;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      document.body.style.cursor = prevCursor;
+      document.body.style.userSelect = prevSelect;
+    };
+  }, [dragging, onPointerMove, onPointerUp]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="flex flex-col lg:h-[calc(100vh-6.5rem)] lg:flex-row"
+    >
+      <aside
+        className="rc-editor-pane w-full shrink-0 overflow-y-auto p-4 lg:h-full"
+        style={isDesktop ? { width: `${editorPct}%` } : undefined}
+      >
+        <SectionsEditor />
+      </aside>
+
+      {/* Draggable divider — desktop only */}
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize editor and preview"
+        onPointerDown={onPointerDown}
+        className={`group relative hidden w-px shrink-0 cursor-col-resize bg-outline-variant lg:block ${
+          dragging ? "bg-primary-container" : "hover:bg-primary-container/70"
+        }`}
+      >
+        {/* Wider invisible hit area for easy grabbing */}
+        <span className="absolute inset-y-0 -left-1.5 -right-1.5" />
+        {/* Grip indicator */}
+        <span
+          className={`absolute left-1/2 top-1/2 flex h-8 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-outline-variant bg-surface-container transition-colors ${
+            dragging
+              ? "border-primary-container"
+              : "opacity-0 group-hover:opacity-100"
+          }`}
+        >
+          <span className="text-code-sm leading-none text-on-surface-variant">
+            ⋮
+          </span>
+        </span>
+      </div>
+
+      <main className="min-h-0 w-full flex-1 lg:h-full">
+        <PreviewPanel />
+      </main>
+    </div>
   );
 }
 
@@ -71,14 +170,7 @@ function SubHeader() {
   return (
     <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest/90 px-4 py-2 backdrop-blur-xl lg:px-8">
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1.5">
-          <Logo size={30} />
-          <span className="rc-brand text-headline-sm text-on-surface">
-            ReadCraft
-          </span>
-        </div>
-        <div className="hidden h-4 w-px bg-surface-container-highest sm:block" />
-        <div className="hidden items-center gap-1.5 rounded border border-outline-variant/70 bg-surface-container px-2 py-0.5 sm:flex">
+        <div className="flex items-center gap-1.5 rounded border border-outline-variant/70 bg-surface-container px-2 py-0.5">
           <span className="text-code-sm font-bold text-primary-container">
             #
           </span>
@@ -89,12 +181,15 @@ function SubHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button icon={copied ? "check" : "content_copy"} onClick={copyMarkdown}>
-          {copied ? "Copied" : "Copy Markdown"}
+        <Button
+          size="sm"
+          icon={copied ? "check" : "content_copy"}
+          onClick={copyMarkdown}
+        >
+          {copied ? "Copied" : "Copy"}
         </Button>
-        <Button variant="primary" icon="download" onClick={download}>
-          <span className="hidden sm:inline">Download README.md</span>
-          <span className="sm:hidden">Download</span>
+        <Button size="sm" variant="primary" icon="download" onClick={download}>
+          Download
         </Button>
       </div>
     </section>

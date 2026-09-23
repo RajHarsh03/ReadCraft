@@ -10,7 +10,7 @@ const PRIMARY_NAV = [
 /** Fixed left workspace rail (Section Editor / Templates / Badge Studio / …). */
 export function LeftRail() {
   return (
-    <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-64 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest/95 py-4 backdrop-blur-xl lg:flex">
+    <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-52 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest/95 py-4 backdrop-blur-xl lg:flex">
       <div className="flex flex-col gap-4">
         <div className="px-4">
           <span className="text-label-sm uppercase tracking-wider text-on-surface-variant">
@@ -44,10 +44,6 @@ export function LeftRail() {
       </div>
 
       <div className="flex flex-col gap-1 px-4">
-        <div className="flex items-center justify-between py-1 text-code-sm text-on-surface-variant">
-          <span>Engine</span>
-          <span className="text-primary">GFM Ready</span>
-        </div>
         <span
           aria-disabled="true"
           title="Coming soon"
