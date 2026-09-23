@@ -4,6 +4,14 @@ export interface Config {
   corsOrigins: string[];
   githubToken: string | undefined;
   cacheTtlMs: number;
+  /** Rate-limit window length in milliseconds. */
+  rateLimitWindowMs: number;
+  /** Max requests allowed per IP within the window. */
+  rateLimitMax: number;
+  /** Maximum accepted request body size, in bytes. */
+  bodyLimitBytes: number;
+  /** Per-request timeout in milliseconds (Fastify requestTimeout). */
+  requestTimeoutMs: number;
 }
 
 function toInt(value: string | undefined, fallback: number): number {
@@ -20,5 +28,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .filter(Boolean),
     githubToken: env.GITHUB_TOKEN?.trim() || undefined,
     cacheTtlMs: toInt(env.CACHE_TTL_SECONDS, 300) * 1000,
+    rateLimitWindowMs: toInt(env.RATE_LIMIT_WINDOW_SECONDS, 60) * 1000,
+    rateLimitMax: toInt(env.RATE_LIMIT_MAX, 60),
+    bodyLimitBytes: toInt(env.BODY_LIMIT_BYTES, 16 * 1024),
+    requestTimeoutMs: toInt(env.REQUEST_TIMEOUT_SECONDS, 15) * 1000,
   };
 }

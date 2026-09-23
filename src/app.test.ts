@@ -124,4 +124,33 @@ describe("GitHub routes", () => {
     const res = await app.inject({ url: "/health" });
     expect(res.json()).toEqual({ status: "ok" });
   });
+
+  it("stamps security headers on responses", async () => {
+    const app = makeApp(async () => json(USER_FIXTURE));
+    const res = await app.inject({ url: "/health" });
+    expect(res.headers["x-content-type-options"]).toBe("nosniff");
+    expect(res.headers["x-frame-options"]).toBe("DENY");
+    expect(res.headers["referrer-policy"]).toBe("no-referrer");
+    expect(res.headers["content-security-policy"]).toContain("default-src 'none'");
+  });
+
+  it("rate-limits after the configured maximum", async () => {
+    const config = { ...loadConfig({}), rateLimitMax: 2 };
+    const app = buildApp({ config, fetchImpl: async () => json(USER_FIXTURE) });
+    const url = "/api/github/octocat/profile";
+    expect((await app.inject({ url })).statusCode).toBe(200);
+    expect((await app.inject({ url })).statusCode).toBe(200);
+    const limited = await app.inject({ url });
+    expect(limited.statusCode).toBe(429);
+    expect(limited.json().error.kind).toBe("rate_limit");
+    expect(limited.headers["retry-after"]).toBeDefined();
+  });
+
+  it("does not rate-limit the health probe", async () => {
+    const config = { ...loadConfig({}), rateLimitMax: 1 };
+    const app = buildApp({ config, fetchImpl: async () => json(USER_FIXTURE) });
+    await app.inject({ url: "/health" });
+    await app.inject({ url: "/health" });
+    expect((await app.inject({ url: "/health" })).statusCode).toBe(200);
+  });
 });
