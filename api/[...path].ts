@@ -5,14 +5,14 @@ import { loadConfig } from "../server/src/config.js";
 /**
  * Vercel serverless entry for the ReadCraft API.
  *
- * Every `/api/*` request is routed here (see vercel.json) and handed to a
- * Fastify instance. The app is built once per warm instance and reused across
+ * Every `/api/*` request is routed here (see vercel.json) and dispatched into a
+ * Fastify instance via `app.routing`, the pattern Fastify documents for
+ * serverless. The app is built once per warm instance and reused across
  * invocations. In-memory cache / rate-limit state is per-instance and resets
- * on cold starts — acceptable for this read-only API (see server/README.md).
+ * on cold starts, which is acceptable for this read-only API.
  */
 
-let readyApp: Awaited<ReturnType<typeof createReadyApp>> | null = null;
-let building: Promise<void> | null = null;
+let appPromise: ReturnType<typeof createReadyApp> | null = null;
 
 async function createReadyApp() {
   const app = buildApp({ config: loadConfig() });
@@ -24,11 +24,7 @@ export default async function handler(
   req: IncomingMessage,
   res: ServerResponse
 ): Promise<void> {
-  if (!readyApp) {
-    building ??= createReadyApp().then((app) => {
-      readyApp = app;
-    });
-    await building;
-  }
-  readyApp!.server.emit("request", req, res);
+  if (!appPromise) appPromise = createReadyApp();
+  const app = await appPromise;
+  app.routing(req, res);
 }
