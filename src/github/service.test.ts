@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { computeLanguageStats, selectFeaturedRepos } from "./service.js";
-import type { GitHubRepo } from "./types.js";
+import {
+  computeLanguageStats,
+  computeStreak,
+  selectFeaturedRepos,
+} from "./service.js";
+import type { ContributionDay, GitHubRepo } from "./types.js";
 
 function repo(overrides: Partial<GitHubRepo> = {}): GitHubRepo {
   return {
@@ -55,5 +59,50 @@ describe("selectFeaturedRepos", () => {
       repo({ name: `r${i}`, stars: i })
     );
     expect(selectFeaturedRepos(repos, 3)).toHaveLength(3);
+  });
+});
+
+function days(counts: number[], start = "2025-01-01"): ContributionDay[] {
+  const base = new Date(`${start}T00:00:00Z`).getTime();
+  return counts.map((count, i) => ({
+    date: new Date(base + i * 86_400_000).toISOString().slice(0, 10),
+    count,
+  }));
+}
+
+describe("computeStreak", () => {
+  it("returns zeros for no data", () => {
+    expect(computeStreak([])).toEqual({
+      total: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+    });
+  });
+
+  it("sums total contributions", () => {
+    expect(computeStreak(days([1, 2, 3])).total).toBe(6);
+  });
+
+  it("finds the longest run of consecutive active days", () => {
+    // runs: 3, then 2 → longest 3
+    expect(computeStreak(days([1, 1, 1, 0, 1, 1])).longestStreak).toBe(3);
+  });
+
+  it("counts the current streak ending on the last day", () => {
+    expect(computeStreak(days([0, 1, 1, 1])).currentStreak).toBe(3);
+  });
+
+  it("does not break the current streak on a trailing zero (today)", () => {
+    // last day is 0 (today, no activity yet) → streak resumes from prior days
+    expect(computeStreak(days([1, 1, 1, 0])).currentStreak).toBe(3);
+  });
+
+  it("breaks the current streak on an earlier zero", () => {
+    expect(computeStreak(days([1, 1, 0, 1])).currentStreak).toBe(1);
+  });
+
+  it("sorts unordered input by date before computing", () => {
+    const unordered = [...days([1, 1, 1])].reverse();
+    expect(computeStreak(unordered).longestStreak).toBe(3);
   });
 });

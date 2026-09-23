@@ -1,7 +1,18 @@
 import { z } from "zod";
-import { GitHubError, type GitHubProfile, type GitHubRepo } from "./types.js";
+import {
+  GitHubError,
+  type ContributionDay,
+  type GitHubProfile,
+  type GitHubRepo,
+} from "./types.js";
 
 const GITHUB_API = "https://api.github.com";
+/**
+ * Public contributions calendar API (grubersjoe/github-contributions-api).
+ * GitHub's REST API does not expose contribution/streak data, so this
+ * dependable public source is used to build the streak card honestly.
+ */
+const CONTRIBUTIONS_API = "https://github-contributions-api.jogruber.de/v4";
 const DEFAULT_TIMEOUT_MS = 8000;
 
 /** Injectable fetch, so tests can supply a stub. */
@@ -165,4 +176,69 @@ export async function fetchRepos(
     isFork: r.fork,
     updatedAt: r.updated_at,
   }));
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Contributions calendar (separate public host)                             */
+/* -------------------------------------------------------------------------- */
+
+const contributionsSchema = z.object({
+  contributions: z.array(
+    z.object({
+      date: z.string(),
+      count: z.number(),
+    })
+  ),
+});
+
+/**
+ * Fetch the full contributions calendar (all available years) as an ordered
+ * list of day/count entries. Uses a public, token-free host distinct from the
+ * GitHub REST API.
+ */
+export async function fetchContributions(
+  username: string,
+  options: ClientOptions
+): Promise<ContributionDay[]> {
+  const fetchImpl = options.fetchImpl ?? fetch;
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort(),
+    options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  );
+
+  let response: Response;
+  try {
+    response = await fetchImpl(
+      `${CONTRIBUTIONS_API}/${encodeURIComponent(username)}?y=all`,
+      { headers: { Accept: "application/json", "User-Agent": "ReadCraft" }, signal: controller.signal }
+    );
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new GitHubError("timeout", "The contributions source did not respond in time.");
+    }
+    throw new GitHubError("unavailable", "Could not reach the contributions source.");
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  if (response.status === 404) {
+    throw new GitHubError("not_found", "No contribution data for that username.");
+  }
+  if (!response.ok) {
+    throw new GitHubError("unavailable", `Contributions source error (${response.status}).`);
+  }
+
+  let body: unknown;
+  try {
+    body = await response.json();
+  } catch {
+    throw new GitHubError("unavailable", "Contributions source returned an unreadable body.");
+  }
+
+  const parsed = contributionsSchema.safeParse(body);
+  if (!parsed.success) {
+    throw new GitHubError("unavailable", "Unexpected contributions response.");
+  }
+  return parsed.data.contributions.map((d) => ({ date: d.date, count: d.count }));
 }

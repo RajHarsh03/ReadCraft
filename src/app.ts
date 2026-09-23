@@ -69,6 +69,11 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
     return sendData(reply, { languages: await service.getLanguages(username) });
   });
 
+  app.get("/api/github/:username/streak", async (request, reply) => {
+    const username = requireUsername(request.params);
+    return sendData(reply, await service.getStreak(username));
+  });
+
   // Central error handler: map GitHubError → HTTP; everything else → 500.
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof GitHubError) {

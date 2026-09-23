@@ -1,6 +1,17 @@
 import { TtlCache } from "../cache.js";
-import { fetchProfile, fetchRepos, type FetchLike } from "./client.js";
-import type { GitHubProfile, GitHubRepo, LanguageStat } from "./types.js";
+import {
+  fetchContributions,
+  fetchProfile,
+  fetchRepos,
+  type FetchLike,
+} from "./client.js";
+import type {
+  ContributionDay,
+  GitHubProfile,
+  GitHubRepo,
+  LanguageStat,
+  StreakStats,
+} from "./types.js";
 
 export interface ServiceOptions {
   token?: string | undefined;
@@ -31,6 +42,53 @@ export function computeLanguageStats(repos: GitHubRepo[]): LanguageStat[] {
 }
 
 /**
+ * Derive streak figures from a day-by-day contributions calendar.
+ *
+ * - total: sum of all contributions.
+ * - longestStreak: the longest run of consecutive days with count > 0.
+ * - currentStreak: the run ending at the most recent day. A zero on the very
+ *   last day (today, which may have no activity yet) does not break it — the
+ *   count resumes from the previous day, matching the streak-stats convention.
+ *
+ * Input need not be pre-sorted; it is sorted by date ascending here.
+ */
+export function computeStreak(days: ContributionDay[]): StreakStats {
+  if (days.length === 0) {
+    return { total: 0, currentStreak: 0, longestStreak: 0 };
+  }
+
+  const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
+  const total = sorted.reduce((sum, d) => sum + d.count, 0);
+
+  let longest = 0;
+  let run = 0;
+  for (const day of sorted) {
+    if (day.count > 0) {
+      run += 1;
+      if (run > longest) longest = run;
+    } else {
+      run = 0;
+    }
+  }
+
+  // Current streak: walk backwards from the last day. Skip a trailing zero on
+  // the final day only (activity may not have been recorded yet today).
+  let current = 0;
+  for (let i = sorted.length - 1; i >= 0; i -= 1) {
+    const count = sorted[i]!.count;
+    if (count > 0) {
+      current += 1;
+    } else if (i === sorted.length - 1) {
+      continue; // today with no activity yet — don't break the streak
+    } else {
+      break;
+    }
+  }
+
+  return { total, currentStreak: current, longestStreak: longest };
+}
+
+/**
  * Featured repositories. Rule: public non-forks, ordered by stars (desc) then
  * most recently updated. This is deterministic and easy to explain to a user.
  */
@@ -56,6 +114,7 @@ export function createGitHubService(options: ServiceOptions) {
   };
   const profileCache = new TtlCache<GitHubProfile>(options.cacheTtlMs);
   const reposCache = new TtlCache<GitHubRepo[]>(options.cacheTtlMs);
+  const streakCache = new TtlCache<StreakStats>(options.cacheTtlMs);
 
   async function getProfile(username: string): Promise<GitHubProfile> {
     return profileCache.getOrSet(username.toLowerCase(), () =>
@@ -73,7 +132,13 @@ export function createGitHubService(options: ServiceOptions) {
     return computeLanguageStats(await getRepositories(username));
   }
 
-  return { getProfile, getRepositories, getLanguages };
+  async function getStreak(username: string): Promise<StreakStats> {
+    return streakCache.getOrSet(username.toLowerCase(), async () =>
+      computeStreak(await fetchContributions(username, clientOptions))
+    );
+  }
+
+  return { getProfile, getRepositories, getLanguages, getStreak };
 }
 
 export type GitHubService = ReturnType<typeof createGitHubService>;

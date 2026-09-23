@@ -36,6 +36,22 @@ export interface LanguageStat {
   percent: number;
 }
 
+/** A single day's contribution count from the contributions calendar. */
+export interface ContributionDay {
+  date: string;
+  count: number;
+}
+
+/** Derived contribution-streak figures, mirroring the streak-stats card. */
+export interface StreakStats {
+  /** Total contributions across the available history. */
+  total: number;
+  /** Length (days) of the current, still-active streak. */
+  currentStreak: number;
+  /** Length (days) of the longest streak on record. */
+  longestStreak: number;
+}
+
 /** Distinguished failure modes so each layer can react appropriately. */
 export type GitHubErrorKind =
   | "invalid_username"
