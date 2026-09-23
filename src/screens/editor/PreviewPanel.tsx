@@ -41,7 +41,7 @@ export function PreviewPanel() {
       </div>
 
       {/* Canvas */}
-      <div className="relative flex flex-1 justify-center overflow-y-auto bg-surface-dim p-4 lg:p-8">
+      <div className="relative flex-1 overflow-y-auto bg-surface-dim p-4 lg:p-8">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgb(42_78_119_/_0.16),_transparent_48%)]"
@@ -68,7 +68,7 @@ export function PreviewPanel() {
         {tab === "preview" ? (
           <RenderedDocument />
         ) : (
-          <pre className="relative z-10 w-full max-w-3xl overflow-x-auto rounded-[12px] bg-surface-container-lowest p-6 text-code-sm text-on-surface shadow-2xl">
+          <pre className="relative z-10 mx-auto w-full max-w-3xl overflow-x-auto rounded-[12px] bg-surface-container-lowest p-6 text-code-sm text-on-surface shadow-2xl">
             {generateMarkdown(state)}
           </pre>
         )}
@@ -121,7 +121,7 @@ function RenderedDocument() {
   const { blocks } = buildReadmeDocument(state);
 
   return (
-    <div className="rc-elevated relative z-10 flex w-full max-w-3xl flex-col gap-6 rounded-[12px] border border-outline-variant/80 bg-surface-container-lowest p-4 sm:p-8">
+    <div className="rc-elevated relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-6 overflow-hidden rounded-[12px] border border-outline-variant/80 bg-surface-container-lowest p-4 sm:p-8">
       {blocks.length === 0 ? (
         <p className="text-body-md text-on-surface-variant">
           Enable a section to start building your README.
@@ -175,7 +175,7 @@ function BlockView({ block }: { block: ReadmeBlock }) {
               className="flex items-start gap-1.5 text-body-md"
             >
               <span className="select-none">{item.emoji}</span>
-              <span className="text-on-surface">
+              <span className="min-w-0 break-words text-on-surface">
                 {item.prefix}{" "}
                 {item.strong ? (
                   <strong className="font-semibold text-on-surface">

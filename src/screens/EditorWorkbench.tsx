@@ -6,6 +6,8 @@ import { ProfileProvider, useProfile } from "../store";
 import { SectionsEditor } from "./editor/SectionsEditor";
 import { PreviewPanel } from "./editor/PreviewPanel";
 import { generateMarkdown } from "../lib/markdown";
+import { copyText, downloadTextFile, safeSlug } from "../lib/export";
+import { useToast } from "../components/ui/Toast";
 
 interface EditorWorkbenchProps {
   username: string;
@@ -138,38 +140,54 @@ function ResizableWorkbench() {
 }
 
 function SubHeader() {
-  const { state } = useProfile();
+  const { state, savedAt, restored, resetDraft } = useProfile();
+  const toast = useToast();
   const [copied, setCopied] = useState(false);
 
+  // Announce a restored draft once, on mount.
+  const announced = useRef(false);
+  useEffect(() => {
+    if (restored && !announced.current) {
+      announced.current = true;
+      toast.info("Restored your saved draft.");
+    }
+  }, [restored, toast]);
+
   const copyMarkdown = async () => {
-    try {
-      await navigator.clipboard.writeText(generateMarkdown(state));
+    const ok = await copyText(generateMarkdown(state));
+    if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch {
-      setCopied(false);
+      toast.success("Markdown copied to clipboard.");
+    } else {
+      toast.error("Couldn't copy. Select the Markdown tab and copy manually.");
     }
   };
 
   const download = () => {
-    const blob = new Blob([generateMarkdown(state)], {
-      type: "text/markdown;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "README.md";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    try {
+      const filename = `${safeSlug(state.basics.username)}-README.md`;
+      downloadTextFile(generateMarkdown(state), filename);
+      toast.success(`Downloaded ${filename}`);
+    } catch {
+      toast.error("Download failed. Try copying the Markdown instead.");
+    }
+  };
+
+  const handleReset = () => {
+    const ok = window.confirm(
+      "Reset this draft? Your edits will be cleared and the saved draft removed."
+    );
+    if (!ok) return;
+    resetDraft();
+    toast.info("Draft reset.");
   };
 
   const fileSlug = state.basics.username || "profile";
 
   return (
     <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest/90 px-4 py-2 backdrop-blur-xl lg:px-8">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 rounded border border-outline-variant/70 bg-surface-container px-2 py-0.5">
           <span className="text-code-sm font-bold text-primary-container">
             #
@@ -178,9 +196,28 @@ function SubHeader() {
             readme-{fileSlug}.md
           </span>
         </div>
+        <span
+          className="hidden items-center gap-1 text-code-sm text-on-surface-variant sm:flex"
+          title={savedAt ? new Date(savedAt).toLocaleString() : undefined}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              savedAt ? "bg-primary-container" : "bg-outline-variant"
+            }`}
+          />
+          {savedAt ? "Saved locally" : "Not saved"}
+        </span>
       </div>
 
       <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          variant="ghost"
+          icon="restart_alt"
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
         <Button
           size="sm"
           icon={copied ? "check" : "content_copy"}

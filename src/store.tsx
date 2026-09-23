@@ -1,8 +1,11 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
+  useRef,
+  useState,
   type ReactNode,
 } from "react";
 import type {
@@ -13,6 +16,7 @@ import type {
   Tech,
 } from "./types";
 import { SECTION_IDS } from "./types";
+import { clearDraft, loadDraft, saveDraft } from "./lib/persistence";
 
 /* -------------------------------------------------------------------------- */
 /*  Seed data — mirrors the reference design (Alex Rivera)                    */
@@ -220,12 +224,39 @@ function reducer(state: ProfileState, action: Action): ProfileState {
 /*  Context                                                                   */
 /* -------------------------------------------------------------------------- */
 
+/** Debounce window before an edit is written to local storage. */
+const SAVE_DEBOUNCE_MS = 600;
+
 interface Store {
   state: ProfileState;
   dispatch: React.Dispatch<Action>;
+  /** Timestamp (ms) of the last successful local save, or null. */
+  savedAt: number | null;
+  /** True once a draft was restored from a previous session. */
+  restored: boolean;
+  /** Clear the saved draft and reset the document for the given username. */
+  resetDraft: (username?: string) => void;
 }
 
 const ProfileContext = createContext<Store | null>(null);
+
+/**
+ * Build the initial state, preferring any saved local draft so returning users
+ * keep their work. There is a single active draft; the incoming username is
+ * only the seed used when no draft exists yet.
+ */
+function initState(username: string): {
+  state: ProfileState;
+  savedAt: number | null;
+  restored: boolean;
+} {
+  const defaults = createInitialState(username);
+  const draft = loadDraft(defaults);
+  if (draft) {
+    return { state: draft.state, savedAt: draft.savedAt, restored: true };
+  }
+  return { state: defaults, savedAt: null, restored: false };
+}
 
 export function ProfileProvider({
   username,
@@ -234,8 +265,40 @@ export function ProfileProvider({
   username: string;
   children: ReactNode;
 }) {
-  const [state, dispatch] = useReducer(reducer, username, createInitialState);
-  const value = useMemo(() => ({ state, dispatch }), [state]);
+  const initial = useMemo(() => initState(username), [username]);
+  const [state, dispatch] = useReducer(reducer, initial.state);
+  const [savedAt, setSavedAt] = useState<number | null>(initial.savedAt);
+  const [restored, setRestored] = useState(initial.restored);
+
+  // Skip the very first render so restoring a draft doesn't immediately re-save.
+  const firstRun = useRef(true);
+
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      if (saveDraft(state) === "saved") setSavedAt(Date.now());
+    }, SAVE_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [state]);
+
+  const resetDraft = useMemo(
+    () => (nextUsername?: string) => {
+      clearDraft();
+      firstRun.current = true; // don't re-save the reset default immediately
+      setSavedAt(null);
+      setRestored(false);
+      dispatch({ type: "reset", username: nextUsername ?? username });
+    },
+    [username]
+  );
+
+  const value = useMemo(
+    () => ({ state, dispatch, savedAt, restored, resetDraft }),
+    [state, savedAt, restored, resetDraft]
+  );
   return (
     <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
   );

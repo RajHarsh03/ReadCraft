@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import { UsernameEntry } from "./screens/UsernameEntry";
 import { EditorWorkbench } from "./screens/EditorWorkbench";
+import { ToastProvider } from "./components/ui/Toast";
 
 type Route = { view: "landing" } | { view: "editor"; username: string };
 
-/** Read the current route from the browser's history state. */
+/**
+ * Read the current route. Prefers history.state, then falls back to parsing the
+ * URL hash (which survives a full page refresh) so reloading the builder keeps
+ * you in the builder.
+ */
 function routeFromHistory(): Route {
   const state = window.history.state as Route | null;
   if (state && state.view === "editor" && state.username) {
     return { view: "editor", username: state.username };
+  }
+  const match = window.location.hash.match(/^#\/builder\/([^/?#]+)/);
+  if (match) {
+    return { view: "editor", username: decodeURIComponent(match[1]) };
   }
   return { view: "landing" };
 }
@@ -36,18 +45,20 @@ function App() {
     setRoute(landing);
   };
 
-  if (route.view === "editor") {
-    // Keyed so switching users re-seeds the profile provider cleanly.
-    return (
-      <EditorWorkbench
-        key={route.username}
-        username={route.username}
-        onHome={goHome}
-      />
-    );
-  }
-
-  return <UsernameEntry onGenerate={openEditor} />;
+  return (
+    <ToastProvider>
+      {route.view === "editor" ? (
+        // Keyed so switching users re-seeds the profile provider cleanly.
+        <EditorWorkbench
+          key={route.username}
+          username={route.username}
+          onHome={goHome}
+        />
+      ) : (
+        <UsernameEntry onGenerate={openEditor} />
+      )}
+    </ToastProvider>
+  );
 }
 
 export default App;
