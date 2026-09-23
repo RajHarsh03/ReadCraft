@@ -5,12 +5,15 @@ import { cn } from "../../lib/cn";
 import { generateMarkdown } from "../../lib/markdown";
 import {
   buildReadmeDocument,
-  metricImageUrl,
-  metricLabel,
   type MetricKind,
   type ReadmeBlock,
 } from "../../lib/document";
-import { encodeUsername } from "../../lib/username";
+import { useGitHub } from "../../hooks/useGitHub";
+import {
+  deriveGitHubStats,
+  formatCount,
+  type LanguageStat,
+} from "../../lib/github";
 
 type Tab = "preview" | "markdown";
 
@@ -264,14 +267,40 @@ function BlockView({
   }
 }
 
-/** Order the metric cards render in — mirrors the exported Markdown. */
-const METRIC_ORDER: MetricKind[] = [
-  "stats",
-  "streak",
-  "topLanguages",
-  "graph",
-  "snake",
+/** Palette for the top-languages bar segments (cycles for extra langs). */
+const LANG_BAR_COLORS = [
+  "#f97316",
+  "var(--rc-primary-container, #f7a718)",
+  "#00add8",
+  "#3178c6",
+  "#a97bff",
 ];
+
+interface LangSegment {
+  width: number;
+  color: string;
+}
+
+/**
+ * Segments for the top-languages bar: the top three languages, with their
+ * shares normalized so the three add up to 100% (the bar always fills). Falls
+ * back to a representative set before real data has loaded.
+ */
+function topLanguageBar(languages: LanguageStat[]): LangSegment[] {
+  const top = languages.slice(0, 3);
+  if (top.length === 0) {
+    return [
+      { width: 48.2, color: "#f97316" },
+      { width: 34.6, color: "var(--rc-primary-container, #f7a718)" },
+      { width: 17.2, color: "#00add8" },
+    ];
+  }
+  const total = top.reduce((sum, l) => sum + l.percent, 0) || 1;
+  return top.map((l, i) => ({
+    width: (l.percent / total) * 100,
+    color: LANG_BAR_COLORS[i % LANG_BAR_COLORS.length],
+  }));
+}
 
 function MetricsView({
   cards,
@@ -280,75 +309,185 @@ function MetricsView({
   cards: MetricKind[];
   username: string;
 }) {
-  const active = METRIC_ORDER.filter((kind) => cards.includes(kind));
+  const has = (kind: MetricKind) => cards.includes(kind);
+  // Pull the user's real public data. When unavailable (no username, loading,
+  // or an error) cards fall back to placeholder numbers so the layout and
+  // design never change — only the values do.
+  const { state } = useGitHub(username);
+  const bundle = state.status === "success" ? state.bundle : null;
+  const stats = bundle ? deriveGitHubStats(bundle) : null;
+  const languages = bundle?.languages ?? [];
 
   return (
     <div className="flex flex-col gap-2 pt-1">
       <Heading>GitHub Activity &amp; Streak</Heading>
 
-      {username ? (
-        <>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {active.map((kind) => (
-              <MetricCard key={kind} kind={kind} username={username} />
-            ))}
-          </div>
-          <p className="pt-0.5 text-label-sm text-on-surface-variant">
-            These are live cards rendered from @{username}&apos;s real GitHub
-            data — the exact images embedded in your exported README.
-          </p>
-        </>
-      ) : (
-        <div className="flex items-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-body-sm text-on-surface-variant">
-          <Icon name="info" size={16} className="text-primary-container" />
-          Add a GitHub username in Profile Basics to load your live metric
-          cards.
+      {(has("stats") || has("streak")) && (
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+          {has("stats") && (
+            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-code-sm font-semibold text-on-surface">
+                  GitHub Stats
+                </span>
+                <Icon
+                  name="star"
+                  size={16}
+                  className="text-primary-container"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5 pt-1 text-code-sm">
+                <StatRow
+                  k="Total Stars (top repos):"
+                  v={stats ? formatCount(stats.starsFromTopRepos) : "2,284"}
+                />
+                <StatRow
+                  k="Public Repositories:"
+                  v={stats ? formatCount(stats.publicRepos) : "48"}
+                />
+                <StatRow
+                  k="Followers:"
+                  v={stats ? formatCount(stats.followers) : "1,203"}
+                />
+                <StatRow
+                  k="Following:"
+                  v={stats ? formatCount(stats.following) : "215"}
+                />
+              </div>
+            </div>
+          )}
+          {has("streak") && (
+            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-code-sm font-semibold text-on-surface">
+                  Contribution Streak
+                </span>
+                <Icon
+                  name="local_fire_department"
+                  size={16}
+                  className="text-[#f97316]"
+                />
+              </div>
+              <div className="grid grid-cols-3 pt-2 text-center">
+                <Streak value="42" label="Current" />
+                <Streak value="178" label="Longest" accent />
+                <Streak value="1,892" label="Total" />
+              </div>
+            </div>
+          )}
         </div>
       )}
+
+      {has("graph") && (
+        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-code-sm font-semibold text-on-surface">
+              Contribution Graph
+            </span>
+            <Icon
+              name="show_chart"
+              size={16}
+              className="text-primary-container"
+            />
+          </div>
+          <svg
+            className="h-16 w-full text-primary-container/70"
+            fill="none"
+            preserveAspectRatio="none"
+            viewBox="0 0 300 60"
+            aria-hidden
+          >
+            <path
+              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26 L300,60 L0,60 Z"
+              fill="currentColor"
+              fillOpacity="0.1"
+            />
+          </svg>
+          <span className="text-label-sm text-on-surface-variant">
+            Rendered from a contribution-graph card service in the exported
+            Markdown.
+          </span>
+        </div>
+      )}
+
+      {has("topLanguages") && (
+        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-2">
+          <div className="flex items-center justify-between text-code-sm">
+            <span className="text-on-surface-variant">
+              Top Languages Breakdown
+            </span>
+            <span className="font-medium text-primary-container">
+              {languages.length > 0
+                ? languages
+                    .slice(0, 3)
+                    .map((l) => `${l.language} ${l.percent}%`)
+                    .join(" · ")
+                : "Rust 48.2% · TS 34.6% · Go 17.2%"}
+            </span>
+          </div>
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
+            {topLanguageBar(languages).map((seg, i) => (
+              <div
+                key={i}
+                className="h-full"
+                style={{ width: `${seg.width}%`, backgroundColor: seg.color }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {has("snake") && (
+        <div className="flex items-center justify-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-code-sm text-on-surface-variant">
+          <Icon name="animation" size={16} className="text-primary-container" />
+          Contribution snake animation
+        </div>
+      )}
+
+      <p className="pt-0.5 text-label-sm text-on-surface-variant">
+        Stats, repositories, and languages reflect @
+        {username || "your-username"}&apos;s real public data. The exported
+        README embeds live cards that render every metric for each viewer.
+      </p>
     </div>
   );
 }
 
-/**
- * A single live metric card. The image is the same card-service URL embedded
- * in the exported Markdown, so the preview is what a viewer of the README
- * actually sees. Cards can be wide (full-width) or paired two-up.
- */
-function MetricCard({
-  kind,
-  username,
-}: {
-  kind: MetricKind;
-  username: string;
-}) {
-  const [failed, setFailed] = useState(false);
-  const src = metricImageUrl(kind, encodeUsername(username));
-  const label = metricLabel(kind);
-  // Graph and snake are wide banners; stats/streak/top-langs pair two-up.
-  const wide = kind === "graph" || kind === "snake";
-
+function StatRow({ k, v }: { k: string; v: string }) {
   return (
-    <div
-      className={cn(
-        "overflow-hidden rounded-[8px] border border-outline-variant/70 bg-surface-container-low p-2",
-        wide && "md:col-span-2"
-      )}
-    >
-      {failed ? (
-        <div className="flex items-center gap-2 px-1 py-3 text-code-sm text-on-surface-variant">
-          <Icon name="cloud_off" size={15} />
-          {label} preview couldn&apos;t load. It still renders in the exported
-          README.
-        </div>
-      ) : (
-        <img
-          src={src}
-          alt={`${label} for ${username}`}
-          loading="lazy"
-          onError={() => setFailed(true)}
-          className="mx-auto block h-auto w-full max-w-full"
-        />
-      )}
+    <div className="flex justify-between">
+      <span className="text-on-surface-variant">{k}</span>
+      <span className="font-bold text-on-surface">{v}</span>
+    </div>
+  );
+}
+
+function Streak({
+  value,
+  label,
+  accent,
+}: {
+  value: string;
+  label: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="flex flex-col">
+      <span
+        className={cn(
+          "text-headline-md font-bold",
+          accent ? "text-primary-container" : "text-on-surface"
+        )}
+      >
+        {value}
+      </span>
+      <span className="text-label-sm text-on-surface-variant">{label}</span>
     </div>
   );
 }

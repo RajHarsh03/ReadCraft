@@ -13,11 +13,7 @@ function Routes() {
     case "builder":
       return (
         // Keyed so switching users re-seeds the profile provider cleanly.
-        <EditorWorkbench
-          key={route.username}
-          username={route.username}
-          onHome={() => navigate({ name: "landing" })}
-        />
+        <EditorWorkbench key={route.username} username={route.username} />
       );
     case "templates":
       return <TemplatesScreen />;

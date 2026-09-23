@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TopNav } from "../components/shell/TopNav";
-import { LeftRail } from "../components/shell/LeftRail";
+import { AppShell } from "../components/shell/AppShell";
 import { Button } from "../components/ui/Button";
 import { ProfileProvider, useProfile } from "../store";
 import { SectionsEditor } from "./editor/SectionsEditor";
@@ -17,23 +16,17 @@ import {
 
 interface EditorWorkbenchProps {
   username: string;
-  /** Return to the landing/username-entry screen. */
-  onHome?: () => void;
 }
 
-/** The main builder: top nav + left rail + sub-header + 40/60 workbench. */
-export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
+/** The main builder: persistent app shell + sub-header + 40/60 workbench. */
+export function EditorWorkbench({ username }: EditorWorkbenchProps) {
   return (
     <ProfileProvider username={username}>
-      <PendingHandoff />
-      <div className="rc-app-shell min-h-screen text-on-surface">
-        <TopNav onHome={onHome} />
-        <LeftRail />
-        <div className="pt-14 lg:pl-52">
-          <SubHeader />
-          <ResizableWorkbench />
-        </div>
-      </div>
+      <AppShell>
+        <PendingHandoff />
+        <SubHeader />
+        <ResizableWorkbench />
+      </AppShell>
     </ProfileProvider>
   );
 }

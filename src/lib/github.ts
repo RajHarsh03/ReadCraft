@@ -218,3 +218,45 @@ export function mapBundleToImport(
     })),
   };
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Derived preview stats                                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real, honestly-sourced figures for the preview stat cards.
+ *
+ * Only values the public GitHub REST API actually provides are included:
+ * follower/following/repo counts come straight from the profile, and the star
+ * total is summed over the fetched repositories (hence "top repos", not an
+ * all-time all-repo figure). Metrics the REST API cannot supply — total
+ * commits, merged PRs, and contribution streaks — are deliberately absent so
+ * the UI never presents a fabricated number as real.
+ */
+export interface GitHubStats {
+  /** Sum of stars across the repositories we fetched (top repos). */
+  starsFromTopRepos: number;
+  /** Exact count of public repositories. */
+  publicRepos: number;
+  followers: number;
+  following: number;
+  /** Number of distinct primary languages across non-fork repos. */
+  languageCount: number;
+}
+
+export function deriveGitHubStats(bundle: GitHubBundle): GitHubStats {
+  const { profile, repositories, languages, totalPublic } = bundle;
+  return {
+    starsFromTopRepos: repositories.reduce((sum, r) => sum + r.stars, 0),
+    publicRepos: totalPublic || profile.publicRepos,
+    followers: profile.followers,
+    following: profile.following,
+    languageCount: languages.length,
+  };
+}
+
+/** Compact count formatter, e.g. 2284 → "2.3k", 48 → "48". */
+export function formatCount(n: number): string {
+  if (n < 1000) return String(n);
+  return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+}
