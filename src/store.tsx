@@ -17,6 +17,7 @@ import type {
 } from "./types";
 import { SECTION_IDS } from "./types";
 import { clearDraft, loadDraft, saveDraft } from "./lib/persistence";
+import { templateLayout, type Template } from "./lib/templates";
 
 /* -------------------------------------------------------------------------- */
 /*  Seed data — mirrors the reference design (Alex Rivera)                    */
@@ -105,6 +106,7 @@ type Action =
   | { type: "moveProject"; id: string; direction: -1 | 1 }
   | { type: "hydrate"; state: ProfileState }
   | { type: "importGitHub"; payload: GitHubImport }
+  | { type: "applyTemplate"; template: Template }
   | { type: "reset"; username?: string };
 
 /** Merge technologies, de-duplicating by case-insensitive name. */
@@ -198,6 +200,12 @@ function reducer(state: ProfileState, action: Action): ProfileState {
           action.direction
         ),
       };
+    case "applyTemplate": {
+      // Layout only: change which sections show and their order. Content
+      // (basics, headline, focus, tech, pinned) is intentionally preserved.
+      const { enabled, order } = templateLayout(action.template);
+      return { ...state, enabled, order };
+    }
     case "hydrate":
       return action.state;
     case "importGitHub": {

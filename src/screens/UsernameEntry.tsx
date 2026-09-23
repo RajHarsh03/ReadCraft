@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Icon } from "../components/ui/Icon";
 import { Logo } from "../components/ui/Logo";
+import { useRouter } from "../router";
 
 const FEATURES = [
   {
@@ -64,6 +65,7 @@ interface UsernameEntryProps {
 /** Landing / username-entry screen. */
 export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   const [value, setValue] = useState("");
+  const { navigate } = useRouter();
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -81,20 +83,20 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
             <span className="rc-brand text-[1.6rem] leading-none">ReadCraft</span>
           </div>
           <nav className="hidden items-center gap-1 md:flex">
-            <span
-              aria-disabled="true"
-              title="Coming soon"
-              className="cursor-not-allowed rounded-md px-3 py-1.5 text-label-md text-on-surface-variant/70"
+            <button
+              type="button"
+              onClick={() => navigate({ name: "templates" })}
+              className="rounded-md px-3 py-1.5 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
             >
               Templates
-            </span>
-            <span
-              aria-disabled="true"
-              title="Coming soon"
-              className="cursor-not-allowed rounded-md px-3 py-1.5 text-label-md text-on-surface-variant/70"
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate({ name: "docs" })}
+              className="rounded-md px-3 py-1.5 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
             >
               Documentation
-            </span>
+            </button>
           </nav>
           <button
             type="button"

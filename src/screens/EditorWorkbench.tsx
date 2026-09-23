@@ -8,6 +8,7 @@ import { PreviewPanel } from "./editor/PreviewPanel";
 import { generateMarkdown } from "../lib/markdown";
 import { copyText, downloadTextFile, safeSlug } from "../lib/export";
 import { useToast } from "../components/ui/Toast";
+import { getTemplate, PENDING_TEMPLATE_KEY } from "../lib/templates";
 
 interface EditorWorkbenchProps {
   username: string;
@@ -19,6 +20,7 @@ interface EditorWorkbenchProps {
 export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
   return (
     <ProfileProvider username={username}>
+      <PendingTemplate />
       <div className="rc-app-shell min-h-screen text-on-surface">
         <TopNav onHome={onHome} />
         <LeftRail />
@@ -29,6 +31,36 @@ export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
       </div>
     </ProfileProvider>
   );
+}
+
+/**
+ * Applies a template chosen on the standalone Templates page (handed over via
+ * sessionStorage), once, when the builder mounts. Renders nothing.
+ */
+function PendingTemplate() {
+  const { dispatch } = useProfile();
+  const toast = useToast();
+  const applied = useRef(false);
+
+  useEffect(() => {
+    if (applied.current) return;
+    applied.current = true;
+    let id: string | null = null;
+    try {
+      id = sessionStorage.getItem(PENDING_TEMPLATE_KEY);
+      if (id) sessionStorage.removeItem(PENDING_TEMPLATE_KEY);
+    } catch {
+      id = null;
+    }
+    if (!id) return;
+    const template = getTemplate(id);
+    if (template) {
+      dispatch({ type: "applyTemplate", template });
+      toast.success(`Applied the ${template.name} template.`);
+    }
+  }, [dispatch, toast]);
+
+  return null;
 }
 
 /** Minimum / maximum editor width as a percentage of the workbench. */

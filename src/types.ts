@@ -33,10 +33,12 @@ export interface PinnedProject {
   description: string;
 }
 
-/** A tech badge with an associated language colour dot. */
+/** A tech badge with an associated colour dot and optional badge image. */
 export interface Tech {
   name: string;
   color: string;
+  /** Optional badge/logo image URL rendered instead of the colour dot. */
+  badgeUrl?: string;
 }
 
 /** Payload applied when importing fetched GitHub data into the document. */

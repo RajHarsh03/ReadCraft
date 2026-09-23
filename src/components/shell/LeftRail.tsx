@@ -1,14 +1,26 @@
 import { Icon } from "../ui/Icon";
+import { useRouter, type Route } from "../../router";
 
-const PRIMARY_NAV = [
-  { icon: "edit_document", label: "Section Editor", active: true },
-  { icon: "grid_view", label: "Templates", active: false },
-  { icon: "military_tech", label: "Badge Studio", active: false },
-  { icon: "visibility", label: "Live Preview", active: false },
+interface NavItem {
+  icon: string;
+  label: string;
+  /** Route to navigate to, or null for the current/disabled item. */
+  to: Route | null;
+  active?: boolean;
+  disabled?: boolean;
+}
+
+const PRIMARY_NAV: NavItem[] = [
+  { icon: "edit_document", label: "Section Editor", to: null, active: true },
+  { icon: "grid_view", label: "Templates", to: { name: "templates" } },
+  { icon: "military_tech", label: "Badge Studio", to: { name: "badges" } },
+  { icon: "menu_book", label: "Documentation", to: { name: "docs" } },
 ];
 
 /** Fixed left workspace rail (Section Editor / Templates / Badge Studio / …). */
 export function LeftRail() {
+  const { navigate } = useRouter();
+
   return (
     <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-52 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest/95 py-4 backdrop-blur-xl lg:flex">
       <div className="flex flex-col gap-4">
@@ -29,15 +41,15 @@ export function LeftRail() {
                 <span>{item.label}</span>
               </span>
             ) : (
-              <span
+              <button
                 key={item.label}
-                aria-disabled="true"
-                title="Coming soon"
-                className="flex cursor-not-allowed items-center gap-2.5 rounded-lg px-2.5 py-2 text-label-md text-on-surface-variant/50"
+                type="button"
+                onClick={() => item.to && navigate(item.to)}
+                className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
               >
                 <Icon name={item.icon} size={18} />
                 <span>{item.label}</span>
-              </span>
+              </button>
             )
           )}
         </nav>

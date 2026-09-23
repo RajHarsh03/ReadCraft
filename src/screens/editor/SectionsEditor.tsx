@@ -5,6 +5,7 @@ import { Field, TextField, ToggleRow } from "../../components/ui/Field";
 import { Toggle } from "../../components/ui/Toggle";
 import { usernameError } from "../../lib/username";
 import { GitHubConnectionCard } from "./GitHubConnectionCard";
+import { TemplatePicker } from "./TemplatePicker";
 
 const TECH_CATEGORIES = ["Languages", "Frameworks", "Cloud", "Databases"];
 
@@ -17,6 +18,15 @@ export function SectionsEditor() {
     <div className="flex flex-col gap-2">
       {/* GitHub connection + import */}
       <GitHubConnectionCard />
+
+      {/* Layout templates */}
+      <SectionCard
+        icon="dashboard_customize"
+        title="Templates"
+        description="Rearrange sections with a preset layout"
+      >
+        <TemplatePicker />
+      </SectionCard>
 
       {/* Editor header */}
       <div className="flex items-center justify-between pb-1">
@@ -150,51 +160,7 @@ export function SectionsEditor() {
           dispatch({ type: "toggleSection", id: "tech", value: v })
         }
       >
-        <div className="flex items-center gap-1 rounded-[6px] bg-surface-container-lowest p-1">
-          {TECH_CATEGORIES.map((cat, i) => (
-            <button
-              key={cat}
-              type="button"
-              className={
-                i === 0
-                  ? "rounded bg-surface-container-high px-2 py-1 text-label-sm font-semibold text-primary"
-                  : "rounded px-2 py-1 text-label-sm text-on-surface-variant transition-colors hover:bg-surface-container"
-              }
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {state.tech.map((t) => (
-            <span
-              key={t.name}
-              className="inline-flex items-center gap-1 rounded bg-surface-container-high px-2 py-0.5 text-label-sm text-on-surface"
-            >
-              {t.name}
-              <button
-                type="button"
-                aria-label={`Remove ${t.name}`}
-                onClick={() => dispatch({ type: "removeTech", name: t.name })}
-                className="text-on-surface-variant transition-colors hover:text-error"
-              >
-                <Icon name="close" size={14} />
-              </button>
-            </span>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              dispatch({
-                type: "addTech",
-                tech: { name: "New Tech", color: "#94a3b8" },
-              })
-            }
-            className="inline-flex items-center gap-1 rounded bg-primary-container/10 px-2 py-0.5 text-label-sm font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
-          >
-            <Icon name="add" size={14} /> Add Tech
-          </button>
-        </div>
+        <TechSelector />
       </SectionCard>
 
       {/* 5. GitHub Metrics */}
