@@ -119,16 +119,13 @@ function ResizableWorkbench() {
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const onPointerMove = useCallback(
-    (event: PointerEvent) => {
-      const container = containerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const pct = ((event.clientX - rect.left) / rect.width) * 100;
-      setEditorPct(Math.min(MAX_EDITOR_PCT, Math.max(MIN_EDITOR_PCT, pct)));
-    },
-    []
-  );
+  const onPointerMove = useCallback((event: PointerEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const pct = ((event.clientX - rect.left) / rect.width) * 100;
+    setEditorPct(Math.min(MAX_EDITOR_PCT, Math.max(MIN_EDITOR_PCT, pct)));
+  }, []);
 
   const onPointerUp = useCallback(() => setDragging(false), []);
 

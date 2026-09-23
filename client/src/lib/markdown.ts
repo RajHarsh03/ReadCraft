@@ -72,9 +72,7 @@ function renderBlock(block: ReadmeBlock, encoded: string): string {
         "",
         block.items
           .map((t) =>
-            t.badgeUrl
-              ? `![${t.name}](${encodeURI(t.badgeUrl)})`
-              : code(t.name)
+            t.badgeUrl ? `![${t.name}](${encodeURI(t.badgeUrl)})` : code(t.name)
           )
           .join(" "),
       ].join("\n");

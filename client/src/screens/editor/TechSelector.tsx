@@ -130,9 +130,7 @@ export function TechSelector() {
             <button
               key={entry.name}
               type="button"
-              onClick={() =>
-                add({ name: entry.name, color: entry.color })
-              }
+              onClick={() => add({ name: entry.name, color: entry.color })}
               className="inline-flex items-center gap-1.5 rounded border border-outline-variant bg-surface-container-low px-2 py-0.5 text-label-sm text-on-surface-variant transition-colors hover:border-border-strong hover:text-on-surface"
             >
               <span
@@ -155,7 +153,11 @@ export function TechSelector() {
           aria-expanded={customOpen}
         >
           <span className="flex items-center gap-1.5">
-            <Icon name="add_circle" size={16} className="text-primary-container" />
+            <Icon
+              name="add_circle"
+              size={16}
+              className="text-primary-container"
+            />
             Add custom technology
           </span>
           <Icon

@@ -38,7 +38,8 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
   const toast = useToast();
   const [spec, setSpec] = useState<BadgeSpec>(DEFAULT_SPEC);
 
-  const set = (patch: Partial<BadgeSpec>) => setSpec((s) => ({ ...s, ...patch }));
+  const set = (patch: Partial<BadgeSpec>) =>
+    setSpec((s) => ({ ...s, ...patch }));
 
   const imageUrl = useMemo(() => badgeImageUrl(spec), [spec]);
   const markdown = useMemo(() => badgeMarkdown(spec), [spec]);
@@ -46,7 +47,9 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
   const copy = async () => {
     const ok = await copyText(markdown);
     toast[ok ? "success" : "error"](
-      ok ? "Badge Markdown copied." : "Couldn't copy - select and copy manually."
+      ok
+        ? "Badge Markdown copied."
+        : "Couldn't copy - select and copy manually."
     );
   };
 
@@ -107,7 +110,11 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
             <input
               type="color"
               aria-label="Pick color"
-              value={/^#?[0-9a-f]{6}$/i.test(spec.color) ? `#${spec.color.replace(/^#/, "")}` : "#2ea043"}
+              value={
+                /^#?[0-9a-f]{6}$/i.test(spec.color)
+                  ? `#${spec.color.replace(/^#/, "")}`
+                  : "#2ea043"
+              }
               onChange={(e) => set({ color: e.target.value.replace(/^#/, "") })}
               className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container-lowest p-1"
             />
@@ -117,7 +124,9 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
           <select
             className={inputClass}
             value={spec.style}
-            onChange={(e) => set({ style: e.target.value as BadgeSpec["style"] })}
+            onChange={(e) =>
+              set({ style: e.target.value as BadgeSpec["style"] })
+            }
           >
             {BADGE_STYLES.map((s) => (
               <option key={s} value={s}>

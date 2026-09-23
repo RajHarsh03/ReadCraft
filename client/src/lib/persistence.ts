@@ -34,7 +34,10 @@ function hasStorage(): boolean {
 }
 
 /** Coerce arbitrary parsed data into a complete ProfileState over `defaults`. */
-export function coerceState(raw: unknown, defaults: ProfileState): ProfileState {
+export function coerceState(
+  raw: unknown,
+  defaults: ProfileState
+): ProfileState {
   if (!raw || typeof raw !== "object") return defaults;
   const r = raw as Partial<ProfileState>;
 
@@ -129,4 +132,8 @@ export function clearDraft(): void {
   }
 }
 
-export const PERSISTENCE_INTERNALS = { STORAGE_KEY, SCHEMA_VERSION, coerceState };
+export const PERSISTENCE_INTERNALS = {
+  STORAGE_KEY,
+  SCHEMA_VERSION,
+  coerceState,
+};

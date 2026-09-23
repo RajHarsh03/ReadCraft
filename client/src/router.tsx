@@ -77,7 +77,9 @@ interface RouterApi {
 const RouterContext = createContext<RouterApi | null>(null);
 
 export function RouterProvider({ children }: { children: ReactNode }) {
-  const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash));
+  const [route, setRoute] = useState<Route>(() =>
+    parseHash(window.location.hash)
+  );
 
   useEffect(() => {
     const onHashChange = () => setRoute(parseHash(window.location.hash));
@@ -104,7 +106,9 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     [route, navigate, replace, back]
   );
 
-  return <RouterContext.Provider value={api}>{children}</RouterContext.Provider>;
+  return (
+    <RouterContext.Provider value={api}>{children}</RouterContext.Provider>
+  );
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

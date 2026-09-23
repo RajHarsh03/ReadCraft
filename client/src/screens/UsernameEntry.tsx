@@ -10,7 +10,11 @@ const FEATURES = [
     label: "No GitHub token required",
   },
   { icon: "bolt", tint: "text-tertiary", label: "100% Client-side Markdown" },
-  { icon: "terminal", tint: "text-secondary", label: "Instant Exports raw .md" },
+  {
+    icon: "terminal",
+    tint: "text-secondary",
+    label: "Instant Exports raw .md",
+  },
 ];
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];
@@ -80,7 +84,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-1">
             <Logo size={30} />
-            <span className="rc-brand text-[1.6rem] leading-none">ReadCraft</span>
+            <span className="rc-brand text-[1.6rem] leading-none">
+              ReadCraft
+            </span>
           </div>
           <nav className="hidden items-center gap-1 md:flex">
             <button
@@ -484,7 +490,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               <span className="text-outline-variant">·</span>
               <span>Craft a GitHub profile README worthy of your code.</span>
             </div>
-            <span className="font-medium">100% client-side · no data stored</span>
+            <span className="font-medium">
+              100% client-side · no data stored
+            </span>
           </div>
         </footer>
       </main>

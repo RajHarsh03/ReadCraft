@@ -7,11 +7,7 @@
  */
 
 export type BadgeStyle =
-  | "flat"
-  | "flat-square"
-  | "plastic"
-  | "for-the-badge"
-  | "social";
+  "flat" | "flat-square" | "plastic" | "for-the-badge" | "social";
 
 export const BADGE_STYLES: BadgeStyle[] = [
   "flat",
@@ -37,10 +33,7 @@ export interface BadgeSpec {
 
 /** Escape a segment per Shields.io static-badge rules. */
 function escapeSegment(value: string): string {
-  return value
-    .replace(/-/g, "--")
-    .replace(/_/g, "__")
-    .replace(/ /g, "_");
+  return value.replace(/-/g, "--").replace(/_/g, "__").replace(/ /g, "_");
 }
 
 function stripHash(color: string): string {
@@ -66,7 +59,8 @@ export function badgeImageUrl(spec: BadgeSpec): string {
 
 /** Build the Markdown snippet for a badge (optionally wrapped in a link). */
 export function badgeMarkdown(spec: BadgeSpec): string {
-  const alt = [spec.label, spec.message].filter(Boolean).join(" ").trim() || "badge";
+  const alt =
+    [spec.label, spec.message].filter(Boolean).join(" ").trim() || "badge";
   const img = `![${alt}](${badgeImageUrl(spec)})`;
   const link = spec.link?.trim();
   return link ? `[${img}](${encodeURI(link)})` : img;
@@ -76,11 +70,23 @@ export function badgeMarkdown(spec: BadgeSpec): string {
 export const BADGE_PRESETS: { name: string; spec: BadgeSpec }[] = [
   {
     name: "GitHub",
-    spec: { label: "GitHub", message: "follow", color: "181717", style: "for-the-badge", logo: "github" },
+    spec: {
+      label: "GitHub",
+      message: "follow",
+      color: "181717",
+      style: "for-the-badge",
+      logo: "github",
+    },
   },
   {
     name: "LinkedIn",
-    spec: { label: "LinkedIn", message: "connect", color: "0A66C2", style: "for-the-badge", logo: "linkedin" },
+    spec: {
+      label: "LinkedIn",
+      message: "connect",
+      color: "0A66C2",
+      style: "for-the-badge",
+      logo: "linkedin",
+    },
   },
   {
     name: "License MIT",
@@ -88,11 +94,22 @@ export const BADGE_PRESETS: { name: string; spec: BadgeSpec }[] = [
   },
   {
     name: "Build passing",
-    spec: { label: "build", message: "passing", color: "brightgreen", style: "flat-square" },
+    spec: {
+      label: "build",
+      message: "passing",
+      color: "brightgreen",
+      style: "flat-square",
+    },
   },
   {
     name: "Made with TypeScript",
-    spec: { label: "Made with", message: "TypeScript", color: "3178C6", style: "flat", logo: "typescript" },
+    spec: {
+      label: "Made with",
+      message: "TypeScript",
+      color: "3178C6",
+      style: "flat",
+      logo: "typescript",
+    },
   },
 ];
 

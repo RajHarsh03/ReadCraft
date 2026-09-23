@@ -45,7 +45,10 @@ export interface ReadmeDocument {
  * preview is exactly what the exported README embeds. Each URL points at a
  * public card service that renders the viewer's real GitHub data.
  */
-export function metricImageUrl(kind: MetricKind, encodedUsername: string): string {
+export function metricImageUrl(
+  kind: MetricKind,
+  encodedUsername: string
+): string {
   switch (kind) {
     case "stats":
       return `https://github-readme-stats.vercel.app/api?username=${encodedUsername}`;

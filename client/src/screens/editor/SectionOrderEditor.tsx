@@ -28,7 +28,9 @@ export function SectionOrderEditor() {
             <Icon
               name={meta.icon}
               size={16}
-              className={isOn ? "text-on-surface" : "text-on-surface-variant/50"}
+              className={
+                isOn ? "text-on-surface" : "text-on-surface-variant/50"
+              }
             />
             <span
               className={`flex-1 text-body-sm ${

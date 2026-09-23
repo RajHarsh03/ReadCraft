@@ -49,9 +49,7 @@ export function ProjectsEditor() {
           onChange={(patch) =>
             dispatch({ type: "updateProject", id: project.id, patch })
           }
-          onRemove={() =>
-            dispatch({ type: "removeProject", id: project.id })
-          }
+          onRemove={() => dispatch({ type: "removeProject", id: project.id })}
           onMove={(direction) =>
             dispatch({ type: "moveProject", id: project.id, direction })
           }

@@ -23,7 +23,10 @@ export function GitHubConnectionCard() {
     const login = state.bundle.profile.login.toLowerCase();
     if (importedFor.current === login) return;
     importedFor.current = login;
-    dispatch({ type: "importGitHub", payload: mapBundleToImport(state.bundle) });
+    dispatch({
+      type: "importGitHub",
+      payload: mapBundleToImport(state.bundle),
+    });
   }, [state, dispatch]);
 
   return (
@@ -82,7 +85,9 @@ export function GitHubConnectionCard() {
             </button>
           </div>
         )}
-        {state.status === "success" && <ConnectionSuccess bundle={state.bundle} />}
+        {state.status === "success" && (
+          <ConnectionSuccess bundle={state.bundle} />
+        )}
       </div>
     </div>
   );
@@ -135,7 +140,11 @@ function ConnectionSuccess({ bundle }: { bundle: GitHubBundle }) {
       </div>
 
       <p className="flex items-center gap-1.5 text-body-sm text-on-surface-variant">
-        <Icon name="check_circle" size={15} className="text-primary-container" />
+        <Icon
+          name="check_circle"
+          size={15}
+          className="text-primary-container"
+        />
         Profile data loaded and applied. Your bio and edits are preserved.
       </p>
     </div>

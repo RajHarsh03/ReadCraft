@@ -74,7 +74,8 @@ export function parseImportedDraft(
   }
 
   const stateSource = looksLikeDraftFile ? file.state : raw;
-  const version = typeof file.version === "number" ? file.version : SCHEMA_VERSION;
+  const version =
+    typeof file.version === "number" ? file.version : SCHEMA_VERSION;
 
   return {
     state: coerceState(stateSource, defaults),

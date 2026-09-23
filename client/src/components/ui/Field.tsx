@@ -34,10 +34,7 @@ export function Field({
   const invalid = Boolean(error);
   return (
     <div className="flex flex-col gap-1">
-      <label
-        htmlFor={id}
-        className="text-label-sm text-on-surface-variant"
-      >
+      <label htmlFor={id} className="text-label-sm text-on-surface-variant">
         {label}
       </label>
       {prefix ? (

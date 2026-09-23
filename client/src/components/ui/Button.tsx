@@ -51,7 +51,9 @@ export function Button({
       )}
       {...rest}
     >
-      {icon && <Icon name={icon} size={size === "sm" ? 14 : 16} filled={iconFilled} />}
+      {icon && (
+        <Icon name={icon} size={size === "sm" ? 14 : 16} filled={iconFilled} />
+      )}
       {children}
     </button>
   );

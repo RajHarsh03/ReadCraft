@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  generateMarkdown,
-  READCRAFT_BRAND,
-  READCRAFT_URL,
-} from "./markdown";
+import { generateMarkdown, READCRAFT_BRAND, READCRAFT_URL } from "./markdown";
 import { emptyState, makeState } from "../test/factory";
 
 describe("generateMarkdown", () => {
