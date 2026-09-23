@@ -3,26 +3,31 @@ interface LogoProps {
   className?: string;
 }
 
-/** The ReadCraft mark: a stylized amber markdown hash on a dark tile. */
+/**
+ * The ReadCraft mark: an amber Satisfy-script "#", slightly tilted with a soft
+ * glow. No tile or background — the glyph stands on its own and sits snugly
+ * next to the wordmark.
+ */
 export function Logo({ size = 32, className }: LogoProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width={size}
-      height={size}
-      fill="none"
-      className={className}
+    <span
       aria-hidden
+      className={className}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flex: "none",
+        fontFamily: "'Satisfy', cursive",
+        fontSize: size,
+        lineHeight: 1,
+        color: "#f7a718",
+        transform: "rotate(-10deg)",
+        textShadow: "0 2px 10px rgb(247 167 24 / 0.45)",
+        paddingRight: size * 0.08,
+      }}
     >
-      <rect width="32" height="32" rx="7" fill="#161922" />
-      <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" stroke="#2a2f3d" />
-      <path
-        d="M9 13.5H23M9 18.5H23M13.5 9L11.5 23M19.5 9L17.5 23"
-        stroke="#f59e0b"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
+      #
+    </span>
   );
 }

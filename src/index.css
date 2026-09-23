@@ -50,6 +50,9 @@
   /* Fonts */
   --font-sans:
     "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display:
+    "Sora", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-brand: "Satisfy", "Segoe Script", cursive;
   --font-mono:
     "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas",
     monospace;
@@ -85,31 +88,52 @@ body {
 .rc-app-shell {
   min-height: 100%;
   background:
+    /* top hero glow */
     radial-gradient(
-      1000px 480px at 50% -180px,
-      rgb(53 93 143 / 0.2),
+      1100px 520px at 50% -160px,
+      rgb(70 116 176 / 0.26),
+      transparent 68%
+    ),
+    /* warm accent wash, right */
+    radial-gradient(
+      760px 460px at 100% 30%,
+      rgb(247 167 24 / 0.08),
       transparent 70%
     ),
+    /* cool tint, lower left */
     radial-gradient(
-      720px 440px at 100% 55%,
-      rgb(247 167 24 / 0.055),
+      680px 520px at 0% 85%,
+      rgb(58 98 150 / 0.12),
       transparent 72%
     ),
-    var(--color-surface);
+    /* subtle vertical lift so it isn't flat black */
+    linear-gradient(180deg, #171c26 0%, var(--color-surface) 46%, #0f131b 100%);
 }
 
 .rc-landing-grid {
   background-image:
-    linear-gradient(rgb(128 157 193 / 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(128 157 193 / 0.055) 1px, transparent 1px);
+    linear-gradient(rgb(128 157 193 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(128 157 193 / 0.07) 1px, transparent 1px);
   background-size: 44px 44px;
-  mask-image: linear-gradient(to bottom, black, transparent 78%);
+  mask-image: radial-gradient(
+    120% 90% at 50% 0%,
+    black,
+    rgb(0 0 0 / 0.35) 55%,
+    transparent 82%
+  );
 }
 
 .rc-nav-surface {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(23 28 38 / 0.92),
+      rgb(15 19 27 / 0.86)
+    );
   box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.025),
-    0 10px 30px rgb(0 0 0 / 0.18);
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 1px 0 rgb(70 116 176 / 0.14),
+    0 12px 34px rgb(0 0 0 / 0.28);
 }
 
 .rc-elevated {
@@ -120,6 +144,14 @@ body {
 
 .rc-amber-glow {
   box-shadow: 0 14px 34px -16px rgb(247 167 24 / 0.72);
+}
+
+/* The ReadCraft wordmark — the Satisfy script used everywhere the brand name
+   appears, so it stays distinct and consistent across the app. */
+.rc-brand {
+  font-family: var(--font-brand) !important;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .rc-editor-pane {
@@ -205,24 +237,28 @@ kbd,
    ========================================================================== */
 
 .text-headline-xl {
+  font-family: var(--font-display);
   font-size: 2.25rem;
   line-height: 2.75rem;
   letter-spacing: -0.025em;
-  font-weight: 600;
+  font-weight: 700;
 }
 .text-headline-lg {
+  font-family: var(--font-display);
   font-size: 1.5rem;
   line-height: 2rem;
   letter-spacing: -0.02em;
-  font-weight: 600;
+  font-weight: 700;
 }
 .text-headline-md {
+  font-family: var(--font-display);
   font-size: 1.25rem;
   line-height: 1.75rem;
   letter-spacing: -0.015em;
   font-weight: 600;
 }
 .text-headline-sm {
+  font-family: var(--font-display);
   font-size: 1rem;
   line-height: 1.5rem;
   letter-spacing: -0.01em;

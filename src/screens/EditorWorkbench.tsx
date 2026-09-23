@@ -72,8 +72,8 @@ function SubHeader() {
     <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest/90 px-4 py-2 backdrop-blur-xl lg:px-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <Logo size={28} />
-          <span className="text-headline-sm font-bold tracking-tight text-on-surface">
+          <Logo size={30} />
+          <span className="rc-brand text-headline-sm text-on-surface">
             ReadCraft
           </span>
         </div>

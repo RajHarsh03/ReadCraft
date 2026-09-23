@@ -20,8 +20,8 @@ export function TopNav({ onHome }: TopNavProps) {
           aria-label="Back to home"
           title="Back to home"
         >
-          <Logo size={30} />
-          <span className="text-headline-sm font-semibold tracking-tight text-on-surface">
+          <Logo size={34} />
+          <span className="rc-brand text-headline-sm text-on-surface">
             ReadCraft
           </span>
           <span className="hidden rounded bg-surface-container-high px-1.5 py-0.5 text-code-sm text-on-surface-variant sm:inline-flex">

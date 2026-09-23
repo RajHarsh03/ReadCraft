@@ -14,6 +14,49 @@ const FEATURES = [
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];
 
+/** Capability cards shown below the hero. */
+const CAPABILITIES = [
+  {
+    icon: "person_edit",
+    title: "Visual section editor",
+    body: "Edit your profile, headline, focus, tech stack, and pinned projects with live-synced controls.",
+  },
+  {
+    icon: "hub",
+    title: "Real GitHub data",
+    body: "Pull your public profile, top languages, and best repositories with one click — no token needed.",
+  },
+  {
+    icon: "visibility",
+    title: "Live GFM preview",
+    body: "See rendered GitHub-Flavored Markdown as you type, then flip to the raw Markdown any time.",
+  },
+  {
+    icon: "download",
+    title: "Copy or download",
+    body: "Export a clean README.md, or copy the Markdown straight into your profile repository.",
+  },
+];
+
+/** Three-step "how it works" strip. */
+const STEPS = [
+  {
+    n: "01",
+    title: "Enter a username",
+    body: "Drop in any public GitHub handle to start from real profile data.",
+  },
+  {
+    n: "02",
+    title: "Craft your sections",
+    body: "Toggle, edit, and arrange sections until the README reads exactly how you want.",
+  },
+  {
+    n: "03",
+    title: "Export the Markdown",
+    body: "Copy or download a valid README.md and commit it to your profile repo.",
+  },
+];
+
 interface UsernameEntryProps {
   onGenerate: (username: string) => void;
 }
@@ -31,26 +74,24 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   return (
     <div className="rc-app-shell min-h-screen text-on-surface">
       {/* Header */}
-      <header className="rc-nav-surface fixed inset-x-0 top-0 z-50 h-14 border-b border-outline-variant bg-surface-container-lowest/90 backdrop-blur-xl">
+      <header className="rc-nav-surface fixed inset-x-0 top-0 z-50 h-14 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             <Logo size={30} />
-            <span className="text-headline-sm font-semibold tracking-tight">
-              ReadCraft
-            </span>
+            <span className="rc-brand text-[1.6rem] leading-none">ReadCraft</span>
           </div>
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-1 md:flex">
             <span
               aria-disabled="true"
               title="Coming soon"
-              className="cursor-not-allowed text-label-md text-on-surface-variant/60"
+              className="cursor-not-allowed rounded-md px-3 py-1.5 text-label-md text-on-surface-variant/70"
             >
               Templates
             </span>
             <span
               aria-disabled="true"
               title="Coming soon"
-              className="cursor-not-allowed text-label-md text-on-surface-variant/60"
+              className="cursor-not-allowed rounded-md px-3 py-1.5 text-label-md text-on-surface-variant/70"
             >
               Documentation
             </span>
@@ -58,7 +99,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
           <button
             type="button"
             onClick={() => onGenerate("alexrivera")}
-            className="rc-amber-glow inline-flex items-center gap-1.5 rounded bg-primary-container px-3 py-1.5 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+            className="rc-amber-glow inline-flex items-center gap-1.5 rounded-md bg-primary-container px-3.5 py-1.5 text-label-md font-semibold text-on-primary-container transition-all duration-150 hover:-translate-y-px hover:bg-primary-fixed-dim"
           >
             <Icon name="terminal" size={16} />
             <span className="hidden sm:inline">Launch Studio</span>
@@ -94,19 +135,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 pb-24 pt-12">
           {/* Brand cluster */}
           <div className="flex flex-col items-center text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-high/90 px-4 py-1 shadow-lg">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-              <span className="text-label-sm uppercase tracking-widest text-secondary">
-                README Compiler
-              </span>
-              <span className="text-label-sm text-outline-variant">/</span>
-              <span className="text-label-sm font-semibold text-primary">
-                v1.4
-              </span>
-            </div>
             <div className="mb-3 flex items-center justify-center gap-3">
-              <Logo size={36} />
-              <h1 className="bg-gradient-to-r from-on-surface via-on-surface to-secondary bg-clip-text text-headline-xl font-bold tracking-tight text-transparent">
+              <Logo size={52} />
+              <h1 className="rc-brand text-[3.25rem] leading-none text-primary drop-shadow-sm">
                 ReadCraft
               </h1>
             </div>
@@ -346,7 +377,113 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               <span>output: 100% standard markdown</span>
             </div>
           </div>
+
+          {/* Capabilities */}
+          <section className="mt-24 w-full">
+            <div className="mb-8 flex flex-col items-center text-center">
+              <span className="text-label-sm uppercase tracking-widest text-primary">
+                Everything you need
+              </span>
+              <h2 className="mt-2 text-headline-lg font-bold tracking-tight text-on-surface">
+                A focused README workflow
+              </h2>
+              <p className="mt-2 max-w-xl text-body-md text-on-surface-variant">
+                No boilerplate, no copy-pasting Markdown. Just the pieces that
+                make a profile look considered.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {CAPABILITIES.map((c) => (
+                <div
+                  key={c.title}
+                  className="group rounded-[10px] border border-outline-variant/80 bg-surface-container-low/60 p-5 transition-colors hover:border-primary-container/60 hover:bg-surface-container"
+                >
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-[8px] bg-primary-container/15 text-primary transition-colors group-hover:bg-primary-container/25">
+                    <Icon name={c.icon} size={18} />
+                  </div>
+                  <h3 className="text-headline-sm font-semibold text-on-surface">
+                    {c.title}
+                  </h3>
+                  <p className="mt-1.5 text-body-sm text-on-surface-variant">
+                    {c.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* How it works */}
+          <section className="mt-24 w-full">
+            <div className="mb-8 flex flex-col items-center text-center">
+              <span className="text-label-sm uppercase tracking-widest text-primary">
+                How it works
+              </span>
+              <h2 className="mt-2 text-headline-lg font-bold tracking-tight text-on-surface">
+                From handle to README in three steps
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {STEPS.map((s) => (
+                <div
+                  key={s.n}
+                  className="relative overflow-hidden rounded-[10px] border border-outline-variant/80 bg-surface-container-low/60 p-6"
+                >
+                  <span className="absolute -right-2 -top-3 select-none text-[64px] font-bold leading-none text-primary-container/10">
+                    {s.n}
+                  </span>
+                  <span className="text-label-md font-semibold text-primary">
+                    {s.n}
+                  </span>
+                  <h3 className="mt-2 text-headline-sm font-semibold text-on-surface">
+                    {s.title}
+                  </h3>
+                  <p className="mt-1.5 text-body-sm text-on-surface-variant">
+                    {s.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Closing call to action */}
+          <section className="mt-24 w-full">
+            <div className="relative overflow-hidden rounded-[14px] border border-outline-variant/80 bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-low px-8 py-12 text-center">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/10 blur-[100px]" />
+              <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-tertiary/10 blur-[110px]" />
+              <div className="relative z-10 flex flex-col items-center">
+                <Logo size={40} />
+                <h2 className="mt-4 text-headline-lg font-bold tracking-tight text-on-surface">
+                  Ready to craft your README?
+                </h2>
+                <p className="mt-2 max-w-md text-body-md text-on-surface-variant">
+                  Start from your own GitHub profile and export a polished
+                  README in minutes.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => onGenerate("alexrivera")}
+                  className="rc-amber-glow mt-6 inline-flex items-center gap-2 rounded-[8px] bg-primary-container px-6 py-3 text-headline-sm font-bold text-on-primary-container transition-all duration-150 hover:-translate-y-px hover:bg-primary-fixed-dim active:scale-[0.98]"
+                >
+                  <Icon name="terminal" size={18} />
+                  Launch Studio
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
+
+        {/* Footer */}
+        <footer className="relative z-10 border-t border-outline-variant/60 bg-surface-container-lowest/40">
+          <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-6 text-body-sm text-on-surface-variant sm:flex-row">
+            <div className="flex items-center gap-2">
+              <Logo size={24} />
+              <span className="rc-brand text-on-surface">ReadCraft</span>
+              <span className="text-outline-variant">·</span>
+              <span>Craft a GitHub profile README worthy of your code.</span>
+            </div>
+            <span className="font-medium">100% client-side · no data stored</span>
+          </div>
+        </footer>
       </main>
     </div>
   );
