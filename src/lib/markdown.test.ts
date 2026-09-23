@@ -1,10 +1,25 @@
 import { describe, it, expect } from "vitest";
-import { generateMarkdown } from "./markdown";
+import {
+  generateMarkdown,
+  READCRAFT_BRAND,
+  READCRAFT_URL,
+} from "./markdown";
 import { emptyState, makeState } from "../test/factory";
 
 describe("generateMarkdown", () => {
-  it("returns an empty string when nothing is enabled", () => {
-    expect(generateMarkdown(emptyState())).toBe("");
+  it("outputs only the ReadCraft credit when nothing is enabled", () => {
+    const md = generateMarkdown(emptyState());
+    expect(md).toContain(READCRAFT_BRAND);
+    expect(md).toContain(READCRAFT_URL);
+    // No section content, just the divider + credit footer.
+    expect(md).not.toContain("Tech Stack");
+  });
+
+  it("always appends the ReadCraft credit footer with only the brand linked", () => {
+    const md = generateMarkdown(makeState());
+    expect(md).toContain(`<a href="${READCRAFT_URL}">${READCRAFT_BRAND}</a>`);
+    // The credit is the last content in the document.
+    expect(md.trimEnd().endsWith("</p>")).toBe(true);
   });
 
   it("renders the greeting and handle for the profile block", () => {

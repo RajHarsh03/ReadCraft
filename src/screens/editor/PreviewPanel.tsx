@@ -2,7 +2,12 @@ import { useState, type ReactNode } from "react";
 import { useProfile } from "../../store";
 import { Icon } from "../../components/ui/Icon";
 import { cn } from "../../lib/cn";
-import { generateMarkdown } from "../../lib/markdown";
+import {
+  generateMarkdown,
+  READCRAFT_BRAND,
+  READCRAFT_CREDIT_PREFIX,
+  READCRAFT_URL,
+} from "../../lib/markdown";
 import {
   buildReadmeDocument,
   type MetricKind,
@@ -141,6 +146,22 @@ function RenderedDocument() {
           />
         ))
       )}
+
+      {/* ReadCraft attribution - always present, mirrors the exported footer. */}
+      <div className="flex flex-col gap-3 pt-1">
+        <hr className="border-outline-variant/70" />
+        <p className="text-center text-body-sm text-on-surface-variant">
+          {READCRAFT_CREDIT_PREFIX}{" "}
+          <a
+            href={READCRAFT_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-primary-container hover:underline"
+          >
+            {READCRAFT_BRAND}
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
