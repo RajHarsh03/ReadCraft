@@ -91,9 +91,13 @@ async function get<T>(path: string): Promise<T> {
   }
 
   if (!response.ok || !body || body.error) {
-    const kind = body?.error?.kind ?? "unknown";
+    const kind =
+      body?.error?.kind ?? (response.status >= 500 ? "unavailable" : "unknown");
     const message =
-      body?.error?.message ?? `Request failed (${response.status}).`;
+      body?.error?.message ??
+      (response.status >= 500
+        ? "The ReadCraft API is unavailable. Restart the development server and try again."
+        : `Request failed (${response.status}).`);
     throw new GitHubApiError(kind, message);
   }
   if (body.data === undefined) {

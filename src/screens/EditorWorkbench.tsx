@@ -10,14 +10,16 @@ import { generateMarkdown } from "../lib/markdown";
 
 interface EditorWorkbenchProps {
   username: string;
+  /** Return to the landing/username-entry screen. */
+  onHome?: () => void;
 }
 
 /** The main builder: top nav + left rail + sub-header + 40/60 workbench. */
-export function EditorWorkbench({ username }: EditorWorkbenchProps) {
+export function EditorWorkbench({ username, onHome }: EditorWorkbenchProps) {
   return (
     <ProfileProvider username={username}>
       <div className="rc-app-shell min-h-screen text-on-surface">
-        <TopNav />
+        <TopNav onHome={onHome} />
         <LeftRail />
         <div className="pt-14 lg:pl-64">
           <SubHeader />

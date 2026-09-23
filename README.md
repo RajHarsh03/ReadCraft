@@ -14,16 +14,24 @@ Built with React 19, TypeScript, Vite, and Tailwind CSS.
 ## Local setup
 
 ```bash
-npm ci            # install exact dependencies
+cd server
+npm ci            # install API dependencies
+cd ../client
+npm ci            # install client dependencies
 cp .env.example .env.local   # then fill in values as needed
-npm run dev       # start the dev server at http://localhost:5173
+npm run dev       # start both UI (:5173) and API (:8787)
 ```
+
+`npm run dev` from `client/` starts both processes. To run them separately,
+use `npm run dev:client` in `client/` and `npm run dev` in `server/`.
 
 ## Commands
 
 | Command                | Description                                       |
 | ---------------------- | ------------------------------------------------- |
-| `npm run dev`          | Start the Vite dev server.                        |
+| `npm run dev`          | Start client and API together (`:5173` + `:8787`). |
+| `npm run dev:client`   | Start only the Vite client (API must run separately). |
+| `npm run dev:api`      | Start only the API from `../server`.                 |
 | `npm run build`        | Type-check (`tsc -b`) and build for production.   |
 | `npm run preview`      | Serve the production build locally.               |
 | `npm run typecheck`    | Type-check without emitting.                      |

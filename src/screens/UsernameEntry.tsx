@@ -14,15 +14,6 @@ const FEATURES = [
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];
 
-type NavItem = { label: string; state: "current" | "action" | "soon" };
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Showcase", state: "current" },
-  { label: "Templates", state: "soon" },
-  { label: "Documentation", state: "soon" },
-  { label: "Open App", state: "action" },
-];
-
 interface UsernameEntryProps {
   onGenerate: (username: string) => void;
 }
@@ -48,56 +39,31 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               ReadCraft
             </span>
           </div>
-          <nav className="hidden items-center gap-1 md:flex">
-            {NAV_ITEMS.map((item) => {
-              if (item.state === "current") {
-                return (
-                  <span
-                    key={item.label}
-                    aria-current="page"
-                    className="rounded-lg bg-primary-container px-3 py-1 text-label-md font-semibold text-on-primary-container shadow-[0_6px_18px_-8px_rgb(247_167_24_/_0.9)]"
-                  >
-                    {item.label}
-                  </span>
-                );
-              }
-              if (item.state === "action") {
-                return (
-                  <button
-                    key={item.label}
-                    type="button"
-                    onClick={() => onGenerate("alexrivera")}
-                    className="rounded px-3 py-1 text-label-md text-on-surface-variant transition-colors hover:text-on-surface"
-                  >
-                    {item.label}
-                  </button>
-                );
-              }
-              return (
-                <span
-                  key={item.label}
-                  aria-disabled="true"
-                  title="Coming soon"
-                  className="cursor-not-allowed rounded px-3 py-1 text-label-md text-on-surface-variant/50"
-                >
-                  {item.label}
-                </span>
-              );
-            })}
-          </nav>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => onGenerate("alexrivera")}
-              className="rc-amber-glow hidden items-center gap-1.5 rounded bg-primary-container px-3 py-1.5 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim sm:inline-flex"
+          <nav className="hidden items-center gap-6 md:flex">
+            <span
+              aria-disabled="true"
+              title="Coming soon"
+              className="cursor-not-allowed text-label-md text-on-surface-variant/60"
             >
-              <Icon name="terminal" size={16} />
-              <span>Launch Studio</span>
-            </button>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-              <Icon name="person" size={18} className="text-on-primary" />
-            </div>
-          </div>
+              Templates
+            </span>
+            <span
+              aria-disabled="true"
+              title="Coming soon"
+              className="cursor-not-allowed text-label-md text-on-surface-variant/60"
+            >
+              Documentation
+            </span>
+          </nav>
+          <button
+            type="button"
+            onClick={() => onGenerate("alexrivera")}
+            className="rc-amber-glow inline-flex items-center gap-1.5 rounded bg-primary-container px-3 py-1.5 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+          >
+            <Icon name="terminal" size={16} />
+            <span className="hidden sm:inline">Launch Studio</span>
+            <span className="sm:hidden">Launch</span>
+          </button>
         </div>
       </header>
 
@@ -108,19 +74,19 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
           className="rc-landing-grid pointer-events-none absolute inset-0 overflow-hidden"
         >
           <div className="absolute -top-12 left-1/2 h-[360px] w-[720px] -translate-x-1/2 rounded-full bg-tertiary/10 blur-[140px]" />
-          <span className="absolute left-8 top-16 text-label-md text-outline-variant/40">
+          <span className="absolute left-8 top-16 text-label-md font-medium text-on-surface-variant/70">
             ### profile_init.md
           </span>
-          <span className="absolute right-12 top-28 text-label-md text-outline-variant/40">
+          <span className="absolute right-12 top-28 text-label-md font-medium text-on-surface-variant/70">
             &gt; stream: ready
           </span>
-          <span className="absolute left-16 top-64 text-label-md text-outline-variant/30">
+          <span className="absolute left-16 top-64 text-label-md font-medium text-on-surface-variant/55">
             - - -
           </span>
-          <span className="absolute bottom-40 right-24 text-label-md text-outline-variant/30">
+          <span className="absolute bottom-40 right-24 text-label-md font-medium text-on-surface-variant/55">
             bash
           </span>
-          <span className="absolute bottom-16 left-28 text-label-md text-outline-variant/40">
+          <span className="absolute bottom-16 left-28 text-label-md font-medium text-on-surface-variant/70">
             # dev_identity.json
           </span>
         </div>
@@ -156,22 +122,18 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               className="rc-elevated rounded-[12px] border border-outline-variant/80 bg-surface-container-low/95 p-2 backdrop-blur-sm"
             >
               <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-                <div className="flex flex-1 items-center rounded-[8px] border border-transparent bg-surface-container px-4 py-2.5 transition-colors focus-within:border-border-strong focus-within:bg-surface-container-high">
+                <div className="flex flex-1 items-center rounded-[8px] border border-outline-variant bg-surface-container px-4 py-2.5 transition-colors focus-within:border-primary-container focus-within:bg-surface-container-high">
                   <span className="mr-1 select-none text-code-lg text-secondary-container">
                     github.com/
                   </span>
                   <input
                     autoComplete="off"
                     spellCheck={false}
-                    className="w-full bg-transparent text-code-lg tracking-tight text-on-surface placeholder:text-outline-variant/60 focus:outline-none"
+                    className="w-full bg-transparent text-code-lg font-semibold tracking-tight text-on-surface placeholder:font-normal placeholder:text-outline-variant/60 focus:outline-none"
                     placeholder="torvalds"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                   />
-                  <div className="hidden items-center gap-1 rounded bg-surface-container-high px-2 py-0.5 text-outline-variant sm:inline-flex">
-                    <span className="text-label-sm">Enter</span>
-                    <span className="text-label-sm">↵</span>
-                  </div>
                 </div>
                 <button
                   type="submit"
@@ -376,9 +338,9 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               <div className="h-1 w-full bg-gradient-to-r from-primary-container via-tertiary to-secondary-container" />
             </div>
 
-            <div className="mt-4 flex items-center justify-between px-2 text-code-sm text-outline-variant/60">
+            <div className="mt-4 flex items-center justify-between px-2 text-code-sm font-medium text-on-surface-variant">
               <span className="flex items-center gap-1">
-                <Icon name="auto_awesome" size={14} />
+                <Icon name="auto_awesome" size={14} className="text-primary" />
                 Built from public GitHub data
               </span>
               <span>output: 100% standard markdown</span>

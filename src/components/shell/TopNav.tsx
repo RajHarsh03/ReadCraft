@@ -3,12 +3,23 @@ import { Logo } from "../ui/Logo";
 
 const NAV_ITEMS = ["Builder", "Templates", "Badges", "Docs"];
 
+interface TopNavProps {
+  /** Return to the landing/username-entry screen. */
+  onHome?: () => void;
+}
+
 /** Fixed top navigation bar for the editor workbench. */
-export function TopNav() {
+export function TopNav({ onHome }: TopNavProps) {
   return (
     <header className="rc-nav-surface fixed inset-x-0 top-0 z-50 h-14 border-b border-outline-variant bg-surface-container-lowest/90 backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onHome}
+          className="flex items-center gap-3 rounded-lg px-1 py-1 transition-colors hover:bg-surface-container-high"
+          aria-label="Back to home"
+          title="Back to home"
+        >
           <Logo size={30} />
           <span className="text-headline-sm font-semibold tracking-tight text-on-surface">
             ReadCraft
@@ -16,7 +27,7 @@ export function TopNav() {
           <span className="hidden rounded bg-surface-container-high px-1.5 py-0.5 text-code-sm text-on-surface-variant sm:inline-flex">
             v2.4.0
           </span>
-        </div>
+        </button>
 
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_ITEMS.map((item, i) =>

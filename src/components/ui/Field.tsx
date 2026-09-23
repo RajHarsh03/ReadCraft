@@ -1,8 +1,8 @@
 import { cn } from "../../lib/cn";
 
 const inputBase =
-  "w-full rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 text-on-surface shadow-inner shadow-black/10 " +
-  "placeholder:text-outline focus:border-border-strong focus:outline-none focus:ring-2 focus:ring-primary-container/25";
+  "w-full rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-on-surface " +
+  "placeholder:text-outline focus:border-primary-container focus:outline-none";
 
 interface FieldProps {
   label: string;
@@ -17,8 +17,7 @@ interface FieldProps {
   error?: string | null;
 }
 
-const errorRing =
-  "border-error/70 ring-2 ring-error/25 focus:border-error/70 focus:ring-error/25";
+const errorRing = "border-error/70 focus:border-error/70";
 
 export function Field({
   label,
@@ -36,7 +35,7 @@ export function Field({
       {prefix ? (
         <div
           className={cn(
-            "flex items-center rounded-[6px] border border-transparent bg-surface-container-lowest px-2.5 py-1.5 shadow-inner shadow-black/10 focus-within:border-border-strong focus-within:ring-2 focus-within:ring-primary-container/25",
+            "flex items-center rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 focus-within:border-primary-container",
             invalid && errorRing
           )}
         >
