@@ -7,7 +7,7 @@ import { SECTION_META } from "../lib/sections";
 export function TemplatesScreen() {
   const { navigate } = useRouter();
 
-  const useTemplate = (id: string) => {
+  const openWithTemplate = (id: string) => {
     try {
       sessionStorage.setItem(PENDING_TEMPLATE_KEY, id);
     } catch {
@@ -48,7 +48,7 @@ export function TemplatesScreen() {
 
             <button
               type="button"
-              onClick={() => useTemplate(template.id)}
+              onClick={() => openWithTemplate(template.id)}
               className="rc-amber-glow mt-4 inline-flex items-center justify-center gap-1.5 rounded-[6px] bg-primary-container px-3 py-2 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
             >
               Use template
