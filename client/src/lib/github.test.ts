@@ -41,7 +41,10 @@ const bundle: GitHubBundle = {
     { language: "TypeScript", count: 5, percent: 62.5 },
     { language: "Go", count: 3, percent: 37.5 },
   ],
-  streak: { total: 1892, currentStreak: 42, longestStreak: 178 },
+  contributions: {
+    days: [{ date: "2025-01-01", count: 3 }],
+    streak: { total: 1892, currentStreak: 42, longestStreak: 178 },
+  },
 };
 
 describe("formatStars", () => {

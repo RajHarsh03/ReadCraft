@@ -52,6 +52,16 @@ export interface StreakStats {
   longestStreak: number;
 }
 
+export interface ContributionDay {
+  date: string;
+  count: number;
+}
+
+export interface ContributionCalendar {
+  days: ContributionDay[];
+  streak: StreakStats;
+}
+
 export type GitHubErrorKind =
   | "invalid_username"
   | "not_found"
@@ -132,9 +142,11 @@ export function fetchLanguages(username: string): Promise<LanguageStat[]> {
   );
 }
 
-export function fetchStreak(username: string): Promise<StreakStats> {
+export function fetchContributions(
+  username: string
+): Promise<ContributionCalendar> {
   const u = encodeURIComponent(normalizeUsername(username));
-  return get<StreakStats>(`/api/github/${u}/streak`);
+  return get<ContributionCalendar>(`/api/github/${u}/contributions`);
 }
 
 export interface GitHubBundle {
@@ -142,8 +154,11 @@ export interface GitHubBundle {
   repositories: GitHubRepo[];
   totalPublic: number;
   languages: LanguageStat[];
-  /** Contribution streak, or null if the streak source was unavailable. */
-  streak: StreakStats | null;
+  /**
+   * Per-day contribution calendar + derived streak, or null if the
+   * contributions source was unavailable.
+   */
+  contributions: ContributionCalendar | null;
 }
 
 /** Fetch everything the connection panel needs in parallel. */
@@ -151,20 +166,20 @@ export async function fetchGitHubBundle(
   username: string,
   repoLimit = 6
 ): Promise<GitHubBundle> {
-  const [profile, repos, languages, streak] = await Promise.all([
+  const [profile, repos, languages, contributions] = await Promise.all([
     fetchProfile(username),
     fetchRepositories(username, repoLimit),
     fetchLanguages(username),
-    // The streak comes from a separate public source; never let its failure
+    // Contributions come from a separate public source; never let its failure
     // block the core profile data - fall back to null instead.
-    fetchStreak(username).catch(() => null),
+    fetchContributions(username).catch(() => null),
   ]);
   return {
     profile,
     repositories: repos.repositories,
     totalPublic: repos.totalPublic,
     languages,
-    streak,
+    contributions,
   };
 }
 

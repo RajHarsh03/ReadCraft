@@ -52,6 +52,13 @@ export interface StreakStats {
   longestStreak: number;
 }
 
+/** Per-day contribution calendar plus its derived streak figures. */
+export interface ContributionCalendar {
+  /** Day-by-day counts, ascending by date. */
+  days: ContributionDay[];
+  streak: StreakStats;
+}
+
 /** Distinguished failure modes so each layer can react appropriately. */
 export type GitHubErrorKind =
   | "invalid_username"

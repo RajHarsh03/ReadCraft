@@ -139,6 +139,11 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
     return sendData(reply, await service.getStreak(username));
   });
 
+  app.get("/api/github/:username/contributions", async (request, reply) => {
+    const username = requireUsername(request.params);
+    return sendData(reply, await service.getContributions(username));
+  });
+
   // Central error handler: map GitHubError → HTTP; everything else → 500.
   // Logging is privacy-conscious: we record the route *pattern*, method, and
   // error kind/status only — never the raw :username param, query, or body.

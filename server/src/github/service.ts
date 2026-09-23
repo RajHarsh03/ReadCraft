@@ -6,6 +6,7 @@ import {
   type FetchLike,
 } from "./client.js";
 import type {
+  ContributionCalendar,
   ContributionDay,
   GitHubProfile,
   GitHubRepo,
@@ -114,7 +115,11 @@ export function createGitHubService(options: ServiceOptions) {
   };
   const profileCache = new TtlCache<GitHubProfile>(options.cacheTtlMs);
   const reposCache = new TtlCache<GitHubRepo[]>(options.cacheTtlMs);
-  const streakCache = new TtlCache<StreakStats>(options.cacheTtlMs);
+  // One cache for the raw day-by-day calendar; streak is derived from it, so a
+  // single upstream fetch serves both the streak card and the calendar grid.
+  const contributionsCache = new TtlCache<ContributionDay[]>(
+    options.cacheTtlMs
+  );
 
   async function getProfile(username: string): Promise<GitHubProfile> {
     return profileCache.getOrSet(username.toLowerCase(), () =>
@@ -132,13 +137,32 @@ export function createGitHubService(options: ServiceOptions) {
     return computeLanguageStats(await getRepositories(username));
   }
 
-  async function getStreak(username: string): Promise<StreakStats> {
-    return streakCache.getOrSet(username.toLowerCase(), async () =>
-      computeStreak(await fetchContributions(username, clientOptions))
+  async function getContributionDays(
+    username: string
+  ): Promise<ContributionDay[]> {
+    return contributionsCache.getOrSet(username.toLowerCase(), () =>
+      fetchContributions(username, clientOptions)
     );
   }
 
-  return { getProfile, getRepositories, getLanguages, getStreak };
+  async function getStreak(username: string): Promise<StreakStats> {
+    return computeStreak(await getContributionDays(username));
+  }
+
+  async function getContributions(
+    username: string
+  ): Promise<ContributionCalendar> {
+    const days = await getContributionDays(username);
+    return { days, streak: computeStreak(days) };
+  }
+
+  return {
+    getProfile,
+    getRepositories,
+    getLanguages,
+    getStreak,
+    getContributions,
+  };
 }
 
 export type GitHubService = ReturnType<typeof createGitHubService>;

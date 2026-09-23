@@ -19,6 +19,10 @@ import {
   formatCount,
   type LanguageStat,
 } from "../../lib/github";
+import {
+  ContributionCalendar,
+  ContributionLegend,
+} from "../../components/ContributionCalendar";
 
 type Tab = "preview" | "markdown";
 
@@ -342,7 +346,9 @@ function MetricsView({
   const bundle = state.status === "success" ? state.bundle : null;
   const stats = bundle ? deriveGitHubStats(bundle) : null;
   const languages = bundle?.languages ?? [];
-  const streak = bundle?.streak ?? null;
+  const contributions = bundle?.contributions ?? null;
+  const streak = contributions?.streak ?? null;
+  const days = contributions?.days ?? [];
 
   return (
     <div className="flex flex-col gap-2 pt-1">
@@ -426,29 +432,23 @@ function MetricsView({
               className="text-primary-container"
             />
           </div>
-          <svg
-            className="h-16 w-full text-primary-container/70"
-            fill="none"
-            preserveAspectRatio="none"
-            viewBox="0 0 300 60"
-            aria-hidden
-          >
-            <path
-              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26 L300,60 L0,60 Z"
-              fill="currentColor"
-              fillOpacity="0.1"
-            />
-          </svg>
-          <span className="text-label-sm text-on-surface-variant">
-            Rendered from a contribution-graph card service in the exported
-            Markdown.
-          </span>
+          {days.length > 0 ? (
+            <>
+              <ContributionCalendar days={days} showSnake={has("snake")} />
+              <div className="flex items-center justify-between">
+                <span className="text-label-sm text-on-surface-variant">
+                  {has("snake")
+                    ? "Snake travels across your contributed days."
+                    : "Your last year of contributions."}
+                </span>
+                <ContributionLegend />
+              </div>
+            </>
+          ) : (
+            <span className="text-label-sm text-on-surface-variant">
+              Add a GitHub username to load your contribution calendar.
+            </span>
+          )}
         </div>
       )}
 
@@ -479,10 +479,27 @@ function MetricsView({
         </div>
       )}
 
-      {has("snake") && (
-        <div className="flex items-center justify-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-code-sm text-on-surface-variant">
-          <Icon name="animation" size={16} className="text-primary-container" />
-          Contribution snake animation
+      {/* Snake: only render its own card when the graph card isn't already
+          showing it, to avoid a duplicate calendar. */}
+      {has("snake") && !has("graph") && (
+        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-4">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-code-sm font-semibold text-on-surface">
+              <Icon
+                name="animation"
+                size={16}
+                className="text-primary-container"
+              />
+              Contribution Snake
+            </span>
+          </div>
+          {days.length > 0 ? (
+            <ContributionCalendar days={days} showSnake />
+          ) : (
+            <span className="text-label-sm text-on-surface-variant">
+              Add a GitHub username to load the snake animation.
+            </span>
+          )}
         </div>
       )}
 
