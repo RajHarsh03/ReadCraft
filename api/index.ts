@@ -5,11 +5,11 @@ import { loadConfig } from "../server/src/config.js";
 /**
  * Vercel serverless entry for the ReadCraft API.
  *
- * Every `/api/*` request is routed here (see vercel.json) and dispatched into a
- * Fastify instance via `app.routing`, the pattern Fastify documents for
- * serverless. The app is built once per warm instance and reused across
- * invocations. In-memory cache / rate-limit state is per-instance and resets
- * on cold starts, which is acceptable for this read-only API.
+ * A single function handles every `/api/*` path: vercel.json rewrites all such
+ * requests to `/api`, and Fastify (which owns the full `/api/...` route table)
+ * dispatches them via `app.routing`. The app is built once per warm instance
+ * and reused; in-memory cache / rate-limit state resets on cold starts, which
+ * is acceptable for this read-only API.
  */
 
 let appPromise: ReturnType<typeof createReadyApp> | null = null;
