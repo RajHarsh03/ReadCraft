@@ -5,9 +5,12 @@ import { cn } from "../../lib/cn";
 import { generateMarkdown } from "../../lib/markdown";
 import {
   buildReadmeDocument,
+  metricImageUrl,
+  metricLabel,
   type MetricKind,
   type ReadmeBlock,
 } from "../../lib/document";
+import { encodeUsername } from "../../lib/username";
 
 type Tab = "preview" | "markdown";
 
@@ -118,7 +121,7 @@ function TabButton({
 
 function RenderedDocument() {
   const { state } = useProfile();
-  const { blocks } = buildReadmeDocument(state);
+  const { blocks, username } = buildReadmeDocument(state);
 
   return (
     <div className="rc-elevated relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-6 overflow-hidden rounded-[12px] border border-outline-variant/80 bg-surface-container-lowest p-4 sm:p-8">
@@ -128,14 +131,24 @@ function RenderedDocument() {
         </p>
       ) : (
         blocks.map((block, i) => (
-          <BlockView key={`${block.kind}-${i}`} block={block} />
+          <BlockView
+            key={`${block.kind}-${i}`}
+            block={block}
+            username={username}
+          />
         ))
       )}
     </div>
   );
 }
 
-function BlockView({ block }: { block: ReadmeBlock }) {
+function BlockView({
+  block,
+  username,
+}: {
+  block: ReadmeBlock;
+  username: string;
+}) {
   switch (block.kind) {
     case "identity":
       return (
@@ -216,7 +229,7 @@ function BlockView({ block }: { block: ReadmeBlock }) {
         </div>
       );
     case "metrics":
-      return <MetricsView cards={block.cards} />;
+      return <MetricsView cards={block.cards} username={username} />;
     case "projects":
       return (
         <div className="flex flex-col gap-2 pt-1">
@@ -251,120 +264,90 @@ function BlockView({ block }: { block: ReadmeBlock }) {
   }
 }
 
-function MetricsView({ cards }: { cards: MetricKind[] }) {
-  const has = (kind: MetricKind) => cards.includes(kind);
+/** Order the metric cards render in — mirrors the exported Markdown. */
+const METRIC_ORDER: MetricKind[] = [
+  "stats",
+  "streak",
+  "topLanguages",
+  "graph",
+  "snake",
+];
+
+function MetricsView({
+  cards,
+  username,
+}: {
+  cards: MetricKind[];
+  username: string;
+}) {
+  const active = METRIC_ORDER.filter((kind) => cards.includes(kind));
+
   return (
     <div className="flex flex-col gap-2 pt-1">
       <Heading>GitHub Activity &amp; Streak</Heading>
 
-      {(has("stats") || has("streak")) && (
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-          {has("stats") && (
-            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-code-sm font-semibold text-on-surface">
-                  GitHub Stats
-                </span>
-                <Icon
-                  name="star"
-                  size={16}
-                  className="text-primary-container"
-                />
-              </div>
-              <div className="flex flex-col gap-1.5 pt-1 text-code-sm">
-                <StatRow k="Total Stars Earned:" v="2,284" />
-                <StatRow k="Total Commits (2025):" v="1,892" />
-                <StatRow k="Total PRs Merged:" v="347" />
-                <StatRow k="Contributed to:" v="48 Repos" />
-              </div>
-            </div>
-          )}
-          {has("streak") && (
-            <div className="flex flex-col justify-between rounded-[8px] bg-surface-container-low p-4">
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-code-sm font-semibold text-on-surface">
-                  Contribution Streak
-                </span>
-                <Icon
-                  name="local_fire_department"
-                  size={16}
-                  className="text-[#f97316]"
-                />
-              </div>
-              <div className="grid grid-cols-3 pt-2 text-center">
-                <Streak value="42" label="Current" />
-                <Streak value="178" label="Longest" accent />
-                <Streak value="1,892" label="Total" />
-              </div>
-            </div>
-          )}
+      {username ? (
+        <>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {active.map((kind) => (
+              <MetricCard key={kind} kind={kind} username={username} />
+            ))}
+          </div>
+          <p className="pt-0.5 text-label-sm text-on-surface-variant">
+            These are live cards rendered from @{username}&apos;s real GitHub
+            data — the exact images embedded in your exported README.
+          </p>
+        </>
+      ) : (
+        <div className="flex items-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-body-sm text-on-surface-variant">
+          <Icon name="info" size={16} className="text-primary-container" />
+          Add a GitHub username in Profile Basics to load your live metric
+          cards.
         </div>
       )}
+    </div>
+  );
+}
 
-      {has("graph") && (
-        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-code-sm font-semibold text-on-surface">
-              Contribution Graph
-            </span>
-            <Icon
-              name="show_chart"
-              size={16}
-              className="text-primary-container"
-            />
-          </div>
-          <svg
-            className="h-16 w-full text-primary-container/70"
-            fill="none"
-            preserveAspectRatio="none"
-            viewBox="0 0 300 60"
-            aria-hidden
-          >
-            <path
-              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M0,45 Q30,20 60,34 T120,22 T180,40 T240,14 T300,26 L300,60 L0,60 Z"
-              fill="currentColor"
-              fillOpacity="0.1"
-            />
-          </svg>
-          <span className="text-label-sm text-on-surface-variant">
-            Rendered from a contribution-graph card service in the exported
-            Markdown.
-          </span>
-        </div>
+/**
+ * A single live metric card. The image is the same card-service URL embedded
+ * in the exported Markdown, so the preview is what a viewer of the README
+ * actually sees. Cards can be wide (full-width) or paired two-up.
+ */
+function MetricCard({
+  kind,
+  username,
+}: {
+  kind: MetricKind;
+  username: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const src = metricImageUrl(kind, encodeUsername(username));
+  const label = metricLabel(kind);
+  // Graph and snake are wide banners; stats/streak/top-langs pair two-up.
+  const wide = kind === "graph" || kind === "snake";
+
+  return (
+    <div
+      className={cn(
+        "overflow-hidden rounded-[8px] border border-outline-variant/70 bg-surface-container-low p-2",
+        wide && "md:col-span-2"
       )}
-
-      {has("topLanguages") && (
-        <div className="flex flex-col gap-2 rounded-[8px] bg-surface-container-low p-2">
-          <div className="flex items-center justify-between text-code-sm">
-            <span className="text-on-surface-variant">
-              Top Languages Breakdown
-            </span>
-            <span className="font-medium text-primary-container">
-              Rust 48.2% · TS 34.6% · Go 17.2%
-            </span>
-          </div>
-          <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
-            <div className="h-full bg-[#f97316]" style={{ width: "48.2%" }} />
-            <div
-              className="h-full bg-primary-container"
-              style={{ width: "34.6%" }}
-            />
-            <div className="h-full bg-[#00add8]" style={{ width: "17.2%" }} />
-          </div>
+    >
+      {failed ? (
+        <div className="flex items-center gap-2 px-1 py-3 text-code-sm text-on-surface-variant">
+          <Icon name="cloud_off" size={15} />
+          {label} preview couldn&apos;t load. It still renders in the exported
+          README.
         </div>
-      )}
-
-      {has("snake") && (
-        <div className="flex items-center justify-center gap-2 rounded-[8px] border border-dashed border-outline-variant bg-surface-container-low p-4 text-code-sm text-on-surface-variant">
-          <Icon name="animation" size={16} className="text-primary-container" />
-          Contribution snake animation
-        </div>
+      ) : (
+        <img
+          src={src}
+          alt={`${label} for ${username}`}
+          loading="lazy"
+          onError={() => setFailed(true)}
+          className="mx-auto block h-auto w-full max-w-full"
+        />
       )}
     </div>
   );
@@ -381,35 +364,4 @@ function Heading({ children }: { children: ReactNode }) {
   );
 }
 
-function StatRow({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="flex justify-between">
-      <span className="text-on-surface-variant">{k}</span>
-      <span className="font-bold text-on-surface">{v}</span>
-    </div>
-  );
-}
 
-function Streak({
-  value,
-  label,
-  accent,
-}: {
-  value: string;
-  label: string;
-  accent?: boolean;
-}) {
-  return (
-    <div className="flex flex-col">
-      <span
-        className={cn(
-          "text-headline-md font-bold",
-          accent ? "text-primary-container" : "text-on-surface"
-        )}
-      >
-        {value}
-      </span>
-      <span className="text-label-sm text-on-surface-variant">{label}</span>
-    </div>
-  );
-}

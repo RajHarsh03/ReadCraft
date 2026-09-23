@@ -9,6 +9,7 @@ import { TemplatePicker } from "./TemplatePicker";
 import { TechSelector } from "./TechSelector";
 import { ProjectsEditor } from "./ProjectsEditor";
 import { SectionOrderEditor } from "./SectionOrderEditor";
+import { DraftFileEditor } from "./DraftFileEditor";
 
 /** The 40% left column: "Document Sections" accordion editor. */
 export function SectionsEditor() {
@@ -253,6 +254,15 @@ export function SectionsEditor() {
         description={`${activeCount} of ${state.order.length} sections shown`}
       >
         <SectionOrderEditor />
+      </SectionCard>
+
+      {/* 8. Import / export the draft as a JSON file */}
+      <SectionCard
+        icon="sync_alt"
+        title="Backup & Transfer"
+        description="Export or import the document as JSON"
+      >
+        <DraftFileEditor />
       </SectionCard>
     </div>
   );

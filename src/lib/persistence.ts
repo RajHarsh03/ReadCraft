@@ -12,7 +12,12 @@ import { SECTION_IDS } from "../types";
  */
 
 const STORAGE_KEY = "readcraft:draft";
-const SCHEMA_VERSION = 1;
+
+/**
+ * Draft schema version. Bump when the on-disk shape changes in a way that
+ * needs migration; `coerceState` keeps older/partial payloads loadable.
+ */
+export const SCHEMA_VERSION = 1;
 
 interface StoredDraft {
   version: number;
@@ -29,7 +34,7 @@ function hasStorage(): boolean {
 }
 
 /** Coerce arbitrary parsed data into a complete ProfileState over `defaults`. */
-function coerceState(raw: unknown, defaults: ProfileState): ProfileState {
+export function coerceState(raw: unknown, defaults: ProfileState): ProfileState {
   if (!raw || typeof raw !== "object") return defaults;
   const r = raw as Partial<ProfileState>;
 

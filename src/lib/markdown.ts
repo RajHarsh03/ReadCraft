@@ -1,6 +1,8 @@
 import type { ProfileState } from "../types";
 import {
   buildReadmeDocument,
+  metricImageUrl,
+  metricLabel,
   type MetricKind,
   type ReadmeBlock,
   type ReadmeDocument,
@@ -21,18 +23,7 @@ function code(value: string): string {
 }
 
 function renderMetricCard(kind: MetricKind, encoded: string): string {
-  switch (kind) {
-    case "stats":
-      return `![GitHub stats](https://github-readme-stats.vercel.app/api?username=${encoded})`;
-    case "streak":
-      return `![Streak](https://streak-stats.demolab.com?user=${encoded})`;
-    case "graph":
-      return `![Contribution graph](https://github-readme-activity-graph.vercel.app/graph?username=${encoded})`;
-    case "topLanguages":
-      return `![Top languages](https://github-readme-stats.vercel.app/api/top-langs/?username=${encoded})`;
-    case "snake":
-      return `![Contribution snake](https://raw.githubusercontent.com/${encoded}/${encoded}/output/snake.svg)`;
-  }
+  return `![${metricLabel(kind)}](${metricImageUrl(kind, encoded)})`;
 }
 
 function renderBlock(block: ReadmeBlock, encoded: string): string {

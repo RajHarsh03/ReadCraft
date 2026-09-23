@@ -38,6 +38,44 @@ export interface ReadmeDocument {
   username: string;
 }
 
+/**
+ * Live card-service image URL for a metric, built from an already-encoded
+ * username. This is the single source of truth for these URLs: both the
+ * Markdown exporter and the live preview call it, so what you see in the
+ * preview is exactly what the exported README embeds. Each URL points at a
+ * public card service that renders the viewer's real GitHub data.
+ */
+export function metricImageUrl(kind: MetricKind, encodedUsername: string): string {
+  switch (kind) {
+    case "stats":
+      return `https://github-readme-stats.vercel.app/api?username=${encodedUsername}`;
+    case "streak":
+      return `https://streak-stats.demolab.com?user=${encodedUsername}`;
+    case "graph":
+      return `https://github-readme-activity-graph.vercel.app/graph?username=${encodedUsername}`;
+    case "topLanguages":
+      return `https://github-readme-stats.vercel.app/api/top-langs/?username=${encodedUsername}`;
+    case "snake":
+      return `https://raw.githubusercontent.com/${encodedUsername}/${encodedUsername}/output/snake.svg`;
+  }
+}
+
+/** Human-readable alt text / label for each metric card. */
+export function metricLabel(kind: MetricKind): string {
+  switch (kind) {
+    case "stats":
+      return "GitHub stats";
+    case "streak":
+      return "Contribution streak";
+    case "graph":
+      return "Contribution graph";
+    case "topLanguages":
+      return "Top languages";
+    case "snake":
+      return "Contribution snake";
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Per-section builders                                                      */
 /* -------------------------------------------------------------------------- */
