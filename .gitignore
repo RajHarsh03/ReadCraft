@@ -1,0 +1,9 @@
+# Root-level (Vercel deploy shell) artifacts.
+node_modules/
+.vercel/
+*.log
+
+# Local env files (never commit real secrets).
+.env
+.env.local
+.env.*.local

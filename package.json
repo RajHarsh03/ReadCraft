@@ -1,0 +1,15 @@
+{
+  "name": "readcraft",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "ReadCraft monorepo deploy shell for Vercel (client static build + /api serverless functions).",
+  "scripts": {
+    "vercel-build": "npm --prefix client ci && npm --prefix client run build"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "fastify": "^5.2.1",
+    "zod": "^3.24.1"
+  }
+}

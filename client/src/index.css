@@ -1,0 +1,362 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   ReadCraft design tokens
+
+   Ported from the project DESIGN.md: a dark, technical developer-tool theme
+   (Linear / Raycast / GitHub lineage) with a single warm-amber accent. Every
+   surface, line and text colour is a semantic token so components never
+   hard-code a hex value.
+   ========================================================================== */
+
+@theme {
+  /* Surfaces (back to front) */
+  --color-surface: #0c1017;
+  --color-surface-dim: #0a0e15;
+  --color-surface-bright: #394555;
+  --color-surface-container-lowest: #080b11;
+  --color-surface-container-low: #121822;
+  --color-surface-container: #18202c;
+  --color-surface-container-high: #222d3c;
+  --color-surface-container-highest: #303d4e;
+
+  /* Text */
+  --color-on-surface: #f2f5fa;
+  --color-on-surface-variant: #a6b7cd;
+  --color-on-background: #f2f5fa;
+  --color-background: #0c1017;
+
+  /* Lines */
+  --color-outline: #8193ac;
+  --color-outline-variant: #2a3546;
+  --color-border-strong: #44536a;
+
+  /* Amber accent */
+  --color-primary: #ffd28b;
+  --color-primary-container: #f7a718;
+  --color-primary-hover: #dd8a08;
+  --color-on-primary: #321d00;
+  --color-on-primary-container: #382100;
+  --color-primary-fixed-dim: #ffc362;
+
+  /* Support hues (used sparingly for language dots / links) */
+  --color-secondary: #bfd0e8;
+  --color-secondary-container: #3d5068;
+  --color-tertiary: #7bdbff;
+  --color-tertiary-container: #20b9ed;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+
+  /* Fonts */
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display:
+    "Sora", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-brand: "Satisfy", "Segoe Script", cursive;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas",
+    monospace;
+
+  /* Radius scale - tight, engineered */
+  --radius-rc: 0.375rem; /* 6px base for controls */
+  --radius-rc-lg: 0.5rem; /* 8px for containers */
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.45rem;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+/* Shared atmosphere: the blue-black base keeps the warm accent intentional. */
+.rc-app-shell {
+  min-height: 100%;
+  background:
+    /* top hero glow */
+    radial-gradient(
+      1100px 520px at 50% -160px,
+      rgb(70 116 176 / 0.26),
+      transparent 68%
+    ),
+    /* warm accent wash, right */
+    radial-gradient(
+      760px 460px at 100% 30%,
+      rgb(247 167 24 / 0.08),
+      transparent 70%
+    ),
+    /* cool tint, lower left */
+    radial-gradient(
+      680px 520px at 0% 85%,
+      rgb(58 98 150 / 0.12),
+      transparent 72%
+    ),
+    /* subtle vertical lift so it isn't flat black */
+    linear-gradient(180deg, #171c26 0%, var(--color-surface) 46%, #0f131b 100%);
+}
+
+.rc-landing-grid {
+  background-image:
+    linear-gradient(rgb(128 157 193 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(128 157 193 / 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(
+    120% 90% at 50% 0%,
+    black,
+    rgb(0 0 0 / 0.35) 55%,
+    transparent 82%
+  );
+}
+
+.rc-nav-surface {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(23 28 38 / 0.92),
+      rgb(15 19 27 / 0.86)
+    );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 1px 0 rgb(70 116 176 / 0.14),
+    0 12px 34px rgb(0 0 0 / 0.28);
+}
+
+.rc-elevated {
+  box-shadow:
+    0 24px 70px -30px rgb(0 0 0 / 0.78),
+    inset 0 1px rgb(255 255 255 / 0.035);
+}
+
+.rc-amber-glow {
+  box-shadow: 0 14px 34px -16px rgb(247 167 24 / 0.72);
+}
+
+/* The ReadCraft wordmark - the Satisfy script used everywhere the brand name
+   appears, so it stays distinct and consistent across the app. */
+.rc-brand {
+  font-family: var(--font-brand) !important;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.rc-editor-pane {
+  background: linear-gradient(
+    180deg,
+    rgb(18 24 34 / 0.98),
+    rgb(12 16 23 / 0.96)
+  );
+}
+
+/* Tabular figures + slashed zero for all monospace (DESIGN.md requirement) */
+code,
+kbd,
+.font-mono,
+[class*="font-mono"] {
+  font-feature-settings:
+    "tnum" 1,
+    "zero" 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary-container);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: rgb(245 158 11 / 0.24);
+}
+
+/* Thin, unobtrusive scrollbars for the dense workbench */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-container-highest) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-surface-container-high);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-surface-container-highest);
+}
+
+/* ==========================================================================
+   Material Symbols
+   ========================================================================== */
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* ==========================================================================
+   Typography scale (DESIGN.md)
+   ========================================================================== */
+
+.text-headline-xl {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  line-height: 2.75rem;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+.text-headline-lg {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.text-headline-md {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+.text-headline-sm {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+.text-body-lg {
+  font-size: 1rem;
+  line-height: 1.6rem;
+}
+.text-body-md {
+  font-size: 0.875rem;
+  line-height: 1.45rem;
+}
+.text-body-sm {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.005em;
+}
+.text-code-lg {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+.text-code-sm {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+.text-label-md {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1rem;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+.text-label-sm {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Animation - short and purposeful
+   ========================================================================== */
+
+@keyframes rc-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rc-fade-in {
+  animation: rc-fade-in 180ms ease-out;
+}
+
+@keyframes rc-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rc-toast {
+  animation: rc-toast-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Neutralize decorative transform-based motion (waving hand, hover lift,
+     spinners) so nothing keeps moving as a status cue. */
+  .animate-bounce,
+  .animate-spin,
+  .animate-pulse {
+    animation: none !important;
+  }
+}
