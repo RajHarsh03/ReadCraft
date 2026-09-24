@@ -60,10 +60,9 @@ export function metricImageUrl(
   kind: MetricKind,
   encodedUsername: string
 ): string {
-  // Stats, streak, top languages, and the graph are all self-hosted: rendered
-  // by the ReadCraft API from real data, so they never depend on a third-party
-  // card service that may be paused. (The snake needs a GitHub Action set up in
-  // the user's own repo, so it still points at that conventional output path.)
+  // Every metric image is self-hosted: rendered by the ReadCraft API from real
+  // data, so none depends on a third-party card service (which may be paused)
+  // or a GitHub Action the user would have to set up.
   switch (kind) {
     case "stats":
       return `${API_ORIGIN}/api/github/${encodedUsername}/stats.svg`;
@@ -74,8 +73,13 @@ export function metricImageUrl(
     case "topLanguages":
       return `${API_ORIGIN}/api/github/${encodedUsername}/languages.svg`;
     case "snake":
-      return `https://raw.githubusercontent.com/${encodedUsername}/${encodedUsername}/output/snake.svg`;
+      return `${API_ORIGIN}/api/github/${encodedUsername}/snake.svg`;
   }
+}
+
+/** Self-hosted pinned-repositories card image URL for a username. */
+export function projectsImageUrl(encodedUsername: string): string {
+  return `${API_ORIGIN}/api/github/${encodedUsername}/projects.svg`;
 }
 
 /** Human-readable alt text / label for each metric card. */
@@ -163,11 +167,13 @@ function buildTech(state: ProfileState): ReadmeBlock | null {
 
 function buildMetrics(state: ProfileState): ReadmeBlock | null {
   const { metrics } = state;
+  // Order: cards first, then the wide calendar widgets (graph / snake) last,
+  // so the contribution calendar always sits below Top Languages.
   const cards: MetricKind[] = [];
   if (metrics.showStatsCard) cards.push("stats");
   if (metrics.showStreak) cards.push("streak");
-  if (metrics.showGraph) cards.push("graph");
   if (metrics.showTopLanguages) cards.push("topLanguages");
+  if (metrics.showGraph) cards.push("graph");
   if (metrics.showSnake) cards.push("snake");
   return cards.length ? { kind: "metrics", cards } : null;
 }

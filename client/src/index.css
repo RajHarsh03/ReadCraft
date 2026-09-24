@@ -359,3 +359,34 @@ kbd,
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   GitHub-accurate Markdown preview (github-markdown-css) tweaks
+   ========================================================================== */
+
+/* Let the preview sit on our own card instead of the stylesheet's own page
+   background, and keep images tight so wide SVG cards (graph/snake) don't
+   leave a large gap before the trailing content. */
+.rc-markdown-preview.markdown-body {
+  background: transparent;
+  color: inherit;
+}
+
+/* Inline-block keeps images that share a Markdown line side by side (GitHub's
+   own behavior) while still trimming the descender gap under each image. */
+.rc-markdown-preview.markdown-body img {
+  display: inline-block;
+  vertical-align: top;
+  margin: 3px;
+  background: transparent;
+}
+
+/* Trim the big default spacing so the credit footer sits right under the
+   content instead of far below it. */
+.rc-markdown-preview.markdown-body hr {
+  margin: 16px 0;
+}
+
+.rc-markdown-preview.markdown-body > *:last-child {
+  margin-bottom: 0;
+}

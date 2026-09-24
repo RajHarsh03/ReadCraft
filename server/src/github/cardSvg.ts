@@ -60,21 +60,19 @@ export function renderStatsSvg(
     ["Following", compact(profile.following)],
   ];
 
-  const width = 360;
+  const width = 260;
   const height = 165;
   const startY = 62;
   const lineH = 24;
 
   const body = [
-    `<text x="24" y="34" fill="${ACCENT}" font-size="16" font-weight="600">${esc(
-      profile.name ?? profile.login
-    )}'s GitHub Stats</text>`,
-    `<line x1="24" y1="46" x2="${width - 24}" y2="46" stroke="${BORDER}"/>`,
+    `<text x="20" y="32" fill="${ACCENT}" font-size="15" font-weight="600">GitHub Stats</text>`,
+    `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
     ...rows.map(([label, value], i) => {
       const y = startY + i * lineH;
       return (
-        `<text x="24" y="${y}" fill="${MUTED}" font-size="13">${esc(label)}:</text>` +
-        `<text x="${width - 24}" y="${y}" fill="${TEXT}" font-size="13" font-weight="700" text-anchor="end">${esc(
+        `<text x="20" y="${y}" fill="${MUTED}" font-size="12">${esc(label)}:</text>` +
+        `<text x="${width - 20}" y="${y}" fill="${TEXT}" font-size="12" font-weight="700" text-anchor="end">${esc(
           value
         )}</text>`
       );
@@ -91,21 +89,25 @@ export function renderStatsSvg(
 const LANG_COLORS = ["#f97316", "#f7a718", "#00add8", "#3178c6", "#a970ff"];
 
 export function renderLanguagesSvg(languages: LanguageStat[]): string {
-  const top = languages.slice(0, 5);
-  const width = 360;
-  const rowH = 22;
-  const height = 70 + Math.max(top.length, 1) * rowH;
+  // Full-width bar banner: the top three languages as an inline summary line
+  // and a single normalized bar underneath. Wide viewBox so it scales cleanly
+  // when stretched to the README width.
+  const top = languages.slice(0, 3);
+  const width = 840;
+  const height = 74;
+  const barX = 20;
+  const barW = width - 40;
+  const barY = 48;
 
   if (top.length === 0) {
-    const body = `<text x="24" y="40" fill="${MUTED}" font-size="13">No language data available.</text>`;
-    return frame(width, 80, "Top languages", body);
+    const body = `<text x="20" y="42" fill="${MUTED}" font-size="13">No language data available.</text>`;
+    return frame(width, 64, "Top languages", body);
   }
 
-  // Normalize the shown languages so their bar segments fill the width.
+  const summary = top.map((l) => `${l.language} ${l.percent}%`).join("  ·  ");
+
+  // Normalize the shown languages so their segments fill the whole bar.
   const sum = top.reduce((s, l) => s + l.percent, 0) || 1;
-  const barX = 24;
-  const barW = width - 48;
-  const barY = 56;
   let offset = 0;
   const segments = top
     .map((l, i) => {
@@ -118,23 +120,14 @@ export function renderLanguagesSvg(languages: LanguageStat[]): string {
     })
     .join("");
 
-  const legend = top
-    .map((l, i) => {
-      const y = barY + 26 + i * rowH;
-      const color = LANG_COLORS[i % LANG_COLORS.length];
-      return (
-        `<circle cx="28" cy="${y - 4}" r="5" fill="${color}"/>` +
-        `<text x="42" y="${y}" fill="${TEXT}" font-size="12">${esc(l.language)}</text>` +
-        `<text x="${width - 24}" y="${y}" fill="${MUTED}" font-size="12" text-anchor="end">${l.percent}%</text>`
-      );
-    })
-    .join("");
-
   const body = [
-    `<text x="24" y="34" fill="${ACCENT}" font-size="16" font-weight="600">Most Used Languages</text>`,
+    `<text x="20" y="30" fill="${ACCENT}" font-size="14" font-weight="600">Top Languages</text>`,
+    `<text x="${width - 20}" y="30" fill="${MUTED}" font-size="12" text-anchor="end">${esc(
+      summary
+    )}</text>`,
+    `<clipPath id="langbar"><rect x="${barX}" y="${barY}" width="${barW}" height="8" rx="4"/></clipPath>`,
     `<rect x="${barX}" y="${barY}" width="${barW}" height="8" rx="4" fill="#21262d"/>`,
-    segments,
-    legend,
+    `<g clip-path="url(#langbar)">${segments}</g>`,
   ].join("");
 
   return frame(width, height, "Top languages", body);
@@ -145,8 +138,9 @@ export function renderLanguagesSvg(languages: LanguageStat[]): string {
 /* -------------------------------------------------------------------------- */
 
 export function renderStreakSvg(streak: StreakStats): string {
-  const width = 360;
-  const height = 120;
+  // Match the stats card's size so the two sit level side by side.
+  const width = 260;
+  const height = 165;
   const cols: [number, string][] = [
     [streak.currentStreak, "Current Streak"],
     [streak.longestStreak, "Longest Streak"],
@@ -154,20 +148,22 @@ export function renderStreakSvg(streak: StreakStats): string {
   ];
   const colW = width / 3;
 
-  const body = cols
-    .map(([value, label], i) => {
+  const body = [
+    `<text x="20" y="32" fill="${ACCENT}" font-size="15" font-weight="600">Contribution Streak</text>`,
+    `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
+    ...cols.map(([value, label], i) => {
       const cx = colW * i + colW / 2;
       const accent = i === 1;
       return (
-        `<text x="${cx}" y="58" fill="${accent ? ACCENT : TEXT}" font-size="30" font-weight="700" text-anchor="middle">${compact(
+        `<text x="${cx}" y="102" fill="${accent ? ACCENT : TEXT}" font-size="26" font-weight="700" text-anchor="middle">${compact(
           value
         )}</text>` +
-        `<text x="${cx}" y="82" fill="${MUTED}" font-size="12" text-anchor="middle">${esc(
+        `<text x="${cx}" y="126" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(
           label
         )}</text>`
       );
-    })
-    .join("");
+    }),
+  ].join("");
 
   return frame(width, height, "Contribution streak", body);
 }

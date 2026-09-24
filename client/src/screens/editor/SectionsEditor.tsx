@@ -203,7 +203,11 @@ export function SectionsEditor() {
           <Toggle
             checked={state.metrics.showGraph}
             onChange={(v) =>
-              dispatch({ type: "setMetrics", patch: { showGraph: v } })
+              // Graph and snake share the same calendar; only one at a time.
+              dispatch({
+                type: "setMetrics",
+                patch: { showGraph: v, ...(v ? { showSnake: false } : {}) },
+              })
             }
             label="Show Contribution Graph"
           />
@@ -215,7 +219,11 @@ export function SectionsEditor() {
           <Toggle
             checked={state.metrics.showSnake}
             onChange={(v) =>
-              dispatch({ type: "setMetrics", patch: { showSnake: v } })
+              // Snake and graph share the same calendar; only one at a time.
+              dispatch({
+                type: "setMetrics",
+                patch: { showSnake: v, ...(v ? { showGraph: false } : {}) },
+              })
             }
             label="Snake Animation"
           />

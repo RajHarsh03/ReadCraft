@@ -18,6 +18,8 @@ import {
   renderStatsSvg,
   renderStreakSvg,
 } from "./github/cardSvg.js";
+import { renderSnakeSvg } from "./github/snakeSvg.js";
+import { renderProjectsSvg } from "./github/projectsSvg.js";
 
 export interface BuildAppOptions {
   config: Config;
@@ -189,6 +191,18 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   app.get("/api/github/:username/streak.svg", async (request, reply) => {
     const username = requireUsername(request.params);
     sendSvg(reply, renderStreakSvg(await service.getStreak(username)));
+  });
+
+  app.get("/api/github/:username/snake.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    const { days } = await service.getContributions(username);
+    sendSvg(reply, renderSnakeSvg(days, username));
+  });
+
+  app.get("/api/github/:username/projects.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    const repos = selectFeaturedRepos(await service.getRepositories(username));
+    sendSvg(reply, renderProjectsSvg(repos));
   });
 
   // Central error handler: map GitHubError → HTTP; everything else → 500.
