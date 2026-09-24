@@ -38,10 +38,6 @@ function code(value: string): string {
   return "`" + value.replace(/`/g, "") + "`";
 }
 
-function renderMetricCard(kind: MetricKind, encoded: string): string {
-  return `![${metricLabel(kind)}](${metricImageUrl(kind, encoded)})`;
-}
-
 function renderBlock(block: ReadmeBlock, encoded: string): string {
   switch (block.kind) {
     case "identity": {
@@ -91,7 +87,10 @@ function renderBlock(block: ReadmeBlock, encoded: string): string {
       //   row 3: the wide calendar (graph or snake)
       const rows: string[] = [];
 
-      const topCards = [has("stats") && img("stats"), has("streak") && img("streak")]
+      const topCards = [
+        has("stats") && img("stats"),
+        has("streak") && img("streak"),
+      ]
         .filter(Boolean)
         .join("\n  ");
       if (topCards) rows.push(`<div align="center">\n  ${topCards}\n</div>`);
