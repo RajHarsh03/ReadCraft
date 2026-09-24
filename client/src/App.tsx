@@ -5,6 +5,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ToastProvider } from "./components/ui/Toast";
 import { RouterProvider, useRouter } from "./router";
 import { PreferencesProvider } from "./preferences-store";
+import { AppShell } from "./components/shell/AppShell";
+import { PageSkeleton } from "./components/PageSkeleton";
 
 // Secondary routes are code-split: they're not on the critical landing/builder
 // path, so they load on demand and stay out of the initial bundle.
@@ -25,21 +27,18 @@ const NotFoundScreen = lazy(() =>
   }))
 );
 
-/** Minimal centered fallback while a lazily-loaded route resolves. */
-function RouteFallback() {
+/**
+ * Renders a route's content inside the persistent AppShell (top nav + left
+ * rail). The shell stays mounted across route changes, and lazily-loaded pages
+ * only swap the inner content - showing a skeleton while their chunk loads -
+ * so the chrome never blinks or shifts.
+ */
+function Shelled({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="rc-app-shell flex min-h-screen items-center justify-center text-on-surface-variant"
-      role="status"
-      aria-live="polite"
-    >
-      <span className="text-body-md">Loading…</span>
-    </div>
+    <AppShell>
+      <Suspense fallback={<PageSkeleton />}>{children}</Suspense>
+    </AppShell>
   );
-}
-
-function Lazy({ children }: { children: ReactNode }) {
-  return <Suspense fallback={<RouteFallback />}>{children}</Suspense>;
 }
 
 function Routes() {
@@ -48,32 +47,34 @@ function Routes() {
   switch (route.name) {
     case "builder":
       return (
-        // Keyed so switching users re-seeds the profile provider cleanly.
-        <EditorWorkbench key={route.username} username={route.username} />
+        <Shelled>
+          {/* Keyed so switching users re-seeds the profile provider cleanly. */}
+          <EditorWorkbench key={route.username} username={route.username} />
+        </Shelled>
       );
     case "templates":
       return (
-        <Lazy>
+        <Shelled>
           <TemplatesScreen />
-        </Lazy>
+        </Shelled>
       );
     case "badges":
       return (
-        <Lazy>
+        <Shelled>
           <BadgesScreen />
-        </Lazy>
+        </Shelled>
       );
     case "docs":
       return (
-        <Lazy>
+        <Shelled>
           <DocsScreen />
-        </Lazy>
+        </Shelled>
       );
     case "notfound":
       return (
-        <Lazy>
+        <Shelled>
           <NotFoundScreen />
-        </Lazy>
+        </Shelled>
       );
     case "landing":
     default:

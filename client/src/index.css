@@ -390,3 +390,48 @@ kbd,
 .rc-markdown-preview.markdown-body > *:last-child {
   margin-bottom: 0;
 }
+
+/* Loading skeletons: a soft shimmer used while lazily-loaded route chunks
+   fetch. The chrome (top nav + left rail) stays mounted; only the page content
+   shows these placeholders, so it reads like cards rendering into place. */
+.rc-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-container-high, #1b2330);
+}
+.rc-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.06),
+    transparent
+  );
+  animation: rc-shimmer 1.4s ease-in-out infinite;
+}
+.rc-skeleton-card {
+  opacity: 0;
+  animation: rc-fade-in 0.4s ease-out forwards;
+}
+@keyframes rc-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes rc-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rc-skeleton::after {
+    animation: none;
+  }
+  .rc-skeleton-card {
+    animation: none;
+    opacity: 1;
+  }
+}

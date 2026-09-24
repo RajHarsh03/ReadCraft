@@ -355,6 +355,20 @@ export function ProfileProvider({
   // Skip the very first render so restoring a draft doesn't immediately re-save.
   const firstRun = useRef(true);
 
+  // The username the draft is saved under. It follows the editable
+  // basics.username, but DEBOUNCED: while the user is still typing (raj ->
+  // rajh -> rajharsh) it doesn't change, so no junk per-keystroke slots are
+  // created. Once typing pauses, the settled username becomes the slot - so the
+  // final value (e.g. rajharsh03) is what gets saved and listed. Falls back to
+  // the URL username when the field is empty.
+  const editedUser = state.basics.username;
+  const [slotUsername, setSlotUsername] = useState(editedUser || username);
+  useEffect(() => {
+    const next = editedUser || username;
+    const timer = setTimeout(() => setSlotUsername(next), SAVE_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [editedUser, username]);
+
   // React only reads the reducer's initial state once, so when the requested
   // username or the per-username-drafts preference changes, re-initialize the
   // document from the correct draft slot. We track the last inputs so this
@@ -376,15 +390,17 @@ export function ProfileProvider({
       return;
     }
     const timer = setTimeout(() => {
+      // Save into the debounced slot username, so per-keystroke intermediate
+      // values never create their own draft slots, while the final settled
+      // username (e.g. rajharsh03) is saved and shows up in Saved Profiles.
       if (
-        saveDraft(state, { username: state.basics.username, perUsername }) ===
-        "saved"
+        saveDraft(state, { username: slotUsername, perUsername }) === "saved"
       ) {
         setSavedAt(Date.now());
       }
     }, SAVE_DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [state, perUsername]);
+  }, [state, perUsername, slotUsername]);
 
   const resetDraft = useMemo(
     () => (nextUsername?: string) => {

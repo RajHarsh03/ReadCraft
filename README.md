@@ -40,10 +40,17 @@ needs no GitHub Action to set up.
 - **Rich editor.** Technology picker, social-badge section, pinned-project
   editing, keyboard-accessible section reordering, and a Shields.io Badge
   Studio.
-- **Drafts that stick.** Auto-saved to the browser; exportable/importable as
-  versioned JSON.
+- **Drafts that stick.** Auto-saved to the browser (debounced) and
+  exportable/importable as versioned JSON. Optionally keep a **separate draft
+  per username**, and jump between them from the **Saved Profiles** switcher in
+  the rail.
+- **Preferences.** A floating settings popover to pick the default preview tab
+  (Preview vs Markdown) and toggle per-username drafts; choices persist locally.
+- **Persistent chrome, snappy pages.** The top nav and left rail stay mounted
+  across routes; only the page content swaps, showing a card skeleton while a
+  lazily-loaded route's chunk fetches - so navigation never blinks.
 - **Resilient & accessible by default.** Manual editing and export keep working
-  even if the API is unavailable.
+  even if the API is unavailable; animations respect `prefers-reduced-motion`.
 
 ## Repository layout
 
@@ -185,15 +192,20 @@ Markdown, so they can never drift apart.
 ```text
 client/src/
 ├── main.tsx                 App entry
-├── App.tsx                  Error boundary + toast/router providers + route switch
+├── App.tsx                  Providers + route switch; mounts the AppShell once
+│                            and shows a skeleton while lazy routes load
 ├── router.tsx               Hash router (landing, builder, templates, badges, docs, 404)
 ├── types.ts                 ProfileState — the document model
-├── store.tsx                Profile state + draft auto-save/restore
-├── hooks/useGitHub.ts       Fetches a user's public GitHub bundle
-├── lib/                     document, markdown, github, persistence, draftFile,
-│                            templates, techCatalog, badges, sections, username, export
+├── store.tsx                Profile state + draft auto-save/restore (debounced,
+│                            optionally per-username)
+├── preferences-store.tsx    Preferences context (default preview tab, per-user drafts)
+├── hooks/useGitHub.ts       Fetches a user's public GitHub bundle (debounced username)
+├── lib/                     document, markdown, github, persistence, preferences,
+│                            draftFile, templates, techCatalog, badges, sections,
+│                            username, export
 ├── components/              ErrorBoundary, BadgeStudio, MarkdownPreview,
-│                            ContributionCalendar, ui/, shell/
+│                            ContributionCalendar, PreferencesDialog,
+│                            SavedProfilesPopover, PageSkeleton, ui/, shell/
 └── screens/                 UsernameEntry, EditorWorkbench, TemplatesScreen,
                              BadgesScreen, DocsScreen, NotFound, editor/
 
@@ -214,6 +226,20 @@ server/src/
     ├── snakeSvg.ts          Animated contribution-snake card
     └── projectsSvg.ts       Pinned-repositories card
 ```
+
+### Drafts, profiles & preferences
+
+- **Debounced everything.** Typing a username never fires a lookup or a draft
+  save mid-keystroke; both wait for a short pause, so intermediate values
+  (`raj` → `rajharsh` → `rajharsh03`) don't trigger fetches or create junk
+  draft slots. Only the settled username is fetched and saved.
+- **Draft storage.** Drafts live in `localStorage`. By default there is one
+  shared draft (`readcraft:draft`); with **Draft per username** on, each user
+  gets its own slot (`readcraft:draft:<username>`), keyed to the settled name.
+- **Saved Profiles.** The rail's Saved Profiles popover lists every per-username
+  draft (most recent first) so you can switch to, or delete, any of them.
+- **Preferences.** Stored separately in `localStorage` (`readcraft:prefs`) and
+  applied immediately - no Save step.
 
 ### Design principles
 

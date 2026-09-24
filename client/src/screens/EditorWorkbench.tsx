@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppShell } from "../components/shell/AppShell";
 import { Button } from "../components/ui/Button";
 import { ProfileProvider, useProfile } from "../store";
 import { SectionsEditor } from "./editor/SectionsEditor";
@@ -22,11 +21,9 @@ interface EditorWorkbenchProps {
 export function EditorWorkbench({ username }: EditorWorkbenchProps) {
   return (
     <ProfileProvider username={username}>
-      <AppShell>
-        <PendingHandoff />
-        <SubHeader />
-        <ResizableWorkbench />
-      </AppShell>
+      <PendingHandoff />
+      <SubHeader />
+      <ResizableWorkbench />
     </ProfileProvider>
   );
 }

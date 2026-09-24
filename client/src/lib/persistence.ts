@@ -210,6 +210,58 @@ export function clearDraft(scope: DraftScope = {}): void {
   }
 }
 
+/** A per-username saved draft, as surfaced in the "Saved Profiles" list. */
+export interface SavedProfile {
+  /** The username the draft belongs to (its full name, if known). */
+  username: string;
+  fullName: string;
+  /** Timestamp (ms) of the last save. */
+  savedAt: number;
+}
+
+/**
+ * List all per-username saved drafts (keys shaped `readcraft:draft:<user>`),
+ * most-recently-saved first. The shared/default draft (no username suffix) is
+ * intentionally excluded - this powers the "Saved Profiles" switcher which only
+ * makes sense for named, per-username drafts.
+ */
+export function listSavedProfiles(): SavedProfile[] {
+  if (!hasStorage()) return [];
+  const prefix = `${STORAGE_KEY}:`;
+  const out: SavedProfile[] = [];
+  try {
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const key = window.localStorage.key(i);
+      if (!key || !key.startsWith(prefix)) continue;
+      const username = key.slice(prefix.length);
+      if (!username) continue;
+      const rawText = window.localStorage.getItem(key);
+      if (!rawText) continue;
+      try {
+        const parsed = JSON.parse(rawText) as Partial<StoredDraft>;
+        if (!parsed || parsed.version !== SCHEMA_VERSION) continue;
+        const fullName =
+          (parsed.state?.basics?.fullName ?? "").trim() || username;
+        out.push({
+          username,
+          fullName,
+          savedAt: typeof parsed.savedAt === "number" ? parsed.savedAt : 0,
+        });
+      } catch {
+        // skip a corrupt entry
+      }
+    }
+  } catch {
+    return [];
+  }
+  return out.sort((a, b) => b.savedAt - a.savedAt);
+}
+
+/** Remove a specific per-username saved draft by username. */
+export function deleteSavedProfile(username: string): void {
+  clearDraft({ username, perUsername: true });
+}
+
 export const PERSISTENCE_INTERNALS = {
   STORAGE_KEY,
   SCHEMA_VERSION,

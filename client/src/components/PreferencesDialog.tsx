@@ -28,7 +28,13 @@ export function PreferencesDialog({ open, onClose }: PreferencesDialogProps) {
       if (event.key === "Escape") onClose();
     };
     const onDown = (event: MouseEvent) => {
-      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement | null;
+      // Ignore clicks inside the card and on the trigger (both live in the
+      // [data-rc-prefs] wrapper). Without this, clicking the button while open
+      // would close via this handler and then the button's own onClick would
+      // toggle it right back open.
+      if (target?.closest("[data-rc-prefs]")) return;
+      if (cardRef.current && !cardRef.current.contains(target)) {
         onClose();
       }
     };
