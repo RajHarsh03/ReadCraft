@@ -20,7 +20,7 @@ export function AppShell({ children }: AppShellProps) {
     <div className="rc-app-shell min-h-screen text-on-surface">
       <TopNav onHome={() => navigate({ name: "landing" })} />
       <LeftRail />
-      <div className="pt-14 lg:pl-52">{children}</div>
+      <div className="pt-14 lg:pl-56">{children}</div>
     </div>
   );
 }

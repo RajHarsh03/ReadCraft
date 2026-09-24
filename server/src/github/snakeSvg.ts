@@ -15,8 +15,9 @@ import type { ContributionDay } from "./types.js";
 const CELL = 11;
 const GAP = 3;
 const STEP = CELL + GAP;
-const TOP = 44; // room for the header line and month labels above the grid
-const LEFT = 30;
+const TOP = 40; // room for the header line and month labels above the grid
+const LEFT = 34; // left inset: weekday labels + padding off the card border
+const PAD = 14; // inner padding on the right/bottom so cells clear the border
 const ROWS = 7;
 const MIN_LABEL_GAP = 3; // min columns between month labels so they don't overlap
 
@@ -194,8 +195,8 @@ export function renderSnakeSvg(
       ? [...linked, ...linked.slice(1, -1).reverse()]
       : linked;
 
-  const width = LEFT + weeks * STEP + 4;
-  const height = TOP + ROWS * STEP + 4;
+  const width = LEFT + weeks * STEP + PAD;
+  const height = TOP + ROWS * STEP + PAD;
 
   const weekdayLabels = [
     [1, "Mon"],
@@ -204,7 +205,7 @@ export function renderSnakeSvg(
   ]
     .map(
       ([r, label]) =>
-        `<text x="0" y="${TOP + (r as number) * STEP + CELL - 2}" fill="#8b949e" font-size="9">${label}</text>`
+        `<text x="${PAD}" y="${TOP + (r as number) * STEP + CELL - 2}" fill="#8b949e" font-size="9">${label}</text>`
     )
     .join("");
 
@@ -241,8 +242,8 @@ export function renderSnakeSvg(
 
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution snake for ${esc(login)}">`,
-    `<rect width="${width}" height="${height}" fill="#0d1117"/>`,
-    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="${headerAccent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
+    `<rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="8" fill="#0d1117" stroke="#21262d"/>`,
+    `<text x="${PAD}" y="18" fill="#c9d1d9" font-size="12"><tspan fill="${headerAccent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),

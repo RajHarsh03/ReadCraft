@@ -14,13 +14,13 @@ interface PageShellProps {
  */
 export function PageShell({ title, description, children }: PageShellProps) {
   return (
-    <main className="mx-auto max-w-5xl px-6 pb-24 pt-10">
-      <div className="mb-8">
-        <h1 className="text-headline-lg font-bold tracking-tight text-on-surface">
+    <main className="mx-auto max-w-5xl px-6 pb-24 pt-12 lg:px-10">
+      <div className="mb-12 border-b border-outline-variant/60 pb-8">
+        <h1 className="font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.05] tracking-tight text-on-surface">
           {title}
         </h1>
         {description && (
-          <p className="mt-2 max-w-2xl text-body-md text-on-surface-variant">
+          <p className="mt-4 max-w-2xl text-body-lg leading-relaxed text-on-surface-variant">
             {description}
           </p>
         )}

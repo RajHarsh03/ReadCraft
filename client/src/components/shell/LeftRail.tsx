@@ -61,9 +61,9 @@ export function LeftRail() {
         <span
           key={item.label}
           aria-current="page"
-          className="flex items-center gap-2.5 rounded-lg border border-border-strong/70 bg-surface-container-high px-2.5 py-2 text-label-md font-semibold text-primary shadow-[inset_3px_0_0_var(--color-primary-container)]"
+          className="relative flex items-center gap-2.5 border-l-2 border-primary-container bg-surface-container-high/60 py-2 pl-3 pr-3 text-label-md font-semibold text-on-surface"
         >
-          <Icon name={item.icon} size={18} />
+          <Icon name={item.icon} size={18} className="text-primary" />
           <span>{item.label}</span>
         </span>
       ) : (
@@ -71,7 +71,7 @@ export function LeftRail() {
           key={item.label}
           type="button"
           onClick={() => navigate(item.to)}
-          className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+          className="flex items-center gap-2.5 border-l-2 border-transparent py-2 pl-3 pr-3 text-left text-label-md text-on-surface-variant transition-colors hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
         >
           <Icon name={item.icon} size={18} />
           <span>{item.label}</span>
@@ -82,14 +82,14 @@ export function LeftRail() {
   );
 
   return (
-    <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-52 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest/95 py-4 backdrop-blur-xl lg:flex">
+    <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-56 flex-col justify-between border-r border-outline-variant/60 bg-surface py-4 lg:flex">
       <div className="flex flex-col gap-4">
-        <div className="px-4">
-          <span className="text-label-sm uppercase tracking-wider text-on-surface-variant">
-            Workspace Canvas
+        <div className="flex items-center gap-2 px-4">
+          <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+            Workspace
           </span>
         </div>
-        <nav className="flex flex-col gap-1 px-2">
+        <nav className="flex flex-col">
           {NAV_BEFORE.map(renderNavItem)}
 
           {/* Saved Profiles: opens a popover of per-username saved drafts. */}
@@ -109,10 +109,10 @@ export function LeftRail() {
               aria-expanded={savedOpen}
               onClick={() => setSavedOpen((v) => !v)}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-label-md transition-colors",
+                "flex w-full items-center gap-2.5 border-l-2 py-2 pl-3 pr-3 text-left text-label-md transition-colors",
                 savedOpen
-                  ? "bg-surface-container text-on-surface"
-                  : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                  ? "border-primary-container bg-surface-container-high/60 text-on-surface"
+                  : "border-transparent text-on-surface-variant hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
               )}
             >
               <Icon name="folder_open" size={18} />
@@ -124,7 +124,7 @@ export function LeftRail() {
         </nav>
       </div>
 
-      <div data-rc-prefs className="relative flex flex-col gap-1 px-2">
+      <div data-rc-prefs className="relative flex flex-col">
         <PreferencesDialog
           open={prefsOpen}
           onClose={() => setPrefsOpen(false)}
@@ -135,10 +135,10 @@ export function LeftRail() {
           aria-expanded={prefsOpen}
           onClick={() => setPrefsOpen((v) => !v)}
           className={cn(
-            "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-label-md transition-colors",
+            "flex items-center gap-2.5 border-l-2 py-2 pl-3 pr-3 text-left text-label-md transition-colors",
             prefsOpen
-              ? "bg-surface-container text-on-surface"
-              : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+              ? "border-primary-container bg-surface-container-high/60 text-on-surface"
+              : "border-transparent text-on-surface-variant hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
           )}
         >
           <Icon name="tune" size={18} />

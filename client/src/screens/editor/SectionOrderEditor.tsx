@@ -20,7 +20,7 @@ export function SectionOrderEditor() {
         return (
           <li
             key={id}
-            className="flex items-center gap-2 rounded-[6px] border border-outline-variant bg-surface-container-low/60 px-2 py-1.5"
+            className="flex items-center gap-2 rounded-[6px] border border-outline-variant bg-surface-container px-2 py-1.5"
           >
             <span className="flex w-5 shrink-0 justify-center text-code-sm text-on-surface-variant">
               {index + 1}

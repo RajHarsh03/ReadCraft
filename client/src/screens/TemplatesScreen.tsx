@@ -49,7 +49,7 @@ export function TemplatesScreen() {
           return (
             <div
               key={template.id}
-              className="group flex flex-col overflow-hidden border border-outline-variant/70 bg-surface-container-lowest transition-colors hover:border-border-strong"
+              className="group flex flex-col overflow-hidden border border-outline-variant/70 bg-surface-container-low transition-colors hover:border-border-strong"
             >
               {/* Accent header strip */}
               <div className="h-1 w-full" style={{ backgroundColor: accent }} />

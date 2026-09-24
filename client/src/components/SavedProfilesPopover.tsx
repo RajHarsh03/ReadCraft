@@ -83,7 +83,7 @@ export function SavedProfilesPopover({
       role="dialog"
       aria-modal="false"
       aria-label="Saved profiles"
-      className="rc-elevated absolute left-full top-0 z-50 ml-2 max-h-[70vh] w-72 origin-top-left overflow-hidden rounded-[12px] border border-outline-variant bg-surface-container-lowest shadow-2xl"
+      className="rc-elevated rc-fade-in absolute left-full top-0 z-50 ml-2 max-h-[70vh] w-72 origin-top-left overflow-hidden border border-outline-variant/70 bg-surface-container-low"
     >
       <header className="flex items-center gap-2 border-b border-outline-variant px-4 py-3">
         <Icon name="folder_open" size={16} className="text-primary-container" />

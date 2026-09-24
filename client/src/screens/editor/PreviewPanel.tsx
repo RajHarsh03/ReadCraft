@@ -21,7 +21,7 @@ export function PreviewPanel() {
   const markdown = generateMarkdown(state);
 
   return (
-    <div className="flex h-full flex-col bg-surface/80">
+    <div className="flex h-full flex-col bg-surface">
       {/* Tab switch bar */}
       <div className="z-10 flex items-center justify-between border-b border-outline-variant/60 bg-surface px-4">
         <div className="flex items-center gap-6">
@@ -45,13 +45,13 @@ export function PreviewPanel() {
       </div>
 
       {/* Canvas */}
-      <div className="relative flex-1 overflow-y-auto bg-surface-dim p-4 lg:p-8">
+      <div className="relative flex-1 overflow-y-auto bg-surface-dim/40 p-4 lg:p-8">
         {tab === "preview" ? (
-          <div className="relative z-10 mx-auto w-full max-w-3xl overflow-hidden border border-outline-variant/70 bg-surface-container-lowest p-4 shadow-[0_30px_80px_-50px_rgb(0_0_0_/_0.9)] sm:p-8">
+          <div className="relative z-10 mx-auto w-full max-w-3xl overflow-hidden border border-outline-variant/70 bg-surface-container-low p-4 shadow-[0_30px_80px_-50px_rgb(0_0_0_/_0.9)] sm:p-8">
             <MarkdownPreview markdown={markdown} />
           </div>
         ) : (
-          <pre className="relative z-10 mx-auto w-full max-w-3xl whitespace-pre-wrap break-words border border-outline-variant/70 bg-surface-container-lowest p-6 text-code-sm text-on-surface">
+          <pre className="relative z-10 mx-auto w-full max-w-3xl whitespace-pre-wrap break-words border border-outline-variant/70 bg-surface-container-low p-6 text-code-sm text-on-surface">
             {markdown}
           </pre>
         )}

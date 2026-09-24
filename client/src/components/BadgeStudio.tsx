@@ -20,7 +20,7 @@ const DEFAULT_SPEC: BadgeSpec = {
 };
 
 const inputClass =
-  "w-full rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 " +
+  "w-full rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 " +
   "text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none";
 
 const labelClass = "text-label-sm text-on-surface-variant";

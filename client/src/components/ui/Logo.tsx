@@ -4,9 +4,9 @@ interface LogoProps {
 }
 
 /**
- * The ReadCraft mark: an amber Satisfy-script "#", slightly tilted with a soft
- * glow. No tile or background - the glyph stands on its own and sits snugly
- * next to the wordmark.
+ * The ReadCraft mark: a Satisfy-script "#", slightly tilted with a soft glow.
+ * No tile or background - the glyph stands on its own and sits snugly next to
+ * the wordmark. Tinted with the theme's violet accent for a cohesive look.
  */
 export function Logo({ size = 32, className }: LogoProps) {
   return (
@@ -23,7 +23,7 @@ export function Logo({ size = 32, className }: LogoProps) {
         lineHeight: 1,
         color: "#f7a718",
         transform: "rotate(-10deg)",
-        textShadow: "0 2px 10px rgb(247 167 24 / 0.45)",
+        textShadow: "0 2px 12px rgb(247 167 24 / 0.5)",
         paddingRight: size * 0.08,
       }}
     >

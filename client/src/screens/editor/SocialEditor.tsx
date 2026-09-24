@@ -24,7 +24,7 @@ export function SocialEditor() {
           {links.map((link, i) => (
             <li
               key={link.id}
-              className="flex items-center gap-2 rounded-[6px] border border-outline-variant/70 bg-surface-container-lowest p-2"
+              className="flex items-center gap-2 rounded-[6px] border border-outline-variant/70 bg-surface-container p-2"
             >
               <img
                 src={link.badgeUrl}

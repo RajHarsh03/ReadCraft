@@ -11,7 +11,7 @@ export function NotFoundScreen() {
       title="Page not found"
       description="That link doesn't match any part of ReadCraft."
     >
-      <div className="flex flex-col items-start gap-6 border border-outline-variant/70 border-l-2 border-l-primary-container bg-surface-container-lowest p-8">
+      <div className="flex flex-col items-start gap-6 border border-outline-variant/70 border-l-2 border-l-primary-container bg-surface-container-low p-8">
         <span className="font-display text-[6rem] font-bold leading-none tracking-tight text-outline-variant">
           404
         </span>

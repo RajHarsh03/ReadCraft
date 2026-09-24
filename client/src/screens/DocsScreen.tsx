@@ -26,18 +26,23 @@ export function DocsScreen() {
       title="Documentation"
       description="Everything you need to build and export your profile README."
     >
-      <div className="flex flex-col gap-3">
-        {SECTIONS.map((s) => (
+      <div className="divide-y divide-outline-variant/50 border-y border-outline-variant/50">
+        {SECTIONS.map((s, i) => (
           <div
             key={s.q}
-            className="rounded-[10px] border border-outline-variant/80 bg-surface-container-low/60 p-5"
+            className="group grid grid-cols-12 items-baseline gap-4 py-7 transition-colors hover:bg-surface-container-lowest/40"
           >
-            <h2 className="text-headline-sm font-semibold text-on-surface">
-              {s.q}
-            </h2>
-            <p className="mt-2 text-body-md leading-relaxed text-on-surface-variant">
-              {s.a}
-            </p>
+            <span className="col-span-2 font-display text-headline-md font-bold text-outline-variant transition-colors group-hover:text-primary md:col-span-1">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="col-span-10 md:col-span-11">
+              <h2 className="text-headline-sm font-semibold text-on-surface">
+                {s.q}
+              </h2>
+              <p className="mt-2 max-w-2xl text-body-md leading-relaxed text-on-surface-variant">
+                {s.a}
+              </p>
+            </div>
           </div>
         ))}
       </div>

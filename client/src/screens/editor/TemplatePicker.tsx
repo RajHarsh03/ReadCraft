@@ -55,7 +55,7 @@ export function TemplatePicker() {
             className={`rounded-[8px] border p-3 transition-colors ${
               active
                 ? "border-primary-container/60 bg-primary-container/5"
-                : "border-outline-variant bg-surface-container-low/50 hover:border-border-strong"
+                : "border-outline-variant bg-surface-container hover:border-border-strong"
             }`}
           >
             <div className="flex items-start justify-between gap-3">

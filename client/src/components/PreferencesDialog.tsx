@@ -59,7 +59,7 @@ export function PreferencesDialog({ open, onClose }: PreferencesDialogProps) {
       role="dialog"
       aria-modal="false"
       aria-label="Preferences"
-      className="rc-elevated rc-fade-in absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden border border-border-strong bg-surface-container-lowest"
+      className="rc-elevated rc-fade-in absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden border border-outline-variant/70 bg-surface-container-low"
     >
       <header className="flex items-center gap-2 border-b border-outline-variant px-4 py-3">
         <Icon name="tune" size={16} className="text-primary-container" />

@@ -2,7 +2,7 @@ import { useId } from "react";
 import { cn } from "../../lib/cn";
 
 const inputBase =
-  "w-full rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-on-surface " +
+  "w-full rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-on-surface " +
   "placeholder:text-outline focus:border-primary-container focus:outline-none";
 
 interface FieldProps {
@@ -40,7 +40,7 @@ export function Field({
       {prefix ? (
         <div
           className={cn(
-            "flex items-center rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 focus-within:border-primary-container",
+            "flex items-center rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 focus-within:border-primary-container",
             invalid && errorRing
           )}
         >
@@ -125,7 +125,7 @@ export function ToggleRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-[6px] bg-surface-container-lowest p-2">
+    <div className="flex items-center justify-between rounded-[6px] border border-outline-variant/50 bg-surface-container p-2">
       <div className="flex flex-col">
         <span className="text-body-md font-medium text-on-surface">
           {title}

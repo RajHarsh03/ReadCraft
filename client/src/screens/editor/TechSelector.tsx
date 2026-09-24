@@ -76,7 +76,7 @@ export function TechSelector() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 focus-within:border-primary-container">
+      <div className="flex items-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 focus-within:border-primary-container">
         <Icon name="search" size={16} className="text-on-surface-variant" />
         <input
           value={query}
@@ -145,7 +145,7 @@ export function TechSelector() {
       </div>
 
       {/* Custom technology */}
-      <div className="rounded-[6px] border border-outline-variant/70 bg-surface-container-lowest/60 p-2.5">
+      <div className="rounded-[6px] border border-outline-variant/70 bg-surface-container p-2.5">
         <button
           type="button"
           onClick={() => setCustomOpen((v) => !v)}
@@ -218,14 +218,14 @@ function CustomTechForm({
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Technology name"
           aria-label="Custom technology name"
-          className="flex-1 rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
+          className="flex-1 rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
         />
         <input
           type="color"
           value={color}
           onChange={(e) => setColor(e.target.value)}
           aria-label="Badge colour"
-          className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container-lowest p-1"
+          className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container p-1"
         />
       </div>
       <input
@@ -234,7 +234,7 @@ function CustomTechForm({
         onKeyDown={(e) => e.key === "Enter" && submit()}
         placeholder="Badge image URL (optional)"
         aria-label="Custom badge image URL"
-        className="rounded-[6px] border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
+        className="rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
       />
       {duplicate && (
         <span className="text-body-sm text-error">

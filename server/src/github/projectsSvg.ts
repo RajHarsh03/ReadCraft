@@ -75,7 +75,7 @@ export function renderProjectsSvg(
   if (items.length === 0) {
     return [
       `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="80" viewBox="0 0 ${width} 80" font-family="${FONT}" role="img" aria-label="Pinned repositories">`,
-      `<rect width="${width}" height="80" fill="${BG}"/>`,
+      `<rect x="0.5" y="0.5" width="${width - 1}" height="79" rx="8" fill="${BG}" stroke="${BORDER}"/>`,
       `<text x="${PAD}" y="44" fill="${MUTED}" font-size="13">No public repositories to show.</text>`,
       `</svg>`,
     ].join("");
@@ -106,7 +106,7 @@ export function renderProjectsSvg(
 
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${FONT}" role="img" aria-label="Pinned repositories">`,
-    `<rect width="${width}" height="${height}" fill="${BG}"/>`,
+    `<rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="8" fill="${BG}" stroke="${BORDER}"/>`,
     cards,
     `</svg>`,
   ].join("");

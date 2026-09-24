@@ -239,18 +239,16 @@ function SubHeader() {
   const fileSlug = state.basics.username || "profile";
 
   return (
-    <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest/90 px-4 py-2 backdrop-blur-xl lg:px-8">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5 rounded border border-outline-variant/70 bg-surface-container px-2 py-0.5">
-          <span className="text-code-sm font-bold text-primary-container">
-            #
-          </span>
+    <section className="relative z-20 flex items-center justify-between border-b border-outline-variant/60 bg-surface px-4 py-2.5 lg:px-8">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1.5">
+          <span className="text-code-sm font-bold text-primary">#</span>
           <span className="text-code-sm text-on-surface">
             readme-{fileSlug}.md
           </span>
         </div>
         <span
-          className="hidden items-center gap-1 text-code-sm text-on-surface-variant sm:flex"
+          className="hidden items-center gap-1.5 text-label-sm uppercase tracking-widest text-on-surface-variant sm:flex"
           title={savedAt ? new Date(savedAt).toLocaleString() : undefined}
         >
           <span

@@ -31,26 +31,22 @@ export function SectionCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="group rounded-[8px] border border-outline-variant bg-surface-container/95 p-4 shadow-[0_12px_28px_-22px_rgb(0_0_0_/_0.9)] transition-all hover:-translate-y-px hover:border-border-strong hover:bg-surface-container-high/85">
-      <div className="flex w-full items-center justify-between gap-3">
+    <div className="group border border-outline-variant/70 bg-surface-container-low transition-colors hover:border-border-strong">
+      <div className="flex w-full items-center justify-between gap-3 p-4">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+          className="flex min-w-0 flex-1 items-center gap-3 text-left"
           aria-expanded={open}
         >
-          <div className="flex items-center gap-2.5">
-            <Icon
-              name={icon}
-              size={18}
-              className="text-on-surface-variant transition-colors group-hover:text-primary-container"
-            />
-            <div className="flex flex-col">
-              <span className="text-headline-sm text-on-surface">{title}</span>
-              <span className="text-body-sm text-on-surface-variant">
-                {description}
-              </span>
-            </div>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-outline-variant/70 text-on-surface-variant transition-colors group-hover:border-primary-container/60 group-hover:text-primary">
+            <Icon name={icon} size={17} />
+          </span>
+          <div className="flex min-w-0 flex-col">
+            <span className="text-headline-sm text-on-surface">{title}</span>
+            <span className="truncate text-body-sm text-on-surface-variant">
+              {description}
+            </span>
           </div>
         </button>
         <div className="flex shrink-0 items-center gap-3">
@@ -81,7 +77,7 @@ export function SectionCard({
       </div>
 
       {open && (
-        <div className="mt-3 flex flex-col gap-2 border-t border-outline-variant/70 pt-3">
+        <div className="flex flex-col gap-2 border-t border-outline-variant/70 px-4 pb-4 pt-3">
           {children}
         </div>
       )}
