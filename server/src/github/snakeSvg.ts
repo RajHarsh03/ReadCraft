@@ -107,7 +107,8 @@ function bfsPath(
 export function renderSnakeSvg(
   days: ContributionDay[],
   login: string,
-  accent: string = SNAKE
+  accent: string = SNAKE,
+  headerAccent: string = accent
 ): string {
   const ascending = [...days].sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date();
@@ -222,8 +223,12 @@ export function renderSnakeSvg(
     const stepFrac = 1 / route.length; // one cell as a fraction of the loop
 
     snake = Array.from({ length: SNAKE_SEGMENTS }, (_, i) => {
+      // i = 0 is the biggest, most opaque segment: the HEAD. It must lead the
+      // motion, so it gets the largest lead (most-negative begin). Higher i
+      // segments are smaller/fainter and lag behind as the TAIL.
       const size = CELL + 1 - i * 0.8;
-      const begin = (-i * stepFrac * dur).toFixed(2);
+      const lead = SNAKE_SEGMENTS - 1 - i;
+      const begin = (-lead * stepFrac * dur).toFixed(2);
       // animateMotion moves the element origin along the path, so drawing the
       // rect at (-size/2, -size/2) keeps it centred on the path point.
       return (
@@ -237,7 +242,7 @@ export function renderSnakeSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution snake for ${esc(login)}">`,
     `<rect width="${width}" height="${height}" fill="#0d1117"/>`,
-    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="${accent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
+    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="${headerAccent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),

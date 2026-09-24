@@ -209,7 +209,19 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   app.get("/api/github/:username/snake.svg", async (request, reply) => {
     const username = requireUsername(request.params);
     const { days } = await service.getContributions(username);
-    sendSvg(reply, renderSnakeSvg(days, username, accentOf(request)));
+    // `accent` colours the snake body; `header` (the template accent) colours
+    // the contribution-count text, so it matches the rest of the theme rather
+    // than the snake's own distinct colour. Falls back to the snake colour.
+    const snakeAccent = accentOf(request);
+    const headerRaw = (request.query as { header?: unknown })?.header;
+    const headerAccent =
+      typeof headerRaw === "string"
+        ? normalizeAccent(headerRaw)
+        : snakeAccent;
+    sendSvg(
+      reply,
+      renderSnakeSvg(days, username, snakeAccent, headerAccent)
+    );
   });
 
   app.get("/api/github/:username/projects.svg", async (request, reply) => {

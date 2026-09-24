@@ -46,6 +46,58 @@ function shieldBadge(name: string, accent: string): string {
   return `![${name}](https://img.shields.io/badge/${label}-${accent}?style=for-the-badge&labelColor=0d1117)`;
 }
 
+/**
+ * Derive a distinct snake color from the template accent so the snake never
+ * matches the graph's accent. We rotate the hue ~150 degrees and keep it away
+ * from the contribution grid's green ramp (hue ~140), so it stays readable on
+ * top of the dark/green cells. Input/output are 6-digit hex WITHOUT a leading
+ * "#", matching how accents flow into the SVG query param.
+ */
+export function snakeAccentFor(accent: string): string {
+  const hex = accent.replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return "a970ff";
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+  }
+  h = (h * 60 + 360) % 360;
+  const l = (max + min) / 2;
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+
+  // Rotate hue for contrast, then push it out of the grid's green band
+  // (roughly 90-160 degrees) so the snake reads against green cells.
+  let hue = (h + 150) % 360;
+  if (hue >= 90 && hue <= 160) hue = 275; // land on a vivid violet instead
+  const sat = Math.min(1, Math.max(0.55, s));
+  const lig = Math.min(0.72, Math.max(0.55, l || 0.6));
+
+  const c = (1 - Math.abs(2 * lig - 1)) * sat;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = lig - c / 2;
+  let rp: number;
+  let gp: number;
+  let bp: number;
+  if (hue < 60) [rp, gp, bp] = [c, x, 0];
+  else if (hue < 120) [rp, gp, bp] = [x, c, 0];
+  else if (hue < 180) [rp, gp, bp] = [0, c, x];
+  else if (hue < 240) [rp, gp, bp] = [0, x, c];
+  else if (hue < 300) [rp, gp, bp] = [x, 0, c];
+  else [rp, gp, bp] = [c, 0, x];
+  const to2 = (v: number) =>
+    Math.round((v + m) * 255)
+      .toString(16)
+      .padStart(2, "0");
+  return `${to2(rp)}${to2(gp)}${to2(bp)}`;
+}
+
 /** Format a section heading per the template's heading style. */
 function heading(text: string, style: TemplateStyle): string {
   switch (style.headingStyle) {
@@ -162,8 +214,22 @@ function renderBlock(
 
       if (has("graph"))
         groups.push(`<div align="center">\n  ${img("graph")}\n</div>`);
-      if (has("snake"))
-        groups.push(`<div align="center">\n  ${img("snake")}\n</div>`);
+      if (has("snake")) {
+        // The snake body gets its own color, derived from (but distinct from)
+        // the template accent, so it never matches the graph's accent. The
+        // contribution-count header, though, uses the template accent (via the
+        // `header` param) so it stays on-theme with the rest of the card.
+        const snakeUrl = metricImageUrl(
+          "snake",
+          encoded,
+          snakeAccentFor(accent),
+          {
+            header: accent,
+          }
+        );
+        const snakeImg = `<img src="${snakeUrl}" alt="${metricLabel("snake")}" />`;
+        groups.push(`<div align="center">\n  ${snakeImg}\n</div>`);
+      }
 
       if (has("topLanguages"))
         groups.push(

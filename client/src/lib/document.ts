@@ -69,12 +69,16 @@ export interface ReadmeDocument {
 export function metricImageUrl(
   kind: MetricKind,
   encodedUsername: string,
-  accent?: string
+  accent?: string,
+  extraParams?: Record<string, string>
 ): string {
   // Every metric image is self-hosted: rendered by the ReadCraft API from real
   // data, so none depends on a third-party card service (which may be paused)
   // or a GitHub Action the user would have to set up.
-  const q = accent ? `?accent=${encodeURIComponent(accent)}` : "";
+  const params = new URLSearchParams();
+  if (accent) params.set("accent", accent);
+  for (const [k, v] of Object.entries(extraParams ?? {})) params.set(k, v);
+  const q = params.toString() ? `?${params.toString()}` : "";
   const file: Record<MetricKind, string> = {
     stats: "stats.svg",
     streak: "streak.svg",
