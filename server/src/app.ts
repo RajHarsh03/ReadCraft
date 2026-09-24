@@ -165,7 +165,14 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   function sendSvg(reply: import("fastify").FastifyReply, svg: string) {
     reply
       .header("Content-Type", "image/svg+xml; charset=utf-8")
-      .header("Cache-Control", "public, max-age=1800")
+      // Cache aggressively: serve the cached copy immediately while revalidating
+      // in the background so a cold-start fetch never results in a broken image.
+      // stale-while-revalidate means the browser/CDN shows the old SVG instantly
+      // and fetches a fresh one behind the scenes.
+      .header(
+        "Cache-Control",
+        "public, max-age=7200, stale-while-revalidate=86400"
+      )
       .send(svg);
   }
 

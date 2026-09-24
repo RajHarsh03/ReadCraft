@@ -31,6 +31,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     rateLimitWindowMs: toInt(env.RATE_LIMIT_WINDOW_SECONDS, 60) * 1000,
     rateLimitMax: toInt(env.RATE_LIMIT_MAX, 60),
     bodyLimitBytes: toInt(env.BODY_LIMIT_BYTES, 16 * 1024),
-    requestTimeoutMs: toInt(env.REQUEST_TIMEOUT_SECONDS, 15) * 1000,
+    requestTimeoutMs: toInt(env.REQUEST_TIMEOUT_SECONDS, 25) * 1000,
   };
 }
