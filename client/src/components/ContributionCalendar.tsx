@@ -150,8 +150,7 @@ function buildGrid(allDays: ContributionDay[]): Built {
   // column 0 top->bottom, column 1 bottom->top, and so on.
   const waypoints: { col: number; row: number }[] = [];
   for (let col = 0; col < weeks; col += 1) {
-    const rows =
-      col % 2 === 0 ? [0, 1, 2, 3, 4, 5, 6] : [6, 5, 4, 3, 2, 1, 0];
+    const rows = col % 2 === 0 ? [0, 1, 2, 3, 4, 5, 6] : [6, 5, 4, 3, 2, 1, 0];
     for (const row of rows) {
       if (isEmpty(col, row)) waypoints.push({ col, row });
     }
@@ -194,7 +193,9 @@ function bfsPath(
   if (from.col === to.col && from.row === to.row) return [];
   const key = (c: number, r: number) => `${c},${r}`;
   const queue: { col: number; row: number }[] = [from];
-  const prev = new Map<string, string | null>([[key(from.col, from.row), null]]);
+  const prev = new Map<string, string | null>([
+    [key(from.col, from.row), null],
+  ]);
 
   while (queue.length) {
     const cur = queue.shift()!;

@@ -60,17 +60,19 @@ export function metricImageUrl(
   kind: MetricKind,
   encodedUsername: string
 ): string {
+  // Stats, streak, top languages, and the graph are all self-hosted: rendered
+  // by the ReadCraft API from real data, so they never depend on a third-party
+  // card service that may be paused. (The snake needs a GitHub Action set up in
+  // the user's own repo, so it still points at that conventional output path.)
   switch (kind) {
     case "stats":
-      return `https://github-readme-stats.vercel.app/api?username=${encodedUsername}`;
+      return `${API_ORIGIN}/api/github/${encodedUsername}/stats.svg`;
     case "streak":
-      return `https://streak-stats.demolab.com?user=${encodedUsername}`;
+      return `${API_ORIGIN}/api/github/${encodedUsername}/streak.svg`;
     case "graph":
-      // Self-hosted: rendered by the ReadCraft API from real per-day data, so
-      // it never depends on a third-party card service that may be paused.
       return `${API_ORIGIN}/api/github/${encodedUsername}/graph.svg`;
     case "topLanguages":
-      return `https://github-readme-stats.vercel.app/api/top-langs/?username=${encodedUsername}`;
+      return `${API_ORIGIN}/api/github/${encodedUsername}/languages.svg`;
     case "snake":
       return `https://raw.githubusercontent.com/${encodedUsername}/${encodedUsername}/output/snake.svg`;
   }

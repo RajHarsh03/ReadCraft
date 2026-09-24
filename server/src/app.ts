@@ -13,6 +13,11 @@ import { isValidUsername, normalizeUsername } from "./username.js";
 import { RateLimiter } from "./rateLimit.js";
 import { SECURITY_HEADERS } from "./security.js";
 import { renderContributionSvg } from "./github/graphSvg.js";
+import {
+  renderLanguagesSvg,
+  renderStatsSvg,
+  renderStreakSvg,
+} from "./github/cardSvg.js";
 
 export interface BuildAppOptions {
   config: Config;
@@ -79,10 +84,10 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
       reply.header(name, value);
     }
-    // The graph image is meant to be embedded from other origins (e.g. a
-    // README rendered on github.com), so relax the cross-origin resource
-    // policy for it. It carries no credentials or private data.
-    if (request.url.endsWith("/graph.svg")) {
+    // Metric SVGs are meant to be embedded from other origins (e.g. a README
+    // rendered on github.com), so relax the cross-origin resource policy for
+    // them. They carry no credentials or private data.
+    if (request.url.includes(".svg")) {
       reply.header("Cross-Origin-Resource-Policy", "cross-origin");
     }
     return payload;
@@ -151,15 +156,39 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
     return sendData(reply, await service.getContributions(username));
   });
 
-  // Self-hosted contribution-graph image. Returns an SVG (not the JSON
-  // envelope) so it can be embedded directly in a README with an <img>.
-  app.get("/api/github/:username/graph.svg", async (request, reply) => {
-    const username = requireUsername(request.params);
-    const { days } = await service.getContributions(username);
+  /* Self-hosted metric images. Each returns an SVG (not the JSON envelope) so
+     it can be embedded directly in a README with an <img>. */
+
+  function sendSvg(reply: import("fastify").FastifyReply, svg: string) {
     reply
       .header("Content-Type", "image/svg+xml; charset=utf-8")
       .header("Cache-Control", "public, max-age=1800")
-      .send(renderContributionSvg(days, username));
+      .send(svg);
+  }
+
+  app.get("/api/github/:username/graph.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    const { days } = await service.getContributions(username);
+    sendSvg(reply, renderContributionSvg(days, username));
+  });
+
+  app.get("/api/github/:username/stats.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    const [profile, repos] = await Promise.all([
+      service.getProfile(username),
+      service.getRepositories(username),
+    ]);
+    sendSvg(reply, renderStatsSvg(profile, repos));
+  });
+
+  app.get("/api/github/:username/languages.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    sendSvg(reply, renderLanguagesSvg(await service.getLanguages(username)));
+  });
+
+  app.get("/api/github/:username/streak.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    sendSvg(reply, renderStreakSvg(await service.getStreak(username)));
   });
 
   // Central error handler: map GitHubError → HTTP; everything else → 500.

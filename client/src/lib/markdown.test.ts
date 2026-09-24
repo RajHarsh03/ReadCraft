@@ -60,8 +60,11 @@ describe("generateMarkdown", () => {
         basics: { fullName: "X", username: "@Ada", location: "", company: "" },
       })
     );
-    expect(md).toContain("username=Ada");
-    expect(md).not.toContain("username=@Ada");
+    // Self-hosted metric images carry the normalized username in the path.
+    expect(md).toContain("/github/Ada/stats.svg");
+    // The @ must be stripped in the image URL path (it may still appear as the
+    // profile handle elsewhere in the document).
+    expect(md).not.toContain("/github/@Ada/");
   });
 
   it("escapes backticks in tech names so code spans can't break", () => {
