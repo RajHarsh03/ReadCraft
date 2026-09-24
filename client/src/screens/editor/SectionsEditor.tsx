@@ -10,6 +10,7 @@ import { TechSelector } from "./TechSelector";
 import { ProjectsEditor } from "./ProjectsEditor";
 import { SectionOrderEditor } from "./SectionOrderEditor";
 import { DraftFileEditor } from "./DraftFileEditor";
+import { SocialEditor } from "./SocialEditor";
 
 /** The 40% left column: "Document Sections" accordion editor. */
 export function SectionsEditor() {
@@ -88,6 +89,20 @@ export function SectionsEditor() {
             }
           />
         </div>
+      </SectionCard>
+
+      {/* Social Links (badges added from the Badge Studio) - shown right
+          under the profile handle, above the headline. */}
+      <SectionCard
+        icon="share"
+        title="Social Links"
+        description="LinkedIn, X, email and more as badges"
+        enabled={state.enabled.social}
+        onToggle={(v) =>
+          dispatch({ type: "toggleSection", id: "social", value: v })
+        }
+      >
+        <SocialEditor />
       </SectionCard>
 
       {/* 2. Headline & Pitch */}

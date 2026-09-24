@@ -54,6 +54,16 @@ function renderBlock(block: ReadmeBlock, encoded: string): string {
       }
       return lines.join("\n");
     }
+    case "social": {
+      // A centered row of clickable badge images.
+      const badges = block.items
+        .map(
+          (s) =>
+            `<a href="${s.url}"><img src="${encodeURI(s.badgeUrl)}" alt="${s.label}" /></a>`
+        )
+        .join("\n  ");
+      return `<div align="center">\n  ${badges}\n</div>`;
+    }
     case "focus":
       return block.items
         .map(

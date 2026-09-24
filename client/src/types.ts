@@ -41,6 +41,17 @@ export interface Tech {
   badgeUrl?: string;
 }
 
+/** A social link shown as a clickable badge (e.g. LinkedIn, X, Email). */
+export interface SocialLink {
+  id: string;
+  /** Human label, e.g. "LinkedIn". */
+  label: string;
+  /** Destination URL the badge links to. */
+  url: string;
+  /** Shields.io (or other) badge image URL. */
+  badgeUrl: string;
+}
+
 /** Payload applied when importing fetched GitHub data into the document. */
 export interface GitHubImport {
   basics: Partial<ProfileBasics>;
@@ -54,10 +65,11 @@ export interface GitHubImport {
 
 /** Section identifiers, in their default render order. */
 export type SectionId =
-  "profile" | "headline" | "focus" | "tech" | "metrics" | "pinned";
+  "profile" | "social" | "headline" | "focus" | "tech" | "metrics" | "pinned";
 
 export const SECTION_IDS: SectionId[] = [
   "profile",
+  "social",
   "headline",
   "focus",
   "tech",
@@ -68,6 +80,7 @@ export const SECTION_IDS: SectionId[] = [
 export interface ProfileState {
   basics: ProfileBasics;
   headline: Headline;
+  social: SocialLink[];
   focus: Focus;
   tech: Tech[];
   metrics: Metrics;

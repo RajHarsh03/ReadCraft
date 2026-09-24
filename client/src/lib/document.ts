@@ -1,4 +1,10 @@
-import type { PinnedProject, ProfileState, SectionId, Tech } from "../types";
+import type {
+  PinnedProject,
+  ProfileState,
+  SectionId,
+  SocialLink,
+  Tech,
+} from "../types";
 import { normalizeUsername } from "./username";
 
 /**
@@ -37,6 +43,7 @@ export interface FocusItem {
 export type ReadmeBlock =
   | { kind: "identity"; greeting: string; handle: string }
   | { kind: "headline"; title: string; bio: string }
+  | { kind: "social"; items: SocialLink[] }
   | { kind: "focus"; items: FocusItem[] }
   | { kind: "tech"; items: Tech[] }
   | { kind: "metrics"; cards: MetricKind[] }
@@ -130,6 +137,11 @@ function buildHeadline(state: ProfileState): ReadmeBlock | null {
   return { kind: "headline", title, bio: bioText };
 }
 
+function buildSocial(state: ProfileState): ReadmeBlock | null {
+  const items = state.social.filter((s) => s.badgeUrl.trim());
+  return items.length ? { kind: "social", items } : null;
+}
+
 function buildFocus(state: ProfileState): ReadmeBlock | null {
   const { working, learning, askMeAbout } = state.focus;
   const items: FocusItem[] = [];
@@ -189,6 +201,7 @@ const BUILDERS: Record<
 > = {
   profile: buildIdentity,
   headline: (state) => buildHeadline(state),
+  social: (state) => buildSocial(state),
   focus: (state) => buildFocus(state),
   tech: (state) => buildTech(state),
   metrics: (state) => buildMetrics(state),

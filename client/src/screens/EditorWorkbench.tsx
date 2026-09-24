@@ -59,25 +59,28 @@ function PendingHandoff() {
       // ignore
     }
 
-    // Pending badge → add to the Tech section as an image badge.
+    // Pending badge → add to the Social Links section as a clickable badge.
     try {
       const raw = sessionStorage.getItem(PENDING_BADGE_KEY);
       if (raw) {
         sessionStorage.removeItem(PENDING_BADGE_KEY);
         const spec = JSON.parse(raw) as BadgeSpec;
-        const name =
-          [spec.label, spec.message].filter(Boolean).join(" ").trim() ||
-          "Badge";
+        const label =
+          [spec.label, spec.message].filter(Boolean).join(" ").trim() || "Link";
         dispatch({
-          type: "addTech",
-          tech: {
-            name,
-            color: `#${spec.color.replace(/^#/, "")}`,
+          type: "addSocial",
+          link: {
+            id:
+              typeof crypto !== "undefined" && "randomUUID" in crypto
+                ? crypto.randomUUID()
+                : `social-${Date.now()}`,
+            label,
+            url: spec.link?.trim() || "#",
             badgeUrl: badgeImageUrl(spec),
           },
         });
-        dispatch({ type: "toggleSection", id: "tech", value: true });
-        toast.success("Badge added to your Tech Stack.");
+        dispatch({ type: "toggleSection", id: "social", value: true });
+        toast.success("Badge added to your Social Links.");
       }
     } catch {
       // ignore

@@ -26,6 +26,7 @@ export function makeState(overrides: Partial<ProfileState> = {}): ProfileState {
       { name: "Assembly", color: "#111111" },
       { name: "Mathematics", color: "#222222" },
     ],
+    social: [],
     metrics: {
       showStatsCard: true,
       showStreak: true,
@@ -44,6 +45,7 @@ export function makeState(overrides: Partial<ProfileState> = {}): ProfileState {
     enabled: {
       profile: true,
       headline: true,
+      social: true,
       focus: true,
       tech: true,
       metrics: true,
@@ -69,9 +71,11 @@ export function emptyState(): ProfileState {
       showTopLanguages: false,
     },
     pinned: [],
+    social: [],
     enabled: {
       profile: false,
       headline: false,
+      social: false,
       focus: false,
       tech: false,
       metrics: false,

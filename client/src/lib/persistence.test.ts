@@ -71,8 +71,11 @@ describe("coerceState", () => {
     const defaults = makeState();
     const result = coerceState({ order: ["tech", "profile"] }, defaults);
     expect(result.order).toHaveLength(defaults.order.length);
-    expect(result.order.slice(0, 2)).toEqual(["tech", "profile"]);
-    // Every default id is present exactly once.
+    // The provided ids keep their given relative order (tech before profile)...
+    expect(result.order.indexOf("tech")).toBeLessThan(
+      result.order.indexOf("profile")
+    );
+    // ...and every default id is present exactly once.
     expect(new Set(result.order)).toEqual(new Set(defaults.order));
   });
 

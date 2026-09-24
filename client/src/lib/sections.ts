@@ -5,6 +5,7 @@ export const SECTION_META: Record<SectionId, { label: string; icon: string }> =
   {
     profile: { label: "Profile", icon: "badge" },
     headline: { label: "Headline", icon: "title" },
+    social: { label: "Social Links", icon: "share" },
     focus: { label: "Focus", icon: "track_changes" },
     tech: { label: "Tech Stack", icon: "code" },
     metrics: { label: "GitHub Metrics", icon: "query_stats" },

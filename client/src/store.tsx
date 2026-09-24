@@ -13,6 +13,7 @@ import type {
   PinnedProject,
   ProfileState,
   SectionId,
+  SocialLink,
   Tech,
 } from "./types";
 import { SECTION_IDS } from "./types";
@@ -63,6 +64,7 @@ function createInitialState(username = "alexrivera"): ProfileState {
       primary: "Senior Systems & UI Engineer",
       bio: "Architecting distributed interfaces, high-concurrency tooling, and developer productivity systems.",
     },
+    social: [],
     focus: {
       working: "Low-latency WebAssembly graphics pipeline at Acme",
       learning: "Rust async actors and eBPF kernel observability",
@@ -89,6 +91,7 @@ function createInitialState(username = "alexrivera"): ProfileState {
     enabled: {
       profile: true,
       headline: true,
+      social: true,
       focus: true,
       tech: true,
       metrics: true,
@@ -110,6 +113,9 @@ type Action =
   | { type: "addTech"; tech: Tech }
   | { type: "updateTech"; name: string; patch: Partial<Tech> }
   | { type: "removeTech"; name: string }
+  | { type: "addSocial"; link: SocialLink }
+  | { type: "removeSocial"; id: string }
+  | { type: "moveSocial"; id: string; direction: -1 | 1 }
   | { type: "toggleSection"; id: SectionId; value: boolean }
   | { type: "reorderSection"; id: SectionId; direction: -1 | 1 }
   | { type: "setOrder"; order: SectionId[] }
@@ -174,6 +180,26 @@ function reducer(state: ProfileState, action: Action): ProfileState {
       return {
         ...state,
         tech: state.tech.filter((t) => t.name !== action.name),
+      };
+    case "addSocial":
+      // De-dupe by badge URL so the same badge isn't added twice.
+      if (state.social.some((s) => s.badgeUrl === action.link.badgeUrl)) {
+        return state;
+      }
+      return { ...state, social: [...state.social, action.link] };
+    case "removeSocial":
+      return {
+        ...state,
+        social: state.social.filter((s) => s.id !== action.id),
+      };
+    case "moveSocial":
+      return {
+        ...state,
+        social: moveInArray(
+          state.social,
+          state.social.findIndex((s) => s.id === action.id),
+          action.direction
+        ),
       };
     case "toggleSection":
       return {

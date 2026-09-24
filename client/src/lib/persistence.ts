@@ -60,7 +60,19 @@ export function coerceState(
         !seen.has(id as SectionId) &&
         (seen.add(id as SectionId), true)
     );
-    for (const id of SECTION_IDS) if (!seen.has(id)) cleaned.push(id);
+    // Insert any section missing from an older draft at its canonical position
+    // (from SECTION_IDS) rather than blindly at the end, so newly-added
+    // sections land where they belong.
+    for (let i = 0; i < SECTION_IDS.length; i += 1) {
+      const id = SECTION_IDS[i]!;
+      if (seen.has(id)) continue;
+      const insertAt = cleaned.findIndex(
+        (existing) => SECTION_IDS.indexOf(existing) > i
+      );
+      if (insertAt === -1) cleaned.push(id);
+      else cleaned.splice(insertAt, 0, id);
+      seen.add(id);
+    }
     order = cleaned;
   }
 
@@ -70,6 +82,7 @@ export function coerceState(
     focus: { ...defaults.focus, ...(r.focus ?? {}) },
     metrics: { ...defaults.metrics, ...(r.metrics ?? {}) },
     tech: Array.isArray(r.tech) ? r.tech : defaults.tech,
+    social: Array.isArray(r.social) ? r.social : defaults.social,
     pinned: Array.isArray(r.pinned) ? r.pinned : defaults.pinned,
     enabled,
     order,
