@@ -1,9 +1,14 @@
 import { useProfile } from "../../store";
 import { useToast } from "../../components/ui/Toast";
 import { Icon } from "../../components/ui/Icon";
+import { useRouter } from "../../router";
 import { TEMPLATES, templateLayout, type Template } from "../../lib/templates";
 import { SECTION_META } from "../../lib/sections";
 import type { SectionId } from "../../types";
+
+/** Only the first few templates are shown inline; the rest live on the
+ *  Templates page reachable via "Browse templates". */
+const INLINE_TEMPLATE_COUNT = 3;
 
 /**
  * In-builder template picker. Applying a template changes the layout (enabled
@@ -14,6 +19,8 @@ import type { SectionId } from "../../types";
 export function TemplatePicker() {
   const { state, dispatch } = useProfile();
   const toast = useToast();
+  const { navigate } = useRouter();
+  const inlineTemplates = TEMPLATES.slice(0, INLINE_TEMPLATE_COUNT);
 
   /** A template is active only when its layout AND style match the document. */
   const isActive = (template: Template) => {
@@ -40,7 +47,7 @@ export function TemplatePicker() {
 
   return (
     <div className="flex flex-col gap-2">
-      {TEMPLATES.map((template) => {
+      {inlineTemplates.map((template) => {
         const active = isActive(template);
         return (
           <div
@@ -91,7 +98,15 @@ export function TemplatePicker() {
           </div>
         );
       })}
-      <p className="mt-1 text-body-sm text-on-surface-variant">
+      <button
+        type="button"
+        onClick={() => navigate({ name: "templates" })}
+        className="mt-1 inline-flex items-center justify-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container-low px-3 py-2 text-label-md text-on-surface transition-colors hover:border-border-strong hover:bg-surface-container"
+      >
+        <Icon name="grid_view" size={15} />
+        Browse all {TEMPLATES.length} templates
+      </button>
+      <p className="text-body-sm text-on-surface-variant">
         Templates change the layout and styling only - your content is never
         changed.
       </p>

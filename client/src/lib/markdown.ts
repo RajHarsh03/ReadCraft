@@ -73,16 +73,18 @@ function renderBlock(
   const accent = style.accent;
   switch (block.kind) {
     case "identity": {
-      const title = `# ${block.greeting} 👋`;
-      const handle = block.handle ? code(block.handle) : "";
       if (style.align === "center") {
-        return [
-          `<h1 align="center">${block.greeting} 👋</h1>`,
-          handle ? `<p align="center">${handle}</p>` : "",
-        ]
+        // Inside raw HTML, Markdown backticks don't render, so use a <code>
+        // tag for the handle instead of a code span.
+        const handle = block.handle
+          ? `<p align="center"><code>${block.handle}</code></p>`
+          : "";
+        return [`<h1 align="center">${block.greeting} 👋</h1>`, handle]
           .filter(Boolean)
           .join("\n");
       }
+      const title = `# ${block.greeting} 👋`;
+      const handle = block.handle ? code(block.handle) : "";
       return [title, handle ? `\n${handle}` : ""].filter(Boolean).join("\n");
     }
     case "headline": {

@@ -107,6 +107,195 @@ export const TEMPLATES: Template[] = [
       divider: "line",
     },
   },
+  {
+    id: "neon",
+    name: "Neon",
+    description:
+      "Bold centered banners with electric-pink badges. High energy.",
+    layout: ALL,
+    style: {
+      headingStyle: "banner",
+      align: "center",
+      techStyle: "badges",
+      accent: "ec4899",
+      divider: "blank",
+    },
+  },
+  {
+    id: "terminal",
+    name: "Terminal",
+    description:
+      "Left-aligned, code-chip tech, green accent. A developer console vibe.",
+    layout: ["profile", "social", "headline", "focus", "tech", "metrics"],
+    style: {
+      headingStyle: "plain",
+      align: "left",
+      techStyle: "code",
+      accent: "39d353",
+      divider: "line",
+    },
+  },
+  {
+    id: "corporate",
+    name: "Corporate",
+    description:
+      "Centered, understated blue with shield badges. Clean and professional.",
+    layout: ["profile", "headline", "social", "tech", "pinned", "metrics"],
+    style: {
+      headingStyle: "centered",
+      align: "center",
+      techStyle: "badges",
+      accent: "2563eb",
+      divider: "line",
+    },
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    description:
+      "Warm banner headings with amber badges and airy spacing. Friendly.",
+    layout: ALL,
+    style: {
+      headingStyle: "banner",
+      align: "center",
+      techStyle: "badges",
+      accent: "fb923c",
+      divider: "blank",
+    },
+  },
+  {
+    id: "monochrome",
+    name: "Monochrome",
+    description:
+      "Quiet, left-aligned, code chips in slate grey. Maximum focus on content.",
+    layout: ["profile", "social", "headline", "focus", "tech", "pinned"],
+    style: {
+      headingStyle: "plain",
+      align: "left",
+      techStyle: "code",
+      accent: "8b949e",
+      divider: "line",
+    },
+  },
+  {
+    id: "cyberpunk",
+    name: "Cyberpunk",
+    description:
+      "Centered banners, teal badges, no rules. Futuristic and clean.",
+    layout: ALL,
+    style: {
+      headingStyle: "banner",
+      align: "center",
+      techStyle: "badges",
+      accent: "22d3ee",
+      divider: "blank",
+    },
+  },
+  {
+    id: "midnight",
+    name: "Midnight",
+    description:
+      "Centered, underlined headings with indigo shield badges. Calm and modern.",
+    layout: ALL,
+    style: {
+      headingStyle: "centered",
+      align: "center",
+      techStyle: "badges",
+      accent: "6366f1",
+      divider: "line",
+    },
+  },
+  {
+    id: "crimson",
+    name: "Crimson",
+    description: "Bold red banners with shield badges. Striking and confident.",
+    layout: ALL,
+    style: {
+      headingStyle: "banner",
+      align: "center",
+      techStyle: "badges",
+      accent: "ef4444",
+      divider: "blank",
+    },
+  },
+  {
+    id: "forest",
+    name: "Forest",
+    description:
+      "Left-aligned with green shield badges and ruled sections. Grounded.",
+    layout: [
+      "profile",
+      "social",
+      "headline",
+      "focus",
+      "tech",
+      "pinned",
+      "metrics",
+    ],
+    style: {
+      headingStyle: "plain",
+      align: "left",
+      techStyle: "badges",
+      accent: "16a34a",
+      divider: "line",
+    },
+  },
+  {
+    id: "royal",
+    name: "Royal",
+    description:
+      "Centered underlined headings, violet badges. Elegant and refined.",
+    layout: ALL,
+    style: {
+      headingStyle: "centered",
+      align: "center",
+      techStyle: "badges",
+      accent: "7c3aed",
+      divider: "line",
+    },
+  },
+  {
+    id: "focus-first",
+    name: "Focus First",
+    description:
+      "Lead with what you're working on. Left-aligned, teal code chips.",
+    layout: ["profile", "focus", "headline", "tech", "metrics", "pinned"],
+    style: {
+      headingStyle: "plain",
+      align: "left",
+      techStyle: "code",
+      accent: "14b8a6",
+      divider: "line",
+    },
+  },
+  {
+    id: "spotlight",
+    name: "Spotlight",
+    description:
+      "Metrics and projects up top, centered banners, rose badges. Impact-first.",
+    layout: ["profile", "social", "metrics", "pinned", "tech", "headline"],
+    style: {
+      headingStyle: "banner",
+      align: "center",
+      techStyle: "badges",
+      accent: "f43f5e",
+      divider: "blank",
+    },
+  },
+  {
+    id: "aurora",
+    name: "Aurora",
+    description:
+      "Centered underlined headings with cyan-teal badges. Cool and airy.",
+    layout: ALL,
+    style: {
+      headingStyle: "centered",
+      align: "center",
+      techStyle: "badges",
+      accent: "06b6d4",
+      divider: "blank",
+    },
+  },
 ];
 
 export function getTemplate(id: string): Template | undefined {
