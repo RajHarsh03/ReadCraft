@@ -18,6 +18,7 @@ const STEP = CELL + GAP;
 const TOP = 44; // room for the header line and month labels above the grid
 const LEFT = 30;
 const ROWS = 7;
+const MIN_LABEL_GAP = 3; // min columns between month labels so they don't overlap
 
 const MONTHS = [
   "Jan",
@@ -119,13 +120,14 @@ export function renderSnakeSvg(
   );
   const data = windowed.length ? windowed : ascending;
   const max = data.reduce((m, d) => Math.max(m, d.count), 0);
+  const total = data.reduce((s, d) => s + d.count, 0);
   const firstDow = data.length
     ? new Date(`${data[0]!.date}T00:00:00Z`).getUTCDay()
     : 0;
 
   const rects: string[] = [];
-  const monthLabels: string[] = [];
   const monthSeen = new Set<string>();
+  const monthStarts: { col: number; monthIndex: number }[] = [];
   const contributed = new Set<string>();
   let maxCol = 0;
 
@@ -144,11 +146,21 @@ export function renderSnakeSvg(
     const month = day.date.slice(0, 7);
     if (!monthSeen.has(month)) {
       monthSeen.add(month);
-      const label = MONTHS[Number(day.date.slice(5, 7)) - 1] ?? "";
-      monthLabels.push(
-        `<text x="${x}" y="${TOP - 6}" fill="#8b949e" font-size="9">${label}</text>`
-      );
+      monthStarts.push({ col, monthIndex: Number(day.date.slice(5, 7)) - 1 });
     }
+  });
+
+  // Emit month labels, dropping the EARLIER of any two starts closer than
+  // MIN_LABEL_GAP (usually the short partial first month) so labels never
+  // collide (e.g. "SepOct") while genuinely-spaced months are all kept.
+  const monthLabels: string[] = [];
+  monthStarts.forEach((m, idx) => {
+    const next = monthStarts[idx + 1];
+    if (next && next.col - m.col < MIN_LABEL_GAP) return;
+    const label = MONTHS[m.monthIndex] ?? "";
+    monthLabels.push(
+      `<text x="${LEFT + m.col * STEP}" y="${TOP - 6}" fill="#8b949e" font-size="9">${label}</text>`
+    );
   });
 
   const weeks = maxCol + 1;
@@ -225,7 +237,7 @@ export function renderSnakeSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution snake for ${esc(login)}">`,
     `<rect width="${width}" height="${height}" fill="#0d1117"/>`,
-    `<text x="2" y="16" fill="#c9d1d9" font-size="12">Contribution snake</text>`,
+    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="${accent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),

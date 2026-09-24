@@ -15,6 +15,8 @@ const STEP = CELL + GAP;
 const TOP = 44; // room for the header line and the month labels above the grid
 const LEFT = 30;
 const ROWS = 7;
+/** Minimum columns between two month labels so they never overlap. */
+const MIN_LABEL_GAP = 3;
 
 const MONTHS = [
   "Jan",
@@ -71,8 +73,8 @@ export function renderContributionSvg(
     : 0;
 
   const rects: string[] = [];
-  const monthLabels: string[] = [];
   const monthSeen = new Set<string>();
+  const monthStarts: { col: number; monthIndex: number }[] = [];
   let maxCol = 0;
 
   data.forEach((day, i) => {
@@ -90,11 +92,22 @@ export function renderContributionSvg(
     const month = day.date.slice(0, 7);
     if (!monthSeen.has(month)) {
       monthSeen.add(month);
-      const label = MONTHS[Number(day.date.slice(5, 7)) - 1] ?? "";
-      monthLabels.push(
-        `<text x="${LEFT + col * STEP}" y="${TOP - 6}" fill="#8b949e" font-size="9">${label}</text>`
-      );
+      monthStarts.push({ col, monthIndex: Number(day.date.slice(5, 7)) - 1 });
     }
+  });
+
+  // Emit month labels, but when two starts are closer than MIN_LABEL_GAP
+  // (typically the short partial first month running into the next), drop the
+  // EARLIER one so the later, fuller month keeps its natural position. This
+  // avoids "SepOct" overlap without silently swallowing a real month.
+  const monthLabels: string[] = [];
+  monthStarts.forEach((m, idx) => {
+    const next = monthStarts[idx + 1];
+    if (next && next.col - m.col < MIN_LABEL_GAP) return; // too tight: skip this one
+    const label = MONTHS[m.monthIndex] ?? "";
+    monthLabels.push(
+      `<text x="${LEFT + m.col * STEP}" y="${TOP - 6}" fill="#8b949e" font-size="9">${label}</text>`
+    );
   });
 
   const weekdayLabels = [

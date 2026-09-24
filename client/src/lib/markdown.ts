@@ -146,28 +146,36 @@ function renderBlock(
       const img = (k: MetricKind) =>
         `<img src="${metricImageUrl(k, encoded, accent)}" alt="${metricLabel(k)}" />`;
 
-      const rows: string[] = [];
+      // Each group is its own block, separated by a <br> for breathing room:
+      //   1. stats + streak (two-up, centered)
+      //   2. graph / snake (centered)
+      //   3. top languages (full-width, below the graph)
+      const groups: string[] = [];
+
       const topCards = [
         has("stats") && img("stats"),
         has("streak") && img("streak"),
       ]
         .filter(Boolean)
         .join("\n  ");
-      if (topCards) rows.push(`<div align="center">\n  ${topCards}\n</div>`);
+      if (topCards) groups.push(`<div align="center">\n  ${topCards}\n</div>`);
+
+      if (has("graph"))
+        groups.push(`<div align="center">\n  ${img("graph")}\n</div>`);
+      if (has("snake"))
+        groups.push(`<div align="center">\n  ${img("snake")}\n</div>`);
+
       if (has("topLanguages"))
-        rows.push(
+        groups.push(
           `<img src="${metricImageUrl("topLanguages", encoded, accent)}" alt="${metricLabel("topLanguages")}" width="100%" />`
         );
-      if (has("graph"))
-        rows.push(`<div align="center">\n  ${img("graph")}\n</div>`);
-      if (has("snake"))
-        rows.push(`<div align="center">\n  ${img("snake")}\n</div>`);
 
-      return [
-        heading("GitHub Activity & Streak", style),
-        "",
-        rows.join("\n\n"),
-      ].join("\n");
+      // Join groups with a <br>, and add a trailing <br> after the last one.
+      const body = groups.length
+        ? `${groups.join("\n\n<br>\n\n")}\n\n<br>`
+        : "";
+
+      return [heading("GitHub Activity & Streak", style), "", body].join("\n");
     }
     case "projects": {
       return [
