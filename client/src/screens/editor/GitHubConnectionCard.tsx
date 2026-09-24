@@ -30,10 +30,12 @@ export function GitHubConnectionCard() {
   }, [state, dispatch]);
 
   return (
-    <div className="rounded-[6px] border border-outline-variant bg-surface-container p-4 shadow-sm">
+    <div className="border border-outline-variant/70 border-l-2 border-l-primary-container bg-surface-container-lowest p-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <Icon name="hub" size={18} className="text-primary-container" />
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-outline-variant/70 text-primary">
+            <Icon name="hub" size={17} />
+          </span>
           <div className="flex flex-col">
             <span className="text-headline-sm text-on-surface">
               GitHub Connection

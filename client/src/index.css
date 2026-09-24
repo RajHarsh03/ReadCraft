@@ -10,40 +10,47 @@
    ========================================================================== */
 
 @theme {
-  /* Surfaces (back to front) */
-  --color-surface: #0c1017;
-  --color-surface-dim: #0a0e15;
-  --color-surface-bright: #394555;
-  --color-surface-container-lowest: #080b11;
-  --color-surface-container-low: #121822;
-  --color-surface-container: #18202c;
-  --color-surface-container-high: #222d3c;
-  --color-surface-container-highest: #303d4e;
+  /* --------------------------------------------------------------------------
+     Indigo Aurora — a dark, glassy, premium developer-tool theme. Near-black
+     indigo surfaces with a violet→indigo primary and a cyan secondary. Every
+     surface, line and text colour is a semantic token so components never
+     hard-code a hex value.
+     -------------------------------------------------------------------------- */
 
-  /* Text */
-  --color-on-surface: #f2f5fa;
-  --color-on-surface-variant: #a6b7cd;
-  --color-on-background: #f2f5fa;
-  --color-background: #0c1017;
+  /* Surfaces (back to front) — cool indigo-black, subtly blue-shifted */
+  --color-surface: #0b0d16;
+  --color-surface-dim: #08090f;
+  --color-surface-bright: #3a3f57;
+  --color-surface-container-lowest: #070811;
+  --color-surface-container-low: #12141f;
+  --color-surface-container: #181b29;
+  --color-surface-container-high: #222639;
+  --color-surface-container-highest: #2f344c;
+
+  /* Text — cool near-white with a lavender-grey variant */
+  --color-on-surface: #f4f5fb;
+  --color-on-surface-variant: #a9adca;
+  --color-on-background: #f4f5fb;
+  --color-background: #0b0d16;
 
   /* Lines */
-  --color-outline: #8193ac;
-  --color-outline-variant: #2a3546;
-  --color-border-strong: #44536a;
+  --color-outline: #8288ad;
+  --color-outline-variant: #282c40;
+  --color-border-strong: #414867;
 
-  /* Amber accent */
-  --color-primary: #ffd28b;
-  --color-primary-container: #f7a718;
-  --color-primary-hover: #dd8a08;
-  --color-on-primary: #321d00;
-  --color-on-primary-container: #382100;
-  --color-primary-fixed-dim: #ffc362;
+  /* Violet / indigo accent */
+  --color-primary: #c4b5fd;
+  --color-primary-container: #7c6cff;
+  --color-primary-hover: #6a58f0;
+  --color-on-primary: #0f0a2e;
+  --color-on-primary-container: #f3f0ff;
+  --color-primary-fixed-dim: #a78bfa;
 
-  /* Support hues (used sparingly for language dots / links) */
-  --color-secondary: #bfd0e8;
-  --color-secondary-container: #3d5068;
-  --color-tertiary: #7bdbff;
-  --color-tertiary-container: #20b9ed;
+  /* Support hues — cyan secondary (aurora), soft indigo, error */
+  --color-secondary: #c3cbf2;
+  --color-secondary-container: #3a3f66;
+  --color-tertiary: #7be6ff;
+  --color-tertiary-container: #22a6d6;
   --color-error: #ffb4ab;
   --color-error-container: #93000a;
 
@@ -84,36 +91,42 @@ body {
   overscroll-behavior: none;
 }
 
-/* Shared atmosphere: the blue-black base keeps the warm accent intentional. */
+/* Shared atmosphere: an indigo-black base lit by an aurora of violet + cyan
+   glows, so the accent feels like part of the environment rather than paint. */
 .rc-app-shell {
   min-height: 100%;
   background:
-    /* top hero glow */
+    /* top hero glow — violet */
     radial-gradient(
-      1100px 520px at 50% -160px,
-      rgb(70 116 176 / 0.26),
-      transparent 68%
+      1100px 540px at 50% -170px,
+      rgb(124 108 255 / 0.28),
+      transparent 66%
     ),
-    /* warm accent wash, right */
+    /* aurora cyan wash, upper right */
     radial-gradient(
-        760px 460px at 100% 30%,
-        rgb(247 167 24 / 0.08),
+        820px 480px at 100% 12%,
+        rgb(34 166 214 / 0.14),
         transparent 70%
       ),
-    /* cool tint, lower left */
+    /* deep indigo tint, lower left */
     radial-gradient(
-        680px 520px at 0% 85%,
-        rgb(58 98 150 / 0.12),
+        720px 540px at -5% 92%,
+        rgb(99 82 255 / 0.16),
         transparent 72%
       ),
     /* subtle vertical lift so it isn't flat black */
-    linear-gradient(180deg, #171c26 0%, var(--color-surface) 46%, #0f131b 100%);
+    linear-gradient(
+        180deg,
+        #12142100 0%,
+        var(--color-surface) 44%,
+        #090a12 100%
+      );
 }
 
 .rc-landing-grid {
   background-image:
-    linear-gradient(rgb(128 157 193 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(128 157 193 / 0.07) 1px, transparent 1px);
+    linear-gradient(rgb(148 140 210 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 140 210 / 0.07) 1px, transparent 1px);
   background-size: 44px 44px;
   mask-image: radial-gradient(
     120% 90% at 50% 0%,
@@ -126,23 +139,40 @@ body {
 .rc-nav-surface {
   background: linear-gradient(
     180deg,
-    rgb(23 28 38 / 0.92),
-    rgb(15 19 27 / 0.86)
+    rgb(24 27 41 / 0.82),
+    rgb(14 16 26 / 0.78)
   );
+  backdrop-filter: blur(14px) saturate(1.2);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 1px 0 rgb(70 116 176 / 0.14),
-    0 12px 34px rgb(0 0 0 / 0.28);
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 1px 0 rgb(124 108 255 / 0.16),
+    0 14px 38px rgb(0 0 0 / 0.34);
 }
 
 .rc-elevated {
   box-shadow:
-    0 24px 70px -30px rgb(0 0 0 / 0.78),
-    inset 0 1px rgb(255 255 255 / 0.035);
+    0 28px 80px -32px rgb(0 0 0 / 0.82),
+    0 0 0 1px rgb(124 108 255 / 0.06),
+    inset 0 1px rgb(255 255 255 / 0.045);
 }
 
+/* Kept the historic class name (used across buttons) but it is now the indigo
+   accent glow, so the whole app updates without touching every call site. */
 .rc-amber-glow {
-  box-shadow: 0 14px 34px -16px rgb(247 167 24 / 0.72);
+  box-shadow:
+    0 14px 34px -14px rgb(124 108 255 / 0.7),
+    0 0 0 1px rgb(124 108 255 / 0.2);
+}
+
+/* A reusable glassy card surface for popovers and elevated panels. */
+.rc-glass {
+  background: linear-gradient(
+    180deg,
+    rgb(30 33 51 / 0.72),
+    rgb(18 20 32 / 0.72)
+  );
+  backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgb(124 108 255 / 0.14);
 }
 
 /* The ReadCraft wordmark - the Satisfy script used everywhere the brand name
@@ -156,8 +186,8 @@ body {
 .rc-editor-pane {
   background: linear-gradient(
     180deg,
-    rgb(18 24 34 / 0.98),
-    rgb(12 16 23 / 0.96)
+    rgb(19 21 33 / 0.98),
+    rgb(11 12 20 / 0.96)
   );
 }
 
@@ -177,8 +207,16 @@ kbd,
   border-radius: 4px;
 }
 
+/* Text inputs/areas provide their own focus affordance via their wrapper's
+   `focus-within` border, so the global ring would double up. Suppress it for
+   them and keep it for buttons, links, and other controls. */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
 ::selection {
-  background: rgb(245 158 11 / 0.24);
+  background: rgb(124 108 255 / 0.32);
 }
 
 /* Thin, unobtrusive scrollbars for the dense workbench */
@@ -407,21 +445,22 @@ kbd,
   background: linear-gradient(
     90deg,
     transparent,
-    rgb(255 255 255 / 0.06),
+    rgb(124 108 255 / 0.1),
+    rgb(255 255 255 / 0.05),
     transparent
   );
   animation: rc-shimmer 1.4s ease-in-out infinite;
 }
 .rc-skeleton-card {
   opacity: 0;
-  animation: rc-fade-in 0.4s ease-out forwards;
+  animation: rc-skeleton-in 0.4s ease-out forwards;
 }
 @keyframes rc-shimmer {
   100% {
     transform: translateX(100%);
   }
 }
-@keyframes rc-fade-in {
+@keyframes rc-skeleton-in {
   to {
     opacity: 1;
   }

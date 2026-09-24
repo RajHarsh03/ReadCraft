@@ -3,62 +3,48 @@ import { Icon } from "../components/ui/Icon";
 import { Logo } from "../components/ui/Logo";
 import { useRouter } from "../router";
 
-const FEATURES = [
-  {
-    icon: "verified_user",
-    tint: "text-primary",
-    label: "No GitHub token required",
-  },
-  { icon: "bolt", tint: "text-tertiary", label: "100% Client-side Markdown" },
-  {
-    icon: "terminal",
-    tint: "text-secondary",
-    label: "Instant Exports raw .md",
-  },
-];
-
 const SAMPLES = ["shadcn", "leerob", "antfu"];
 
-/** Capability cards shown below the hero. */
-const CAPABILITIES = [
+/** Editorial feature index — rendered as a numbered list, not cards. */
+const FEATURES = [
   {
-    icon: "person_edit",
+    n: "01",
     title: "Visual section editor",
-    body: "Edit your profile, headline, focus, tech stack, and pinned projects with live-synced controls.",
+    body: "Edit profile, headline, focus, tech stack, and pinned projects with live-synced controls.",
   },
   {
-    icon: "hub",
+    n: "02",
     title: "Real GitHub data",
-    body: "Pull your public profile, top languages, and best repositories with one click - no token needed.",
+    body: "Pull your public profile, top languages, and best repositories in one click — no token.",
   },
   {
-    icon: "visibility",
-    title: "Live GFM preview",
-    body: "See rendered GitHub-Flavored Markdown as you type, then flip to the raw Markdown any time.",
+    n: "03",
+    title: "True GFM preview",
+    body: "See rendered GitHub-Flavored Markdown as you type, then flip to the raw source anytime.",
   },
   {
-    icon: "download",
+    n: "04",
+    title: "Self-hosted stat cards",
+    body: "Stats, streak, languages, graph and snake rendered on our server — themed to match.",
+  },
+  {
+    n: "05",
     title: "Copy or download",
     body: "Export a clean README.md, or copy the Markdown straight into your profile repository.",
   },
 ];
 
-/** Three-step "how it works" strip. */
 const STEPS = [
-  {
-    n: "01",
-    title: "Enter a username",
-    body: "Drop in any public GitHub handle to start from real profile data.",
-  },
+  { n: "01", title: "Enter a handle", body: "Any public GitHub username." },
   {
     n: "02",
-    title: "Craft your sections",
-    body: "Toggle, edit, and arrange sections until the README reads exactly how you want.",
+    title: "Craft the sections",
+    body: "Toggle, edit and reorder freely.",
   },
   {
     n: "03",
     title: "Export the Markdown",
-    body: "Copy or download a valid README.md and commit it to your profile repo.",
+    body: "Copy or download README.md.",
   },
 ];
 
@@ -66,7 +52,7 @@ interface UsernameEntryProps {
   onGenerate: (username: string) => void;
 }
 
-/** Landing / username-entry screen. */
+/** Landing / username-entry screen — editorial, left-aligned, type-led. */
 export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   const [value, setValue] = useState("");
   const { navigate } = useRouter();
@@ -78,425 +64,294 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   };
 
   return (
-    <div className="rc-app-shell min-h-screen text-on-surface">
-      {/* Header */}
-      <header className="rc-nav-surface fixed inset-x-0 top-0 z-50 h-14 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-1">
-            <Logo size={30} />
-            <span className="rc-brand text-[1.6rem] leading-none">
+    <div className="min-h-screen bg-surface text-on-surface">
+      {/* Header — sticky rule-under bar, full width */}
+      <header className="sticky top-0 z-50 border-b border-outline-variant/60 bg-surface/90 backdrop-blur-md">
+        <div className="flex h-14 items-center justify-between px-4 lg:px-6">
+          <div className="flex items-center gap-1.5">
+            <Logo size={24} />
+            <span className="rc-brand text-[1.35rem] leading-none">
               ReadCraft
             </span>
           </div>
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="flex items-center gap-6">
             <button
               type="button"
               onClick={() => navigate({ name: "templates" })}
-              className="rounded-md px-3 py-1.5 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+              className="text-label-md font-semibold text-on-surface transition-colors hover:text-primary"
             >
               Templates
             </button>
             <button
               type="button"
               onClick={() => navigate({ name: "docs" })}
-              className="rounded-md px-3 py-1.5 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+              className="hidden text-label-md font-semibold text-on-surface transition-colors hover:text-primary sm:inline"
             >
-              Documentation
+              Docs
+            </button>
+            <button
+              type="button"
+              onClick={() => onGenerate("alexrivera")}
+              className="inline-flex items-center gap-1.5 border border-on-surface/80 px-4 py-1.5 text-label-md font-semibold text-on-surface transition-colors hover:bg-on-surface hover:text-surface"
+            >
+              Launch Studio
             </button>
           </nav>
-          <button
-            type="button"
-            onClick={() => onGenerate("alexrivera")}
-            className="rc-amber-glow inline-flex items-center gap-1.5 rounded-md bg-primary-container px-3.5 py-1.5 text-label-md font-semibold text-on-primary-container transition-all duration-150 hover:-translate-y-px hover:bg-primary-fixed-dim"
-          >
-            <Icon name="terminal" size={16} />
-            <span className="hidden sm:inline">Launch Studio</span>
-            <span className="sm:hidden">Launch</span>
-          </button>
         </div>
       </header>
 
-      <main className="relative overflow-hidden pt-14">
-        {/* Ambient dev grid + markdown watermarks */}
-        <div
-          aria-hidden
-          className="rc-landing-grid pointer-events-none absolute inset-0 overflow-hidden"
-        >
-          <div className="absolute -top-12 left-1/2 h-[360px] w-[720px] -translate-x-1/2 rounded-full bg-tertiary/10 blur-[140px]" />
-          <span className="absolute left-8 top-16 text-label-md font-medium text-on-surface-variant/70">
-            ### profile_init.md
-          </span>
-          <span className="absolute right-12 top-28 text-label-md font-medium text-on-surface-variant/70">
-            &gt; stream: ready
-          </span>
-          <span className="absolute left-16 top-64 text-label-md font-medium text-on-surface-variant/55">
-            - - -
-          </span>
-          <span className="absolute bottom-40 right-24 text-label-md font-medium text-on-surface-variant/55">
-            bash
-          </span>
-          <span className="absolute bottom-16 left-28 text-label-md font-medium text-on-surface-variant/70">
-            # dev_identity.json
-          </span>
-        </div>
-
-        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 pb-24 pt-12">
-          {/* Brand cluster */}
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-3 flex items-center justify-center gap-3">
-              <Logo size={52} />
-              <h1 className="rc-brand text-[3.25rem] leading-none text-primary drop-shadow-sm">
-                ReadCraft
-              </h1>
-            </div>
-            <p className="max-w-xl text-headline-md text-secondary drop-shadow-sm">
-              Craft a GitHub profile README worthy of your code.
+      {/* HERO — asymmetric 2-column, type-led */}
+      <section className="border-b border-outline-variant/60">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-x-10 px-6 lg:grid-cols-12 lg:px-10">
+          {/* Left: the statement */}
+          <div className="col-span-1 flex flex-col justify-center py-12 lg:col-span-7 lg:border-r lg:border-outline-variant/60 lg:py-16 lg:pr-10">
+            <span className="mb-6 flex items-center gap-3 text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+              <span className="text-primary">01</span>
+              <span className="h-px w-4 bg-outline-variant" />
+              GitHub profile README studio
+            </span>
+            <h1 className="font-display text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.02] tracking-tight text-on-surface">
+              Craft a profile README worthy of your{" "}
+              <span className="italic text-primary">code.</span>
+            </h1>
+            <p className="mt-5 max-w-md text-body-lg leading-relaxed text-on-surface-variant">
+              A live editor with true GitHub-Flavored Markdown preview,
+              self-hosted stat cards, and one-click export. No token, no
+              boilerplate.
             </p>
-          </div>
 
-          {/* Username entry bar */}
-          <div className="mt-10 w-full max-w-2xl">
-            <form
-              onSubmit={submit}
-              className="rc-elevated rounded-[12px] border border-outline-variant/80 bg-surface-container-low/95 p-2 backdrop-blur-sm"
-            >
-              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-                <div className="flex flex-1 items-center rounded-[8px] border border-outline-variant bg-surface-container px-4 py-2.5 transition-colors focus-within:border-primary-container focus-within:bg-surface-container-high">
-                  <span className="mr-1 select-none text-code-lg text-secondary-container">
-                    github.com/
-                  </span>
-                  <input
-                    autoComplete="off"
-                    spellCheck={false}
-                    aria-label="GitHub username"
-                    className="w-full bg-transparent text-code-lg font-semibold tracking-tight text-on-surface placeholder:font-normal placeholder:text-outline-variant/60 focus:outline-none"
-                    placeholder="torvalds"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                  />
-                </div>
+            {/* Prompt — a single underlined input line, editorial */}
+            <form onSubmit={submit} className="mt-8 max-w-md">
+              <label className="mb-2 block text-label-sm uppercase tracking-widest text-on-surface-variant">
+                Start with a username
+              </label>
+              <div className="flex items-end gap-3 border-b-2 border-border-strong pb-2 transition-colors focus-within:border-primary-container">
+                <span className="select-none text-headline-md font-semibold text-on-surface-variant">
+                  github.com/
+                </span>
+                <input
+                  autoComplete="off"
+                  spellCheck={false}
+                  aria-label="GitHub username"
+                  className="min-w-0 flex-1 bg-transparent text-headline-md font-semibold tracking-tight text-on-surface placeholder:font-semibold placeholder:text-on-surface-variant/70 focus:outline-none"
+                  placeholder="torvalds"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
                 <button
                   type="submit"
-                  className="rc-amber-glow inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[8px] bg-primary-container px-8 py-3 text-headline-sm font-bold text-on-primary-container transition-all duration-150 hover:-translate-y-px hover:bg-primary-fixed-dim active:scale-[0.98]"
+                  aria-label="Generate profile"
+                  className="mb-1 inline-flex shrink-0 items-center gap-1.5 bg-primary-container px-4 py-2 text-label-md font-bold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
                 >
-                  <span>Generate Profile</span>
-                  <Icon name="arrow_forward" size={18} />
+                  Generate
+                  <Icon name="arrow_forward" size={16} />
                 </button>
+              </div>
+              <div className="mt-3 flex items-center gap-3 text-label-sm">
+                <span className="font-semibold uppercase tracking-widest text-on-surface-variant">
+                  Try
+                </span>
+                {SAMPLES.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setValue(s)}
+                    className="font-semibold text-on-surface underline decoration-border-strong underline-offset-4 transition-colors hover:text-primary hover:decoration-primary-container"
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
             </form>
+          </div>
 
-            {/* Feature guarantees */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-label-sm text-on-surface-variant/80">
-              {FEATURES.map((f, i) => (
-                <div key={f.label} className="flex items-center gap-2">
-                  <span className="flex items-center gap-1">
-                    <Icon name={f.icon} size={14} className={f.tint} />
-                    {f.label}
-                  </span>
-                  {i < FEATURES.length - 1 && (
-                    <span className="text-outline-variant">•</span>
+          {/* Right: a single, calm preview specimen */}
+          <div className="col-span-1 hidden flex-col justify-center py-16 [perspective:1200px] lg:col-span-5 lg:flex lg:pl-10">
+            <div className="-rotate-[1.5deg] border border-outline-variant/70 bg-surface-container-lowest shadow-[0_30px_70px_-40px_rgb(0_0_0_/_0.9)] transition-transform duration-500 ease-out hover:rotate-0">
+              <div className="flex items-center justify-between border-b border-outline-variant/70 px-4 py-2.5">
+                <span className="flex items-center gap-2 text-code-sm text-on-surface-variant">
+                  <Icon name="description" size={13} className="text-primary" />
+                  README.md
+                </span>
+                <span className="text-label-sm uppercase tracking-widest text-outline-variant">
+                  preview
+                </span>
+              </div>
+              <div className="space-y-4 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/20 text-headline-sm font-bold text-primary">
+                    AR
+                  </div>
+                  <div>
+                    <div className="text-headline-sm font-bold text-on-surface">
+                      Alex Rivera
+                    </div>
+                    <div className="text-body-sm text-on-surface-variant">
+                      Systems &amp; UI engineer
+                    </div>
+                  </div>
+                </div>
+                <div className="h-px w-full bg-outline-variant/50" />
+                <div className="space-y-2 text-code-sm">
+                  <Row k="commits (2025)" v="2,481" />
+                  <Row k="pull requests" v="312" vClass="text-primary" />
+                  <Row k="repositories" v="43" vClass="text-tertiary" />
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["Rust", "TypeScript", "Go", "Postgres", "Docker"].map(
+                    (t) => (
+                      <span
+                        key={t}
+                        className="border border-outline-variant/70 px-2 py-0.5 text-code-sm text-on-surface-variant"
+                      >
+                        {t}
+                      </span>
+                    )
                   )}
                 </div>
-              ))}
+              </div>
+              <div className="h-0.5 w-full bg-primary-container" />
             </div>
-
-            {/* Quick presets */}
-            <div className="mt-4 flex items-center justify-center gap-2">
-              <span className="text-label-sm text-outline-variant">
-                Quick sample:
-              </span>
-              {SAMPLES.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setValue(s)}
-                  className="rounded bg-surface-container px-2 py-0.5 text-label-sm text-secondary transition-colors hover:text-primary"
-                >
-                  @{s}
-                </button>
-              ))}
-            </div>
+            <p className="mt-3 text-right text-label-sm text-on-surface-variant">
+              output: 100% standard markdown
+            </p>
           </div>
-
-          {/* Tilted preview mockup */}
-          <div className="relative mt-14 w-full max-w-4xl [perspective:1200px]">
-            <div className="pointer-events-none absolute -inset-1 rounded-2xl bg-gradient-to-b from-primary/10 via-transparent to-transparent opacity-70 blur-xl" />
-            <div className="rc-elevated relative -rotate-[1.5deg] overflow-hidden rounded-[12px] border border-outline-variant/80 bg-surface-container-low transition-transform duration-500 ease-out hover:rotate-0">
-              {/* Window toolbar */}
-              <div className="flex items-center justify-between bg-surface-container-high px-4 py-2.5">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-error-container" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-surface-variant" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-surface-bright" />
-                  <span className="ml-2 flex items-center gap-1.5 text-code-sm text-on-surface-variant">
-                    <Icon name="markdown" size={14} />
-                    README.md - Live Preview
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="rounded bg-surface-container px-2 py-0.5 text-label-sm text-primary">
-                    Standard Spec
-                  </span>
-                  <span className="flex items-center gap-1 text-label-sm text-secondary">
-                    <Icon name="visibility" size={14} />
-                    Rich View
-                  </span>
-                </div>
-              </div>
-
-              {/* Mock rendered README */}
-              <div className="space-y-6 bg-surface-container-lowest/80 p-8">
-                <div className="relative overflow-hidden rounded-[8px] bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-low p-6">
-                  <span className="absolute right-3 top-2 text-code-sm text-outline-variant/30">
-                    # profile
-                  </span>
-                  <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-container/20 text-headline-lg font-bold text-primary">
-                      RC
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="truncate text-headline-lg font-bold text-on-surface">
-                          Alex Rivera
-                        </h3>
-                        <span className="rounded bg-surface-variant px-1.5 py-0.5 text-label-sm text-on-surface-variant">
-                          he/him
-                        </span>
-                      </div>
-                      <p className="mt-0.5 text-body-md text-secondary">
-                        Building distributed databases, high-throughput
-                        pipelines & modern developer tools.
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 text-code-sm text-on-surface-variant sm:flex-col">
-                      <span className="flex items-center gap-1 rounded bg-surface-container-high px-2 py-1">
-                        <Icon name="star" size={13} className="text-primary" />{" "}
-                        14.8k stars
-                      </span>
-                      <span className="flex items-center gap-1 rounded bg-surface-container-high px-2 py-1">
-                        <Icon
-                          name="fork_right"
-                          size={13}
-                          className="text-tertiary"
-                        />{" "}
-                        2.1k forks
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="relative rounded-[8px] bg-surface-container p-4">
-                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30">
-                      &gt;
-                    </span>
-                    <div className="mb-2 text-label-sm uppercase tracking-wider text-secondary">
-                      Metrics Snapshot
-                    </div>
-                    <div className="space-y-2 text-code-sm">
-                      <Row k="Commits (2025)" v="2,481" />
-                      <Row
-                        k="Pull Requests"
-                        v="312 merged"
-                        vClass="text-primary"
-                      />
-                      <Row
-                        k="Contributed Repos"
-                        v="43"
-                        vClass="text-tertiary"
-                      />
-                    </div>
-                    <svg
-                      className="mt-3 h-7 w-full text-primary/80"
-                      fill="none"
-                      preserveAspectRatio="none"
-                      viewBox="0 0 200 30"
-                    >
-                      <path
-                        d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M0,25 Q20,10 40,22 T80,14 T120,6 T160,18 T200,8 L200,30 L0,30 Z"
-                        fill="currentColor"
-                        fillOpacity="0.12"
-                      />
-                    </svg>
-                  </div>
-
-                  <div className="relative rounded-[8px] bg-surface-container p-4 md:col-span-2">
-                    <span className="absolute right-2 top-2 text-code-sm text-outline-variant/30">
-                      # stack
-                    </span>
-                    <div className="mb-2 text-label-sm uppercase tracking-wider text-secondary">
-                      Primary Arsenal
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {[
-                        ["Rust", "text-primary"],
-                        ["TypeScript", "text-primary"],
-                        ["Go", "text-primary"],
-                        ["PostgreSQL", "text-on-surface"],
-                        ["GraphQL", "text-on-surface"],
-                        ["Tailwind CSS", "text-tertiary"],
-                        ["Next.js", "text-tertiary"],
-                        ["Docker", "text-on-surface-variant"],
-                        ["Kubernetes", "text-on-surface-variant"],
-                      ].map(([name, tint]) => (
-                        <span
-                          key={name}
-                          className={`rounded bg-surface-container-high px-2.5 py-1 text-code-sm ${tint}`}
-                        >
-                          {name}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-3 flex items-center justify-between pt-2 text-code-sm text-on-surface-variant">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Icon
-                          name="bookmark"
-                          size={15}
-                          className="text-primary"
-                        />
-                        <span className="font-semibold text-on-surface">
-                          hyper-kv
-                        </span>
-                        <span className="text-body-sm text-secondary">
-                          - Fast in-memory key-value engine
-                        </span>
-                      </div>
-                      <span className="rounded bg-primary/10 px-2 py-0.5 text-label-sm text-primary">
-                        v0.9.4
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="h-1 w-full bg-gradient-to-r from-primary-container via-tertiary to-secondary-container" />
-            </div>
-
-            <div className="mt-4 flex items-center justify-between px-2 text-code-sm font-medium text-on-surface-variant">
-              <span className="flex items-center gap-1">
-                <Icon name="auto_awesome" size={14} className="text-primary" />
-                Built from public GitHub data
-              </span>
-              <span>output: 100% standard markdown</span>
-            </div>
-          </div>
-
-          {/* Capabilities */}
-          <section className="mt-24 w-full">
-            <div className="mb-8 flex flex-col items-center text-center">
-              <span className="text-label-sm uppercase tracking-widest text-primary">
-                Everything you need
-              </span>
-              <h2 className="mt-2 text-headline-lg font-bold tracking-tight text-on-surface">
-                A focused README workflow
-              </h2>
-              <p className="mt-2 max-w-xl text-body-md text-on-surface-variant">
-                No boilerplate, no copy-pasting Markdown. Just the pieces that
-                make a profile look considered.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {CAPABILITIES.map((c) => (
-                <div
-                  key={c.title}
-                  className="group rounded-[10px] border border-outline-variant/80 bg-surface-container-low/60 p-5 transition-colors hover:border-primary-container/60 hover:bg-surface-container"
-                >
-                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-[8px] bg-primary-container/15 text-primary transition-colors group-hover:bg-primary-container/25">
-                    <Icon name={c.icon} size={18} />
-                  </div>
-                  <h3 className="text-headline-sm font-semibold text-on-surface">
-                    {c.title}
-                  </h3>
-                  <p className="mt-1.5 text-body-sm text-on-surface-variant">
-                    {c.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* How it works */}
-          <section className="mt-24 w-full">
-            <div className="mb-8 flex flex-col items-center text-center">
-              <span className="text-label-sm uppercase tracking-widest text-primary">
-                How it works
-              </span>
-              <h2 className="mt-2 text-headline-lg font-bold tracking-tight text-on-surface">
-                From handle to README in three steps
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {STEPS.map((s) => (
-                <div
-                  key={s.n}
-                  className="relative overflow-hidden rounded-[10px] border border-outline-variant/80 bg-surface-container-low/60 p-6"
-                >
-                  <span className="absolute -right-2 -top-3 select-none text-[64px] font-bold leading-none text-primary-container/10">
-                    {s.n}
-                  </span>
-                  <span className="text-label-md font-semibold text-primary">
-                    {s.n}
-                  </span>
-                  <h3 className="mt-2 text-headline-sm font-semibold text-on-surface">
-                    {s.title}
-                  </h3>
-                  <p className="mt-1.5 text-body-sm text-on-surface-variant">
-                    {s.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Closing call to action */}
-          <section className="mt-24 w-full">
-            <div className="relative overflow-hidden rounded-[14px] border border-outline-variant/80 bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-low px-8 py-12 text-center">
-              <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/10 blur-[100px]" />
-              <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-tertiary/10 blur-[110px]" />
-              <div className="relative z-10 flex flex-col items-center">
-                <Logo size={40} />
-                <h2 className="mt-4 text-headline-lg font-bold tracking-tight text-on-surface">
-                  Ready to craft your README?
-                </h2>
-                <p className="mt-2 max-w-md text-body-md text-on-surface-variant">
-                  Start from your own GitHub profile and export a polished
-                  README in minutes.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => onGenerate("alexrivera")}
-                  className="rc-amber-glow mt-6 inline-flex items-center gap-2 rounded-[8px] bg-primary-container px-6 py-3 text-headline-sm font-bold text-on-primary-container transition-all duration-150 hover:-translate-y-px hover:bg-primary-fixed-dim active:scale-[0.98]"
-                >
-                  <Icon name="terminal" size={18} />
-                  Launch Studio
-                </button>
-              </div>
-            </div>
-          </section>
         </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="relative z-10 border-t border-outline-variant/60 bg-surface-container-lowest/40">
-          <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-6 text-body-sm text-on-surface-variant sm:flex-row">
-            <div className="flex items-center gap-2">
-              <Logo size={24} />
+      {/* FEATURE INDEX — a numbered editorial list, ruled rows */}
+      <section className="border-b border-outline-variant/60">
+        <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10">
+          <div className="mb-12 flex items-baseline justify-between">
+            <h2 className="font-display text-headline-lg font-bold tracking-tight text-on-surface">
+              What it does
+            </h2>
+            <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+              02 — Capabilities
+            </span>
+          </div>
+          <div className="divide-y divide-outline-variant/50 border-y border-outline-variant/50">
+            {FEATURES.map((f) => (
+              <div
+                key={f.n}
+                className="group grid grid-cols-12 items-baseline gap-4 py-6 transition-colors hover:bg-surface-container-lowest/40"
+              >
+                <span className="col-span-2 font-display text-headline-md font-bold text-outline-variant transition-colors group-hover:text-primary md:col-span-1">
+                  {f.n}
+                </span>
+                <h3 className="col-span-10 text-headline-sm font-semibold text-on-surface md:col-span-4">
+                  {f.title}
+                </h3>
+                <p className="col-span-12 max-w-xl text-body-md text-on-surface-variant md:col-span-7">
+                  {f.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS — three ruled columns */}
+      <section className="border-b border-outline-variant/60">
+        <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10">
+          <div className="mb-12 flex items-baseline justify-between">
+            <h2 className="font-display text-headline-lg font-bold tracking-tight text-on-surface">
+              How it works
+            </h2>
+            <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+              03 — Workflow
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-px overflow-hidden border border-outline-variant/50 bg-outline-variant/50 md:grid-cols-3">
+            {STEPS.map((s) => (
+              <div key={s.n} className="bg-surface p-8">
+                <span className="font-display text-[2.5rem] font-bold leading-none text-primary/80">
+                  {s.n}
+                </span>
+                <h3 className="mt-4 text-headline-sm font-semibold text-on-surface">
+                  {s.title}
+                </h3>
+                <p className="mt-1.5 text-body-md text-on-surface-variant">
+                  {s.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA — a bold full-width statement bar */}
+      <section className="border-b border-outline-variant/60">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 py-16 lg:flex-row lg:items-center lg:px-10">
+          <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold leading-tight tracking-tight text-on-surface">
+            Ready to craft your README?
+          </h2>
+          <button
+            type="button"
+            onClick={() => onGenerate("alexrivera")}
+            className="inline-flex shrink-0 items-center gap-2 bg-primary-container px-7 py-3.5 text-headline-sm font-bold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+          >
+            Launch Studio
+            <Icon name="arrow_forward" size={18} />
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-outline-variant/60">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-4 text-body-sm text-on-surface-variant sm:flex-row sm:items-center lg:px-10">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="flex items-center gap-2">
+              <Logo size={20} />
               <span className="rc-brand text-on-surface">ReadCraft</span>
-              <span className="text-outline-variant">·</span>
-              <span>Craft a GitHub profile README worthy of your code.</span>
-            </div>
-            <span className="font-medium">
+            </span>
+            <span className="text-outline-variant">·</span>
+            <span>
+              Built by{" "}
+              <a
+                href="https://github.com/RajHarsh03"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-on-surface underline decoration-outline-variant underline-offset-4 transition-colors hover:text-primary hover:decoration-primary-container"
+              >
+                Harsh
+              </a>
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <a
+              href="https://github.com/RajHarsh03/ReadCraft"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="ReadCraft on GitHub"
+              title="RajHarsh03/ReadCraft"
+              className="inline-flex items-center gap-2 border border-outline-variant/70 px-3 py-1.5 text-code-sm text-on-surface transition-colors hover:border-primary-container/60 hover:text-primary"
+            >
+              <GitHubMark className="h-4 w-4" />
+              ReadCraft
+            </a>
+            <span className="uppercase tracking-widest text-on-surface-variant">
               100% client-side · no data stored
             </span>
           </div>
-        </footer>
-      </main>
+        </div>
+      </footer>
     </div>
+  );
+}
+
+/** GitHub mark (inline SVG — Material Symbols has no brand glyph). */
+function GitHubMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="currentColor"
+      aria-hidden
+      className={className}
+    >
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+    </svg>
   );
 }
 
@@ -510,7 +365,7 @@ function Row({
   vClass?: string;
 }) {
   return (
-    <div className="flex items-center justify-between text-code-sm">
+    <div className="flex items-center justify-between">
       <span className="text-on-surface-variant">{k}</span>
       <span className={`font-semibold ${vClass}`}>{v}</span>
     </div>

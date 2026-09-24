@@ -22,7 +22,7 @@ export function PageSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rc-skeleton-card flex flex-col gap-3 rounded-[12px] border border-outline-variant/60 bg-surface-container-low p-4"
+            className="rc-skeleton-card flex flex-col gap-3 border border-outline-variant/60 bg-surface-container-lowest p-4"
             style={{ animationDelay: `${i * 80}ms` }}
           >
             <div className="rc-skeleton h-24 w-full rounded-lg" />

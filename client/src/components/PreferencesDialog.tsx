@@ -59,7 +59,7 @@ export function PreferencesDialog({ open, onClose }: PreferencesDialogProps) {
       role="dialog"
       aria-modal="false"
       aria-label="Preferences"
-      className="rc-elevated absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden rounded-[12px] border border-outline-variant bg-surface-container-lowest shadow-2xl"
+      className="rc-elevated rc-fade-in absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden border border-border-strong bg-surface-container-lowest"
     >
       <header className="flex items-center gap-2 border-b border-outline-variant px-4 py-3">
         <Icon name="tune" size={16} className="text-primary-container" />
@@ -154,7 +154,7 @@ function Segmented({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="flex items-center gap-0.5 rounded-full border border-outline-variant bg-surface-container-low p-0.5">
+    <div className="flex items-center gap-0.5 border border-outline-variant bg-surface-container-low p-0.5">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -167,7 +167,7 @@ function Segmented({
             title={opt.label}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+              "inline-flex h-7 w-7 items-center justify-center transition-colors",
               active
                 ? "bg-surface-container-high text-primary-container"
                 : "text-on-surface-variant hover:text-on-surface"
