@@ -19,6 +19,8 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "github-markdown-css": "^5.9.0",
+    "marked": "^18.0.14",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

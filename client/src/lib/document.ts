@@ -2,6 +2,17 @@ import type { PinnedProject, ProfileState, SectionId, Tech } from "../types";
 import { normalizeUsername } from "./username";
 
 /**
+ * Absolute origin of the ReadCraft API, used to build self-hosted image URLs
+ * that must resolve from GitHub (where a relative "/api" path would not work).
+ * Prefers VITE_API_BASE_URL; otherwise the current site origin (correct for a
+ * same-origin deploy). Empty only during SSR/tests.
+ */
+const API_ORIGIN = (
+  import.meta.env.VITE_API_BASE_URL?.trim() ||
+  (typeof window !== "undefined" ? window.location.origin : "")
+).replace(/\/$/, "");
+
+/**
  * The README document model.
  *
  * `buildReadmeDocument` is the single source of truth for *which* sections
@@ -55,7 +66,9 @@ export function metricImageUrl(
     case "streak":
       return `https://streak-stats.demolab.com?user=${encodedUsername}`;
     case "graph":
-      return `https://github-readme-activity-graph.vercel.app/graph?username=${encodedUsername}`;
+      // Self-hosted: rendered by the ReadCraft API from real per-day data, so
+      // it never depends on a third-party card service that may be paused.
+      return `${API_ORIGIN}/api/github/${encodedUsername}/graph.svg`;
     case "topLanguages":
       return `https://github-readme-stats.vercel.app/api/top-langs/?username=${encodedUsername}`;
     case "snake":

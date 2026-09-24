@@ -12,6 +12,7 @@ import { GitHubError, statusForErrorKind } from "./github/types.js";
 import { isValidUsername, normalizeUsername } from "./username.js";
 import { RateLimiter } from "./rateLimit.js";
 import { SECURITY_HEADERS } from "./security.js";
+import { renderContributionSvg } from "./github/graphSvg.js";
 
 export interface BuildAppOptions {
   config: Config;
@@ -73,10 +74,16 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   });
 
   // Strip the framework banner and stamp security headers on every response.
-  app.addHook("onSend", async (_request, reply, payload) => {
+  app.addHook("onSend", async (request, reply, payload) => {
     reply.removeHeader("x-powered-by");
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
       reply.header(name, value);
+    }
+    // The graph image is meant to be embedded from other origins (e.g. a
+    // README rendered on github.com), so relax the cross-origin resource
+    // policy for it. It carries no credentials or private data.
+    if (request.url.endsWith("/graph.svg")) {
+      reply.header("Cross-Origin-Resource-Policy", "cross-origin");
     }
     return payload;
   });
@@ -142,6 +149,17 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   app.get("/api/github/:username/contributions", async (request, reply) => {
     const username = requireUsername(request.params);
     return sendData(reply, await service.getContributions(username));
+  });
+
+  // Self-hosted contribution-graph image. Returns an SVG (not the JSON
+  // envelope) so it can be embedded directly in a README with an <img>.
+  app.get("/api/github/:username/graph.svg", async (request, reply) => {
+    const username = requireUsername(request.params);
+    const { days } = await service.getContributions(username);
+    reply
+      .header("Content-Type", "image/svg+xml; charset=utf-8")
+      .header("Cache-Control", "public, max-age=1800")
+      .send(renderContributionSvg(days, username));
   });
 
   // Central error handler: map GitHubError → HTTP; everything else → 500.
