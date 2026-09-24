@@ -12,7 +12,7 @@ import type { ContributionDay } from "./types.js";
 const CELL = 11;
 const GAP = 3;
 const STEP = CELL + GAP;
-const TOP = 20;
+const TOP = 44; // room for the header line and the month labels above the grid
 const LEFT = 30;
 const ROWS = 7;
 
@@ -114,7 +114,7 @@ export function renderContributionSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution calendar for ${esc(login)}">`,
     `<rect width="${width}" height="${height}" fill="#0d1117"/>`,
-    `<text x="0" y="12" fill="#c9d1d9" font-size="10">${total} contributions in the last year</text>`,
+    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="#f7a718" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),
