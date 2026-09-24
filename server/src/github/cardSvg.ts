@@ -18,8 +18,15 @@ const BG = "#0d1117";
 const BORDER = "#30363d";
 const TEXT = "#c9d1d9";
 const MUTED = "#8b949e";
-const ACCENT = "#f7a718"; // ReadCraft amber
+const DEFAULT_ACCENT = "#f7a718"; // ReadCraft amber
 const FONT = "-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif";
+
+/** Sanitize an accent query value to a safe #rrggbb, falling back to amber. */
+export function normalizeAccent(raw?: string): string {
+  if (!raw) return DEFAULT_ACCENT;
+  const hex = raw.replace(/^#/, "");
+  return /^[0-9a-fA-F]{6}$/.test(hex) ? `#${hex}` : DEFAULT_ACCENT;
+}
 
 function esc(s: string): string {
   return s
@@ -50,7 +57,8 @@ function frame(width: number, height: number, title: string, body: string): stri
 
 export function renderStatsSvg(
   profile: GitHubProfile,
-  repos: GitHubRepo[]
+  repos: GitHubRepo[],
+  accent: string = DEFAULT_ACCENT
 ): string {
   const stars = repos.reduce((s, r) => s + r.stars, 0);
   const rows: [string, string][] = [
@@ -66,7 +74,7 @@ export function renderStatsSvg(
   const lineH = 24;
 
   const body = [
-    `<text x="20" y="32" fill="${ACCENT}" font-size="15" font-weight="600">GitHub Stats</text>`,
+    `<text x="20" y="32" fill="${accent}" font-size="15" font-weight="600">GitHub Stats</text>`,
     `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
     ...rows.map(([label, value], i) => {
       const y = startY + i * lineH;
@@ -88,7 +96,10 @@ export function renderStatsSvg(
 
 const LANG_COLORS = ["#f97316", "#f7a718", "#00add8", "#3178c6", "#a970ff"];
 
-export function renderLanguagesSvg(languages: LanguageStat[]): string {
+export function renderLanguagesSvg(
+  languages: LanguageStat[],
+  accent: string = DEFAULT_ACCENT
+): string {
   // Full-width bar banner: the top three languages as an inline summary line
   // and a single normalized bar underneath. Wide viewBox so it scales cleanly
   // when stretched to the README width.
@@ -109,19 +120,21 @@ export function renderLanguagesSvg(languages: LanguageStat[]): string {
   // Normalize the shown languages so their segments fill the whole bar.
   const sum = top.reduce((s, l) => s + l.percent, 0) || 1;
   let offset = 0;
+  // First segment uses the template accent; the rest cycle the palette.
+  const palette = [accent, ...LANG_COLORS];
   const segments = top
     .map((l, i) => {
       const w = (l.percent / sum) * barW;
       const seg = `<rect x="${(barX + offset).toFixed(1)}" y="${barY}" width="${w.toFixed(
         1
-      )}" height="8" fill="${LANG_COLORS[i % LANG_COLORS.length]}"/>`;
+      )}" height="8" fill="${palette[i % palette.length]}"/>`;
       offset += w;
       return seg;
     })
     .join("");
 
   const body = [
-    `<text x="20" y="30" fill="${ACCENT}" font-size="14" font-weight="600">Top Languages</text>`,
+    `<text x="20" y="30" fill="${accent}" font-size="14" font-weight="600">Top Languages</text>`,
     `<text x="${width - 20}" y="30" fill="${MUTED}" font-size="12" text-anchor="end">${esc(
       summary
     )}</text>`,
@@ -137,7 +150,10 @@ export function renderLanguagesSvg(languages: LanguageStat[]): string {
 /*  Streak card                                                               */
 /* -------------------------------------------------------------------------- */
 
-export function renderStreakSvg(streak: StreakStats): string {
+export function renderStreakSvg(
+  streak: StreakStats,
+  accent: string = DEFAULT_ACCENT
+): string {
   // Match the stats card's size so the two sit level side by side.
   const width = 260;
   const height = 165;
@@ -149,13 +165,13 @@ export function renderStreakSvg(streak: StreakStats): string {
   const colW = width / 3;
 
   const body = [
-    `<text x="20" y="32" fill="${ACCENT}" font-size="15" font-weight="600">Contribution Streak</text>`,
+    `<text x="20" y="32" fill="${accent}" font-size="15" font-weight="600">Contribution Streak</text>`,
     `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
     ...cols.map(([value, label], i) => {
       const cx = colW * i + colW / 2;
-      const accent = i === 1;
+      const highlight = i === 1;
       return (
-        `<text x="${cx}" y="102" fill="${accent ? ACCENT : TEXT}" font-size="26" font-weight="700" text-anchor="middle">${compact(
+        `<text x="${cx}" y="102" fill="${highlight ? accent : TEXT}" font-size="26" font-weight="700" text-anchor="middle">${compact(
           value
         )}</text>` +
         `<text x="${cx}" y="126" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(

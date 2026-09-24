@@ -103,7 +103,11 @@ function bfsPath(
 }
 
 /** Render the animated contribution-snake SVG for the trailing year. */
-export function renderSnakeSvg(days: ContributionDay[], login: string): string {
+export function renderSnakeSvg(
+  days: ContributionDay[],
+  login: string,
+  accent: string = SNAKE
+): string {
   const ascending = [...days].sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date();
   const todayKey = today.toISOString().slice(0, 10);
@@ -211,7 +215,7 @@ export function renderSnakeSvg(days: ContributionDay[], login: string): string {
       // animateMotion moves the element origin along the path, so drawing the
       // rect at (-size/2, -size/2) keeps it centred on the path point.
       return (
-        `<rect x="${(-size / 2).toFixed(1)}" y="${(-size / 2).toFixed(1)}" width="${size.toFixed(1)}" height="${size.toFixed(1)}" rx="3" fill="${SNAKE}" opacity="${(1 - i * 0.15).toFixed(2)}">` +
+        `<rect x="${(-size / 2).toFixed(1)}" y="${(-size / 2).toFixed(1)}" width="${size.toFixed(1)}" height="${size.toFixed(1)}" rx="3" fill="${accent}" opacity="${(1 - i * 0.15).toFixed(2)}">` +
         `<animateMotion dur="${dur.toFixed(2)}s" begin="${begin}s" repeatCount="indefinite" calcMode="linear" path="${motion}"/>` +
         `</rect>`
       );

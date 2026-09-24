@@ -51,7 +51,8 @@ function esc(s: string): string {
 /** Build the contribution-calendar SVG for the trailing year of `days`. */
 export function renderContributionSvg(
   days: ContributionDay[],
-  login: string
+  login: string,
+  accent: string = "#f7a718"
 ): string {
   const ascending = [...days].sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date();
@@ -114,7 +115,7 @@ export function renderContributionSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution calendar for ${esc(login)}">`,
     `<rect width="${width}" height="${height}" fill="#0d1117"/>`,
-    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="#f7a718" font-weight="700">${total}</tspan> contributions in the last year</text>`,
+    `<text x="2" y="16" fill="#c9d1d9" font-size="12"><tspan fill="${accent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),

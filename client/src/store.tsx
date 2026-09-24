@@ -18,7 +18,11 @@ import type {
 } from "./types";
 import { SECTION_IDS } from "./types";
 import { clearDraft, loadDraft, saveDraft } from "./lib/persistence";
-import { templateLayout, type Template } from "./lib/templates";
+import {
+  DEFAULT_TEMPLATE_STYLE,
+  templateLayout,
+  type Template,
+} from "./lib/templates";
 
 /* -------------------------------------------------------------------------- */
 /*  Seed data - mirrors the reference design (Alex Rivera)                    */
@@ -98,6 +102,7 @@ function createInitialState(username = "alexrivera"): ProfileState {
       pinned: true,
     },
     order: [...SECTION_IDS],
+    templateStyle: { ...DEFAULT_TEMPLATE_STYLE },
   };
 }
 
@@ -243,10 +248,11 @@ function reducer(state: ProfileState, action: Action): ProfileState {
     case "restoreSuggestedProjects":
       return { ...state, pinned: suggestedProjects() };
     case "applyTemplate": {
-      // Layout only: change which sections show and their order. Content
-      // (basics, headline, focus, tech, pinned) is intentionally preserved.
-      const { enabled, order } = templateLayout(action.template);
-      return { ...state, enabled, order };
+      // Layout + style: change which sections show, their order, and the
+      // presentation style. Content (basics, headline, focus, tech, pinned) is
+      // intentionally preserved.
+      const { enabled, order, style } = templateLayout(action.template);
+      return { ...state, enabled, order, templateStyle: style };
     }
     case "hydrate":
       return action.state;

@@ -62,7 +62,11 @@ function wrap(text: string, maxChars: number, maxLines: number): string[] {
 }
 
 /** Render the pinned-repositories card SVG. */
-export function renderProjectsSvg(repos: GitHubRepo[], limit = 4): string {
+export function renderProjectsSvg(
+  repos: GitHubRepo[],
+  limit = 4,
+  accent: string = ACCENT
+): string {
   const items = repos.slice(0, limit);
   const rows = Math.ceil(Math.max(items.length, 1) / COLS);
   const width = PAD * 2 + COLS * CARD_W + (COLS - 1) * GAP;
@@ -92,8 +96,8 @@ export function renderProjectsSvg(repos: GitHubRepo[], limit = 4): string {
         .join("");
       return [
         `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="6" fill="${CARD}" stroke="${BORDER}"/>`,
-        repoIcon(x + 14, y + 15, ACCENT),
-        `<text x="${x + 32}" y="${y + 27}" fill="${ACCENT}" font-size="13" font-weight="700">${esc(repo.name)}</text>`,
+        repoIcon(x + 14, y + 15, accent),
+        `<text x="${x + 32}" y="${y + 27}" fill="${accent}" font-size="13" font-weight="700">${esc(repo.name)}</text>`,
         `<text x="${x + CARD_W - 14}" y="${y + 27}" fill="${MUTED}" font-size="11" text-anchor="end">★ ${compact(repo.stars)}</text>`,
         desc,
       ].join("");

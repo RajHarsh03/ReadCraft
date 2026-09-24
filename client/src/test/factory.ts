@@ -1,5 +1,6 @@
 import type { ProfileState } from "../types";
 import { SECTION_IDS } from "../types";
+import { DEFAULT_TEMPLATE_STYLE } from "../lib/templates";
 
 /**
  * Build a fully-populated ProfileState for tests, with everything enabled.
@@ -52,6 +53,7 @@ export function makeState(overrides: Partial<ProfileState> = {}): ProfileState {
       pinned: true,
     },
     order: [...SECTION_IDS],
+    templateStyle: { ...DEFAULT_TEMPLATE_STYLE },
     ...overrides,
   };
 }

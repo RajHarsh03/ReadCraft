@@ -4,6 +4,7 @@ import type {
   SectionId,
   SocialLink,
   Tech,
+  TemplateStyle,
 } from "../types";
 import { normalizeUsername } from "./username";
 
@@ -54,6 +55,8 @@ export interface ReadmeDocument {
   blocks: ReadmeBlock[];
   /** Normalized username, shared by renderers that build URLs. */
   username: string;
+  /** Presentation style the renderer applies. */
+  style: TemplateStyle;
 }
 
 /**
@@ -65,28 +68,30 @@ export interface ReadmeDocument {
  */
 export function metricImageUrl(
   kind: MetricKind,
-  encodedUsername: string
+  encodedUsername: string,
+  accent?: string
 ): string {
   // Every metric image is self-hosted: rendered by the ReadCraft API from real
   // data, so none depends on a third-party card service (which may be paused)
   // or a GitHub Action the user would have to set up.
-  switch (kind) {
-    case "stats":
-      return `${API_ORIGIN}/api/github/${encodedUsername}/stats.svg`;
-    case "streak":
-      return `${API_ORIGIN}/api/github/${encodedUsername}/streak.svg`;
-    case "graph":
-      return `${API_ORIGIN}/api/github/${encodedUsername}/graph.svg`;
-    case "topLanguages":
-      return `${API_ORIGIN}/api/github/${encodedUsername}/languages.svg`;
-    case "snake":
-      return `${API_ORIGIN}/api/github/${encodedUsername}/snake.svg`;
-  }
+  const q = accent ? `?accent=${encodeURIComponent(accent)}` : "";
+  const file: Record<MetricKind, string> = {
+    stats: "stats.svg",
+    streak: "streak.svg",
+    graph: "graph.svg",
+    topLanguages: "languages.svg",
+    snake: "snake.svg",
+  };
+  return `${API_ORIGIN}/api/github/${encodedUsername}/${file[kind]}${q}`;
 }
 
 /** Self-hosted pinned-repositories card image URL for a username. */
-export function projectsImageUrl(encodedUsername: string): string {
-  return `${API_ORIGIN}/api/github/${encodedUsername}/projects.svg`;
+export function projectsImageUrl(
+  encodedUsername: string,
+  accent?: string
+): string {
+  const q = accent ? `?accent=${encodeURIComponent(accent)}` : "";
+  return `${API_ORIGIN}/api/github/${encodedUsername}/projects.svg${q}`;
 }
 
 /** Human-readable alt text / label for each metric card. */
@@ -222,5 +227,5 @@ export function buildReadmeDocument(state: ProfileState): ReadmeDocument {
     if (block) blocks.push(block);
   }
 
-  return { blocks, username };
+  return { blocks, username, style: state.templateStyle };
 }

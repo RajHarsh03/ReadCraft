@@ -14,6 +14,7 @@ import { RateLimiter } from "./rateLimit.js";
 import { SECURITY_HEADERS } from "./security.js";
 import { renderContributionSvg } from "./github/graphSvg.js";
 import {
+  normalizeAccent,
   renderLanguagesSvg,
   renderStatsSvg,
   renderStreakSvg,
@@ -168,10 +169,16 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
       .send(svg);
   }
 
+  /** Read a safe accent colour (#rrggbb) from the ?accent= query. */
+  function accentOf(request: { query: unknown }): string {
+    const raw = (request.query as { accent?: unknown })?.accent;
+    return normalizeAccent(typeof raw === "string" ? raw : undefined);
+  }
+
   app.get("/api/github/:username/graph.svg", async (request, reply) => {
     const username = requireUsername(request.params);
     const { days } = await service.getContributions(username);
-    sendSvg(reply, renderContributionSvg(days, username));
+    sendSvg(reply, renderContributionSvg(days, username, accentOf(request)));
   });
 
   app.get("/api/github/:username/stats.svg", async (request, reply) => {
@@ -180,29 +187,35 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
       service.getProfile(username),
       service.getRepositories(username),
     ]);
-    sendSvg(reply, renderStatsSvg(profile, repos));
+    sendSvg(reply, renderStatsSvg(profile, repos, accentOf(request)));
   });
 
   app.get("/api/github/:username/languages.svg", async (request, reply) => {
     const username = requireUsername(request.params);
-    sendSvg(reply, renderLanguagesSvg(await service.getLanguages(username)));
+    sendSvg(
+      reply,
+      renderLanguagesSvg(await service.getLanguages(username), accentOf(request))
+    );
   });
 
   app.get("/api/github/:username/streak.svg", async (request, reply) => {
     const username = requireUsername(request.params);
-    sendSvg(reply, renderStreakSvg(await service.getStreak(username)));
+    sendSvg(
+      reply,
+      renderStreakSvg(await service.getStreak(username), accentOf(request))
+    );
   });
 
   app.get("/api/github/:username/snake.svg", async (request, reply) => {
     const username = requireUsername(request.params);
     const { days } = await service.getContributions(username);
-    sendSvg(reply, renderSnakeSvg(days, username));
+    sendSvg(reply, renderSnakeSvg(days, username, accentOf(request)));
   });
 
   app.get("/api/github/:username/projects.svg", async (request, reply) => {
     const username = requireUsername(request.params);
     const repos = selectFeaturedRepos(await service.getRepositories(username));
-    sendSvg(reply, renderProjectsSvg(repos));
+    sendSvg(reply, renderProjectsSvg(repos, 4, accentOf(request)));
   });
 
   // Central error handler: map GitHubError → HTTP; everything else → 500.

@@ -1,5 +1,38 @@
-import type { ProfileState, SectionId } from "../types";
+import type { ProfileState, SectionId, TemplateStyle } from "../types";
 import { SECTION_IDS } from "../types";
+
+/** Coerce a stored template style to valid enum values over `defaults`. */
+function coerceTemplateStyle(
+  raw: unknown,
+  defaults: TemplateStyle
+): TemplateStyle {
+  if (!raw || typeof raw !== "object") return { ...defaults };
+  const r = raw as Partial<TemplateStyle>;
+  const pick = <T extends string>(
+    value: unknown,
+    allowed: readonly T[],
+    fallback: T
+  ): T => (allowed.includes(value as T) ? (value as T) : fallback);
+  const accent =
+    typeof r.accent === "string" && /^[0-9a-fA-F]{6}$/.test(r.accent)
+      ? r.accent
+      : defaults.accent;
+  return {
+    headingStyle: pick(
+      r.headingStyle,
+      ["plain", "centered", "banner"] as const,
+      defaults.headingStyle
+    ),
+    align: pick(r.align, ["left", "center"] as const, defaults.align),
+    techStyle: pick(
+      r.techStyle,
+      ["code", "badges"] as const,
+      defaults.techStyle
+    ),
+    accent,
+    divider: pick(r.divider, ["line", "blank"] as const, defaults.divider),
+  };
+}
 
 /**
  * Local draft persistence.
@@ -86,6 +119,7 @@ export function coerceState(
     pinned: Array.isArray(r.pinned) ? r.pinned : defaults.pinned,
     enabled,
     order,
+    templateStyle: coerceTemplateStyle(r.templateStyle, defaults.templateStyle),
   };
 }
 

@@ -6,20 +6,30 @@ import { SECTION_META } from "../../lib/sections";
 import type { SectionId } from "../../types";
 
 /**
- * In-builder template picker. Applying a template only changes the layout
- * (enabled sections + order); the user's content is preserved, so it is safe
+ * In-builder template picker. Applying a template changes the layout (enabled
+ * sections + order) and the presentation style (headings, alignment, tech
+ * display, accent, dividers); the user's content is preserved, so it is safe
  * to switch freely.
  */
 export function TemplatePicker() {
   const { state, dispatch } = useProfile();
   const toast = useToast();
 
-  /** A template "matches" the current layout if enabled+order are identical. */
+  /** A template is active only when its layout AND style match the document. */
   const isActive = (template: Template) => {
-    const { enabled, order } = templateLayout(template);
+    const { enabled, order, style } = templateLayout(template);
     if (order.join() !== state.order.join()) return false;
-    return (Object.keys(enabled) as SectionId[]).every(
+    const layoutMatch = (Object.keys(enabled) as SectionId[]).every(
       (id) => enabled[id] === state.enabled[id]
+    );
+    if (!layoutMatch) return false;
+    const s = state.templateStyle;
+    return (
+      s.headingStyle === style.headingStyle &&
+      s.align === style.align &&
+      s.techStyle === style.techStyle &&
+      s.accent === style.accent &&
+      s.divider === style.divider
     );
   };
 
@@ -82,7 +92,8 @@ export function TemplatePicker() {
         );
       })}
       <p className="mt-1 text-body-sm text-on-surface-variant">
-        Templates only rearrange sections - your content is never changed.
+        Templates change the layout and styling only - your content is never
+        changed.
       </p>
     </div>
   );

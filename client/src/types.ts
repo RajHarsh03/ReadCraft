@@ -63,6 +63,25 @@ export interface GitHubImport {
   projects: PinnedProject[];
 }
 
+/**
+ * Visual style a template applies to the whole README. Only choices that
+ * actually render on GitHub are expressed here (GitHub ignores CSS/fonts on
+ * plain text, so styling is done via alignment, heading format, image badges,
+ * dividers, and the accent colour of our self-hosted SVG cards).
+ */
+export interface TemplateStyle {
+  /** How section headings are formatted. */
+  headingStyle: "plain" | "centered" | "banner";
+  /** Overall content alignment. */
+  align: "left" | "center";
+  /** How the tech stack renders: inline code chips or shield badges. */
+  techStyle: "code" | "badges";
+  /** Accent colour (hex, no leading #) applied to the SVG metric cards. */
+  accent: string;
+  /** Separator drawn between sections. */
+  divider: "line" | "blank";
+}
+
 /** Section identifiers, in their default render order. */
 export type SectionId =
   "profile" | "social" | "headline" | "focus" | "tech" | "metrics" | "pinned";
@@ -89,4 +108,6 @@ export interface ProfileState {
   enabled: Record<SectionId, boolean>;
   /** Top-to-bottom order sections render in. Drives preview and export. */
   order: SectionId[];
+  /** Visual style applied by the active template. */
+  templateStyle: TemplateStyle;
 }
