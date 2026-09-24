@@ -4,6 +4,7 @@ import { EditorWorkbench } from "./screens/EditorWorkbench";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ToastProvider } from "./components/ui/Toast";
 import { RouterProvider, useRouter } from "./router";
+import { PreferencesProvider } from "./preferences-store";
 
 // Secondary routes are code-split: they're not on the critical landing/builder
 // path, so they load on demand and stay out of the initial bundle.
@@ -87,11 +88,13 @@ function Routes() {
 function App() {
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <RouterProvider>
-          <Routes />
-        </RouterProvider>
-      </ToastProvider>
+      <PreferencesProvider>
+        <ToastProvider>
+          <RouterProvider>
+            <Routes />
+          </RouterProvider>
+        </ToastProvider>
+      </PreferencesProvider>
     </ErrorBoundary>
   );
 }

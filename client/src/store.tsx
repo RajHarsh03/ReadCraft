@@ -23,6 +23,7 @@ import {
   templateLayout,
   type Template,
 } from "./lib/templates";
+import { usePreferences } from "./preferences-store";
 
 /* -------------------------------------------------------------------------- */
 /*  Seed data - mirrors the reference design (Alex Rivera)                    */
@@ -297,19 +298,38 @@ interface Store {
 const ProfileContext = createContext<Store | null>(null);
 
 /**
- * Build the initial state, preferring any saved local draft so returning users
- * keep their work. There is a single active draft; the incoming username is
- * only the seed used when no draft exists yet.
+ * Build the initial state.
+ *
+ * A saved draft is restored only when it belongs to the requested user (or when
+ * no specific username was requested, e.g. bare `/builder`). If the URL asks
+ * for a *different* username than the saved draft, the draft is for someone
+ * else, so we seed fresh state for the requested user instead of showing stale
+ * data. This is what makes changing the username in the URL actually switch the
+ * editor to that user.
  */
-function initState(username: string): {
+function initState(
+  username: string,
+  perUsername: boolean
+): {
   state: ProfileState;
   savedAt: number | null;
   restored: boolean;
 } {
   const defaults = createInitialState(username);
-  const draft = loadDraft(defaults);
+  const draft = loadDraft(defaults, { username, perUsername });
   if (draft) {
-    return { state: draft.state, savedAt: draft.savedAt, restored: true };
+    // With per-username drafts, the slot is already scoped to this user, so any
+    // draft found belongs to them. With the shared slot, restore only when the
+    // draft's user matches the requested one (or none was requested), so
+    // switching users in the URL doesn't show someone else's stale draft.
+    if (perUsername) {
+      return { state: draft.state, savedAt: draft.savedAt, restored: true };
+    }
+    const requested = username.trim().toLowerCase();
+    const draftUser = draft.state.basics.username.trim().toLowerCase();
+    if (!requested || requested === draftUser) {
+      return { state: draft.state, savedAt: draft.savedAt, restored: true };
+    }
   }
   return { state: defaults, savedAt: null, restored: false };
 }
@@ -321,7 +341,13 @@ export function ProfileProvider({
   username: string;
   children: ReactNode;
 }) {
-  const initial = useMemo(() => initState(username), [username]);
+  const { prefs } = usePreferences();
+  const perUsername = prefs.perUsernameDrafts;
+
+  const initial = useMemo(
+    () => initState(username, perUsername),
+    [username, perUsername]
+  );
   const [state, dispatch] = useReducer(reducer, initial.state);
   const [savedAt, setSavedAt] = useState<number | null>(initial.savedAt);
   const [restored, setRestored] = useState(initial.restored);
@@ -329,26 +355,47 @@ export function ProfileProvider({
   // Skip the very first render so restoring a draft doesn't immediately re-save.
   const firstRun = useRef(true);
 
+  // React only reads the reducer's initial state once, so when the requested
+  // username or the per-username-drafts preference changes, re-initialize the
+  // document from the correct draft slot. We track the last inputs so this
+  // doesn't fire on unrelated re-renders.
+  const lastKey = useRef(`${username}|${perUsername}`);
+  useEffect(() => {
+    const key = `${username}|${perUsername}`;
+    if (lastKey.current === key) return;
+    lastKey.current = key;
+    firstRun.current = true; // don't immediately re-save the freshly seeded state
+    dispatch({ type: "hydrate", state: initial.state });
+    setSavedAt(initial.savedAt);
+    setRestored(initial.restored);
+  }, [username, perUsername, initial]);
+
   useEffect(() => {
     if (firstRun.current) {
       firstRun.current = false;
       return;
     }
     const timer = setTimeout(() => {
-      if (saveDraft(state) === "saved") setSavedAt(Date.now());
+      if (
+        saveDraft(state, { username: state.basics.username, perUsername }) ===
+        "saved"
+      ) {
+        setSavedAt(Date.now());
+      }
     }, SAVE_DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [state]);
+  }, [state, perUsername]);
 
   const resetDraft = useMemo(
     () => (nextUsername?: string) => {
-      clearDraft();
+      const user = nextUsername ?? username;
+      clearDraft({ username: user, perUsername });
       firstRun.current = true; // don't re-save the reset default immediately
       setSavedAt(null);
       setRestored(false);
-      dispatch({ type: "reset", username: nextUsername ?? username });
+      dispatch({ type: "reset", username: user });
     },
-    [username]
+    [username, perUsername]
   );
 
   const value = useMemo(

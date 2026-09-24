@@ -47,6 +47,18 @@ function coerceTemplateStyle(
 const STORAGE_KEY = "readcraft:draft";
 
 /**
+ * Resolve the storage key for a draft. With `perUsername` on, each username
+ * gets its own namespaced key so switching users preserves each draft; with it
+ * off, a single shared key is used (the default). An empty/blank username also
+ * falls back to the shared key.
+ */
+function draftKey(username?: string, perUsername?: boolean): string {
+  const user = username?.trim().toLowerCase();
+  if (perUsername && user) return `${STORAGE_KEY}:${user}`;
+  return STORAGE_KEY;
+}
+
+/**
  * Draft schema version. Bump when the on-disk shape changes in a way that
  * needs migration; `coerceState` keeps older/partial payloads loadable.
  */
@@ -128,12 +140,25 @@ export interface LoadedDraft {
   savedAt: number;
 }
 
+/** Options controlling which draft slot is read/written. */
+export interface DraftScope {
+  /** Username the draft belongs to (used only when `perUsername` is on). */
+  username?: string;
+  /** When true, use a per-username storage slot. */
+  perUsername?: boolean;
+}
+
 /** Load and validate the saved draft, or null when none/invalid. */
-export function loadDraft(defaults: ProfileState): LoadedDraft | null {
+export function loadDraft(
+  defaults: ProfileState,
+  scope: DraftScope = {}
+): LoadedDraft | null {
   if (!hasStorage()) return null;
   let rawText: string | null;
   try {
-    rawText = window.localStorage.getItem(STORAGE_KEY);
+    rawText = window.localStorage.getItem(
+      draftKey(scope.username, scope.perUsername)
+    );
   } catch {
     return null;
   }
@@ -154,7 +179,10 @@ export function loadDraft(defaults: ProfileState): LoadedDraft | null {
 export type SaveResult = "saved" | "unavailable" | "error";
 
 /** Persist the draft. Returns a result so callers can surface feedback. */
-export function saveDraft(state: ProfileState): SaveResult {
+export function saveDraft(
+  state: ProfileState,
+  scope: DraftScope = {}
+): SaveResult {
   if (!hasStorage()) return "unavailable";
   const payload: StoredDraft = {
     version: SCHEMA_VERSION,
@@ -162,18 +190,21 @@ export function saveDraft(state: ProfileState): SaveResult {
     state,
   };
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    window.localStorage.setItem(
+      draftKey(scope.username, scope.perUsername),
+      JSON.stringify(payload)
+    );
     return "saved";
   } catch {
     return "error";
   }
 }
 
-/** Remove any saved draft. */
-export function clearDraft(): void {
+/** Remove the saved draft for the given scope. */
+export function clearDraft(scope: DraftScope = {}): void {
   if (!hasStorage()) return;
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(draftKey(scope.username, scope.perUsername));
   } catch {
     // ignore
   }

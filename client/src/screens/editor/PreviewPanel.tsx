@@ -4,6 +4,7 @@ import { Icon } from "../../components/ui/Icon";
 import { cn } from "../../lib/cn";
 import { generateMarkdown } from "../../lib/markdown";
 import { MarkdownPreview } from "../../components/MarkdownPreview";
+import { usePreferences } from "../../preferences-store";
 
 type Tab = "preview" | "markdown";
 
@@ -15,7 +16,8 @@ type Tab = "preview" | "markdown";
  */
 export function PreviewPanel() {
   const { state } = useProfile();
-  const [tab, setTab] = useState<Tab>("preview");
+  const { prefs } = usePreferences();
+  const [tab, setTab] = useState<Tab>(prefs.defaultPreviewTab);
   const markdown = generateMarkdown(state);
 
   return (

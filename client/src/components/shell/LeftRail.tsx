@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { Icon } from "../ui/Icon";
 import { useRouter, type Route, type RouteName } from "../../router";
+import { PreferencesDialog } from "../PreferencesDialog";
+import { cn } from "../../lib/cn";
 
 interface NavItem {
   icon: string;
@@ -41,6 +44,7 @@ const PRIMARY_NAV: NavItem[] = [
 /** Fixed left workspace rail (Section Editor / Templates / Badge Studio / …). */
 export function LeftRail() {
   const { route, navigate } = useRouter();
+  const [prefsOpen, setPrefsOpen] = useState(false);
 
   return (
     <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-52 flex-col justify-between border-r border-outline-variant bg-surface-container-lowest/95 py-4 backdrop-blur-xl lg:flex">
@@ -77,15 +81,26 @@ export function LeftRail() {
         </nav>
       </div>
 
-      <div className="flex flex-col gap-1 px-4">
-        <span
-          aria-disabled="true"
-          title="Coming soon"
-          className="flex cursor-not-allowed items-center gap-2.5 rounded px-2.5 py-1 text-label-md text-on-surface-variant/50"
+      <div className="relative flex flex-col gap-1 px-2">
+        <PreferencesDialog
+          open={prefsOpen}
+          onClose={() => setPrefsOpen(false)}
+        />
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded={prefsOpen}
+          onClick={() => setPrefsOpen((v) => !v)}
+          className={cn(
+            "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-label-md transition-colors",
+            prefsOpen
+              ? "bg-surface-container text-on-surface"
+              : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+          )}
         >
           <Icon name="tune" size={18} />
           <span>Preferences</span>
-        </span>
+        </button>
       </div>
     </aside>
   );
