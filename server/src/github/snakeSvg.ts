@@ -108,8 +108,7 @@ function bfsPath(
 export function renderSnakeSvg(
   days: ContributionDay[],
   login: string,
-  accent: string = SNAKE,
-  headerAccent: string = accent
+  accent: string = SNAKE
 ): string {
   const ascending = [...days].sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date();
@@ -122,7 +121,6 @@ export function renderSnakeSvg(
   );
   const data = windowed.length ? windowed : ascending;
   const max = data.reduce((m, d) => Math.max(m, d.count), 0);
-  const total = data.reduce((s, d) => s + d.count, 0);
   const firstDow = data.length
     ? new Date(`${data[0]!.date}T00:00:00Z`).getUTCDay()
     : 0;
@@ -243,7 +241,6 @@ export function renderSnakeSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="-apple-system,Segoe UI,sans-serif" role="img" aria-label="Contribution snake for ${esc(login)}">`,
     `<rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="8" fill="#0d1117" stroke="#21262d"/>`,
-    `<text x="${PAD}" y="18" fill="#c9d1d9" font-size="12"><tspan fill="${headerAccent}" font-weight="700">${total}</tspan> contributions in the last year</text>`,
     monthLabels.join(""),
     weekdayLabels,
     rects.join(""),
