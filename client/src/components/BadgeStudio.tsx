@@ -128,7 +128,9 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
                       ? `#${spec.color.replace(/^#/, "")}`
                       : "#2ea043"
                   }
-                  onChange={(e) => set({ color: e.target.value.replace(/^#/, "") })}
+                  onChange={(e) =>
+                    set({ color: e.target.value.replace(/^#/, "") })
+                  }
                   className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container p-1"
                 />
               </div>

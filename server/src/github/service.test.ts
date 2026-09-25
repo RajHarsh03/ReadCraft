@@ -76,6 +76,9 @@ describe("computeStreak", () => {
       total: 0,
       currentStreak: 0,
       longestStreak: 0,
+      firstDate: null,
+      currentStreakRange: null,
+      longestStreakRange: null,
     });
   });
 

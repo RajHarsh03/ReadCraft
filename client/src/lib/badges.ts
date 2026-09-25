@@ -47,7 +47,7 @@ export function badgeImageUrl(spec: BadgeSpec): string {
   const label = escapeSegment(spec.label.trim());
   const message = escapeSegment(spec.message.trim() || "");
   const hasMessage = Boolean(message);
-  
+
   // Single-segment (no message) uses consistent neutral grey matching theme
   const color = encodeURIComponent(
     stripHash(hasMessage ? spec.color.trim() || "blue" : "3d4453").trim()
@@ -61,7 +61,7 @@ export function badgeImageUrl(spec: BadgeSpec): string {
   const params = new URLSearchParams();
   params.set("style", spec.style);
   if (spec.logo?.trim()) params.set("logo", spec.logo.trim());
-  
+
   // Two-segment: only set labelColor if explicitly provided, otherwise let both sides be same
   if (hasMessage && spec.labelColor?.trim()) {
     params.set("labelColor", stripHash(spec.labelColor).trim());
@@ -69,7 +69,7 @@ export function badgeImageUrl(spec: BadgeSpec): string {
     // No labelColor = both label and message use the same color (solid color badge)
     // Remove any default contrast
   }
-  
+
   if (spec.logoColor?.trim()) {
     params.set("logoColor", stripHash(spec.logoColor).trim());
   }
