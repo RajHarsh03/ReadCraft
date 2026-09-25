@@ -162,7 +162,11 @@ export function renderStreakSvg(
   const col2 = 210;    // Current streak (center)
   const col3 = 350;    // Longest (right)
 
+  const totalRange = streak.firstDate
+    ? `${fmtDate(streak.firstDate)} - Present`
+    : "";
   const currentRange = streak.currentStreakRange ?? "";
+  const longestRange = streak.longestStreakRange ?? "";
 
   const body = [
     // Title
@@ -173,9 +177,10 @@ export function renderStreakSvg(
     `<line x1="${width / 3}" y1="50" x2="${width / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
     `<line x1="${(width * 2) / 3}" y1="50" x2="${(width * 2) / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
 
-    // LEFT: Total
+    // LEFT: Total Contributions
     `<text x="${col1}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
-    `<text x="${col1}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Total</text>`,
+    `<text x="${col1}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Total Contributions</text>`,
+    totalRange ? `<text x="${col1}" y="135" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(totalRange)}</text>` : "",
 
     // CENTER: Current streak with flame on top
     `<circle cx="${col2}" cy="100" r="32" fill="none" stroke="${accent}" stroke-width="3.5" opacity="0.9"/>`,
@@ -189,9 +194,10 @@ export function renderStreakSvg(
     `<text x="${col2}" y="150" fill="${accent}" font-size="13" font-weight="600" text-anchor="middle">Current Streak</text>`,
     currentRange ? `<text x="${col2}" y="166" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(currentRange)}</text>` : "",
 
-    // RIGHT: Longest
+    // RIGHT: Longest Streak
     `<text x="${col3}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
-    `<text x="${col3}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Longest</text>`,
+    `<text x="${col3}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Longest Streak</text>`,
+    longestRange ? `<text x="${col3}" y="135" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(longestRange)}</text>` : "",
   ].join("");
 
   return frame(width, height, "Contribution streak", body);
