@@ -154,37 +154,44 @@ export function renderStreakSvg(
   streak: StreakStats,
   accent: string = DEFAULT_ACCENT
 ): string {
-  const width = 260;  // Same as stats card
-  const height = 165; // Same as stats card
+  const width = 420;   // Wider for better spacing
+  const height = 180;  // Taller for comfortable layout
   
-  // Single column layout - stacked vertically
-  const centerX = width / 2;
+  // Three column layout like reference
+  const col1 = 70;     // Total (left)
+  const col2 = 210;    // Current streak (center)
+  const col3 = 350;    // Longest (right)
 
   const currentRange = streak.currentStreakRange ?? "";
 
   const body = [
     // Title
-    `<text x="20" y="32" fill="${accent}" font-size="15" font-weight="600">Contribution Streak</text>`,
-    `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
+    `<text x="${width / 2}" y="28" fill="${accent}" font-size="16" font-weight="600" text-anchor="middle">Contribution Streak</text>`,
+    `<line x1="20" y1="42" x2="${width - 20}" y2="42" stroke="${BORDER}"/>`,
 
-    // Current streak with circle + flame on top (like reference image)
-    `<circle cx="${centerX}" cy="90" r="28" fill="none" stroke="${accent}" stroke-width="3" opacity="0.9"/>`,
-    // Flame positioned at top center (12 o'clock position)
-    `<g transform="translate(${centerX}, 58)">
-      <path d="M0,-8 C-2,-4 -3.5,-1 -3.5,2 C-3.5,6 -2,8.5 0,8.5 C2,8.5 3.5,6 3.5,2 C3.5,-1 2,-4 0,-8 Z 
-               M-1,0.5 C-1,0.5 -2,2.5 -2,3.5 C-2,5 -1,6 0,6 C1,6 2,5 2,3.5 C2,2.5 1,0.5 1,0.5 C1,1.5 0,2.5 0,2.5 C0,2.5 -1,1.5 -1,0.5 Z" 
+    // Vertical dividers
+    `<line x1="${width / 3}" y1="50" x2="${width / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
+    `<line x1="${(width * 2) / 3}" y1="50" x2="${(width * 2) / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
+
+    // LEFT: Total
+    `<text x="${col1}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
+    `<text x="${col1}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Total</text>`,
+
+    // CENTER: Current streak with flame on top
+    `<circle cx="${col2}" cy="100" r="32" fill="none" stroke="${accent}" stroke-width="3.5" opacity="0.9"/>`,
+    // Flame at 12 o'clock position
+    `<g transform="translate(${col2}, 64)">
+      <path d="M0,-9 C-2.5,-5 -4,-1.5 -4,2.5 C-4,7 -2.5,10 0,10 C2.5,10 4,7 4,2.5 C4,-1.5 2.5,-5 0,-9 Z 
+               M-1.2,1 C-1.2,1 -2.3,3 -2.3,4.2 C-2.3,5.8 -1.2,7 0,7 C1.2,7 2.3,5.8 2.3,4.2 C2.3,3 1.2,1 1.2,1 C1.2,2 0,3 0,3 C0,3 -1.2,2 -1.2,1 Z" 
             fill="${accent}"/>
     </g>`,
-    `<text x="${centerX}" y="102" fill="${TEXT}" font-size="28" font-weight="700" text-anchor="middle">${compact(streak.currentStreak)}</text>`,
-    `<text x="${centerX}" y="115" fill="${accent}" font-size="11" font-weight="600" text-anchor="middle">Current Streak</text>`,
-    currentRange ? `<text x="${centerX}" y="128" fill="${MUTED}" font-size="9" text-anchor="middle">${esc(currentRange)}</text>` : "",
+    `<text x="${col2}" y="113" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.currentStreak)}</text>`,
+    `<text x="${col2}" y="150" fill="${accent}" font-size="13" font-weight="600" text-anchor="middle">Current Streak</text>`,
+    currentRange ? `<text x="${col2}" y="166" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(currentRange)}</text>` : "",
 
-    // Bottom row: Total and Longest side by side
-    `<text x="${width * 0.3}" y="148" fill="${TEXT}" font-size="14" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
-    `<text x="${width * 0.3}" y="160" fill="${MUTED}" font-size="10" text-anchor="middle">Total</text>`,
-    
-    `<text x="${width * 0.7}" y="148" fill="${TEXT}" font-size="14" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
-    `<text x="${width * 0.7}" y="160" fill="${MUTED}" font-size="10" text-anchor="middle">Longest</text>`,
+    // RIGHT: Longest
+    `<text x="${col3}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
+    `<text x="${col3}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Longest</text>`,
   ].join("");
 
   return frame(width, height, "Contribution streak", body);
