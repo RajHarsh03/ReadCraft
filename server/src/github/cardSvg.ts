@@ -154,32 +154,58 @@ export function renderStreakSvg(
   streak: StreakStats,
   accent: string = DEFAULT_ACCENT
 ): string {
-  // Match the stats card's size so the two sit level side by side.
-  const width = 260;
-  const height = 165;
-  const cols: [number, string][] = [
-    [streak.currentStreak, "Current Streak"],
-    [streak.longestStreak, "Longest Streak"],
-    [streak.total, "Total"],
-  ];
-  const colW = width / 3;
+  const width = 495;
+  const height = 195;
+  const col1 = 83;   // Total center x
+  const col2 = 248;  // Current streak center x (middle)
+  const col3 = 412;  // Longest streak center x
+
+  // Flame SVG path — compact, centered flame icon
+  const flameIcon = `
+    <g transform="translate(${col2}, 75)">
+      <path d="M0,-8 C-2,-4 -4,-1 -4,2 C-4,6 -2,8 0,8 C2,8 4,6 4,2 C4,-1 2,-4 0,-8 Z 
+               M-1,0 C-1,0 -2,2 -2,3 C-2,4 -1,5 0,5 C1,5 2,4 2,3 C2,2 1,0 1,0 C1,1 0,2 0,2 C0,2 -1,1 -1,0 Z" 
+            fill="${accent}" opacity="0.95"/>
+    </g>`;
+
+  const totalRange = streak.firstDate
+    ? `${fmtDate(streak.firstDate)} - Present`
+    : "";
+  const currentRange = streak.currentStreakRange ?? "";
+  const longestRange = streak.longestStreakRange ?? "";
 
   const body = [
-    `<text x="20" y="32" fill="${accent}" font-size="15" font-weight="600">Contribution Streak</text>`,
-    `<line x1="20" y1="44" x2="${width - 20}" y2="44" stroke="${BORDER}"/>`,
-    ...cols.map(([value, label], i) => {
-      const cx = colW * i + colW / 2;
-      const highlight = i === 1;
-      return (
-        `<text x="${cx}" y="102" fill="${highlight ? accent : TEXT}" font-size="26" font-weight="700" text-anchor="middle">${compact(
-          value
-        )}</text>` +
-        `<text x="${cx}" y="126" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(
-          label
-        )}</text>`
-      );
-    }),
+    // Title
+    `<text x="${width / 2}" y="28" fill="${accent}" font-size="15" font-weight="600" text-anchor="middle">Contribution Streak</text>`,
+    `<line x1="20" y1="40" x2="${width - 20}" y2="40" stroke="${BORDER}"/>`,
+
+    // Vertical dividers
+    `<line x1="${width / 3}" y1="50" x2="${width / 3}" y2="${height - 20}" stroke="${BORDER}" stroke-dasharray="4,2"/>`,
+    `<line x1="${(width / 3) * 2}" y1="50" x2="${(width / 3) * 2}" y2="${height - 20}" stroke="${BORDER}" stroke-dasharray="4,2"/>`,
+
+    // LEFT: Total
+    `<text x="${col1}" y="100" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
+    `<text x="${col1}" y="125" fill="${TEXT}" font-size="13" text-anchor="middle">Total Contributions</text>`,
+    totalRange ? `<text x="${col1}" y="145" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(totalRange)}</text>` : "",
+
+    // CENTER: Current streak — circle + flame icon
+    `<circle cx="${col2}" cy="95" r="35" fill="none" stroke="${accent}" stroke-width="3" opacity="0.8"/>`,
+    flameIcon,
+    `<text x="${col2}" y="112" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.currentStreak)}</text>`,
+    `<text x="${col2}" y="155" fill="${accent}" font-size="13" font-weight="600" text-anchor="middle">Current Streak</text>`,
+    currentRange ? `<text x="${col2}" y="172" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(currentRange)}</text>` : "",
+
+    // RIGHT: Longest streak
+    `<text x="${col3}" y="100" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
+    `<text x="${col3}" y="125" fill="${TEXT}" font-size="13" text-anchor="middle">Longest Streak</text>`,
+    longestRange ? `<text x="${col3}" y="145" fill="${MUTED}" font-size="11" text-anchor="middle">${esc(longestRange)}</text>` : "",
   ].join("");
 
   return frame(width, height, "Contribution streak", body);
+}
+
+// Helper for formatting dates (also used in the streak computation above)
+function fmtDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }

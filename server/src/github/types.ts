@@ -50,6 +50,12 @@ export interface StreakStats {
   currentStreak: number;
   /** Length (days) of the longest streak on record. */
   longestStreak: number;
+  /** ISO date of the first contribution day (for "from" label). */
+  firstDate: string | null;
+  /** ISO date range of the current streak, e.g. "Sep 22 - Sep 24". */
+  currentStreakRange: string | null;
+  /** ISO date range of the longest streak. */
+  longestStreakRange: string | null;
 }
 
 /** Per-day contribution calendar plus its derived streak figures. */

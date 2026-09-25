@@ -27,6 +27,8 @@ export interface BadgeSpec {
   style: BadgeStyle;
   /** Optional simple-icons logo slug, e.g. "github". */
   logo?: string;
+  /** Optional logo color (hex without '#', or named color). */
+  logoColor?: string;
   /** Optional link the badge points to. */
   link?: string;
 }
@@ -43,16 +45,33 @@ function stripHash(color: string): string {
 /** Build the Shields.io image URL for a badge spec. */
 export function badgeImageUrl(spec: BadgeSpec): string {
   const label = escapeSegment(spec.label.trim());
-  const message = escapeSegment(spec.message.trim() || " ");
-  const color = encodeURIComponent(stripHash(spec.color).trim() || "blue");
+  const message = escapeSegment(spec.message.trim() || "");
+  const hasMessage = Boolean(message);
+  
+  // Single-segment (no message) uses consistent neutral grey matching theme
+  const color = encodeURIComponent(
+    stripHash(hasMessage ? spec.color.trim() || "blue" : "3d4453").trim()
+  );
 
-  // /badge/<label>-<message>-<color>
-  const path = `${label ? `${label}-` : ""}${message}-${color}`;
+  // If no message, build a single-segment badge (label only, neutral color)
+  const path = !hasMessage
+    ? `${label}-${color}`
+    : `${label ? `${label}-` : ""}${message}-${color}`;
+
   const params = new URLSearchParams();
   params.set("style", spec.style);
   if (spec.logo?.trim()) params.set("logo", spec.logo.trim());
-  if (spec.labelColor?.trim()) {
+  
+  // Two-segment: only set labelColor if explicitly provided, otherwise let both sides be same
+  if (hasMessage && spec.labelColor?.trim()) {
     params.set("labelColor", stripHash(spec.labelColor).trim());
+  } else if (hasMessage) {
+    // No labelColor = both label and message use the same color (solid color badge)
+    // Remove any default contrast
+  }
+  
+  if (spec.logoColor?.trim()) {
+    params.set("logoColor", stripHash(spec.logoColor).trim());
   }
   return `https://img.shields.io/badge/${path}?${params.toString()}`;
 }
@@ -86,6 +105,75 @@ export const BADGE_PRESETS: { name: string; spec: BadgeSpec }[] = [
       color: "0A66C2",
       style: "for-the-badge",
       logo: "linkedin",
+    },
+  },
+  {
+    name: "Twitter",
+    spec: {
+      label: "Twitter",
+      message: "follow",
+      color: "1DA1F2",
+      style: "for-the-badge",
+      logo: "twitter",
+    },
+  },
+  {
+    name: "Hashnode",
+    spec: {
+      label: "Hashnode",
+      message: "blog",
+      color: "2962FF",
+      style: "for-the-badge",
+      logo: "hashnode",
+    },
+  },
+  {
+    name: "CodePen",
+    spec: {
+      label: "CodePen",
+      message: "profile",
+      color: "000000",
+      style: "for-the-badge",
+      logo: "codepen",
+    },
+  },
+  {
+    name: "Instagram",
+    spec: {
+      label: "Instagram",
+      message: "follow",
+      color: "E4405F",
+      style: "for-the-badge",
+      logo: "instagram",
+    },
+  },
+  {
+    name: "Email",
+    spec: {
+      label: "Email",
+      message: "contact",
+      color: "EA4335",
+      style: "for-the-badge",
+      logo: "gmail",
+    },
+  },
+  {
+    name: "LeetCode",
+    spec: {
+      label: "LeetCode",
+      message: "profile",
+      color: "FFA116",
+      style: "for-the-badge",
+      logo: "leetcode",
+    },
+  },
+  {
+    name: "Medium",
+    spec: {
+      label: "Medium",
+      message: "blog",
+      color: "000000",
+      style: "for-the-badge",
     },
   },
   {

@@ -1,19 +1,19 @@
 import { PageShell } from "../components/shell/PageShell";
 import { BadgeStudio } from "../components/BadgeStudio";
-import { useRouter } from "../router";
+import { useToast } from "../components/ui/Toast";
 import { PENDING_BADGE_KEY, type BadgeSpec } from "../lib/badges";
 
-/** Standalone Badge Studio. "Add to README" opens the builder with the badge. */
+/** Standalone Badge Studio. "Add to README" queues the badge for the editor. */
 export function BadgesScreen() {
-  const { navigate } = useRouter();
+  const toast = useToast();
 
   const addToReadme = (spec: BadgeSpec) => {
     try {
       sessionStorage.setItem(PENDING_BADGE_KEY, JSON.stringify(spec));
+      toast.success("Badge ready! Open your editor to add it to the README.");
     } catch {
-      // If storage is unavailable, the builder simply opens without the badge.
+      toast.error("Couldn't save badge. Your storage may be full.");
     }
-    navigate({ name: "builder", username: "" });
   };
 
   return (
@@ -21,9 +21,7 @@ export function BadgesScreen() {
       title="Badge Studio"
       description="Design a Shields.io badge, copy the Markdown, or add it straight to your README."
     >
-      <div className="max-w-2xl">
-        <BadgeStudio onAdd={addToReadme} />
-      </div>
+      <BadgeStudio onAdd={addToReadme} />
     </PageShell>
   );
 }

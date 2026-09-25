@@ -214,10 +214,16 @@ export async function fetchContributions(
     options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   );
 
+  const now = new Date();
+  const from = new Date(now);
+  from.setFullYear(from.getFullYear() - 1);
+  const fromStr = from.toISOString();
+  const toStr = now.toISOString();
+
   const query = `
-    query($login: String!) {
+    query($login: String!, $from: DateTime!, $to: DateTime!) {
       user(login: $login) {
-        contributionsCollection {
+        contributionsCollection(from: $from, to: $to) {
           contributionCalendar {
             weeks {
               contributionDays {
@@ -243,7 +249,7 @@ export async function fetchContributions(
     response = await fetchImpl(`${GITHUB_API}/graphql`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ query, variables: { login: username } }),
+      body: JSON.stringify({ query, variables: { login: username, from: fromStr, to: toStr } }),
       signal: controller.signal,
     });
   } catch (err) {

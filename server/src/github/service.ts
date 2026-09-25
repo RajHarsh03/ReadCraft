@@ -53,40 +53,74 @@ export function computeLanguageStats(repos: GitHubRepo[]): LanguageStat[] {
  *
  * Input need not be pre-sorted; it is sorted by date ascending here.
  */
+/** Format a date string "YYYY-MM-DD" to "Mon DD" e.g. "Sep 22". */
+function fmtDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+/** Format a range as "Mon DD - Mon DD" or just "Mon DD" if both same. */
+function fmtRange(from: string, to: string): string {
+  return from === to ? fmtDate(from) : `${fmtDate(from)} - ${fmtDate(to)}`;
+}
+
 export function computeStreak(days: ContributionDay[]): StreakStats {
   if (days.length === 0) {
-    return { total: 0, currentStreak: 0, longestStreak: 0 };
+    return { total: 0, currentStreak: 0, longestStreak: 0, firstDate: null, currentStreakRange: null, longestStreakRange: null };
   }
 
   const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
   const total = sorted.reduce((sum, d) => sum + d.count, 0);
 
+  // First contribution date
+  const firstActive = sorted.find((d) => d.count > 0);
+  const firstDate = firstActive?.date ?? null;
+
+  // Longest streak with date range
   let longest = 0;
+  let longestStart = "";
+  let longestEnd = "";
   let run = 0;
+  let runStart = "";
   for (const day of sorted) {
     if (day.count > 0) {
+      if (run === 0) runStart = day.date;
       run += 1;
-      if (run > longest) longest = run;
+      if (run > longest) {
+        longest = run;
+        longestStart = runStart;
+        longestEnd = day.date;
+      }
     } else {
       run = 0;
     }
   }
 
-  // Current streak: walk backwards from the last day. Skip a trailing zero on
-  // the final day only (activity may not have been recorded yet today).
+  // Current streak: walk backwards. Skip a trailing zero on the last day only.
   let current = 0;
+  let currentStart = "";
+  let currentEnd = "";
   for (let i = sorted.length - 1; i >= 0; i -= 1) {
     const count = sorted[i]!.count;
     if (count > 0) {
+      currentEnd = currentEnd || sorted[i]!.date;
+      currentStart = sorted[i]!.date;
       current += 1;
     } else if (i === sorted.length - 1) {
-      continue; // today with no activity yet — don't break the streak
+      continue; // today with no activity yet
     } else {
       break;
     }
   }
 
-  return { total, currentStreak: current, longestStreak: longest };
+  return {
+    total,
+    currentStreak: current,
+    longestStreak: longest,
+    firstDate,
+    currentStreakRange: current > 0 ? fmtRange(currentStart, currentEnd) : null,
+    longestStreakRange: longest > 0 ? fmtRange(longestStart, longestEnd) : null,
+  };
 }
 
 /**
