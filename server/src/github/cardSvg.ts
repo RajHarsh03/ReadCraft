@@ -163,8 +163,8 @@ export function renderStreakSvg(
   const col3 = 350;    // Longest (right)
 
   const totalRange = streak.firstDate
-    ? `${fmtDate(streak.firstDate)} - Present`
-    : "";
+    ? `Since ${new Date(streak.firstDate).getFullYear()}`
+    : "This Year";
   const currentRange = streak.currentStreakRange ?? "";
   const longestRange = streak.longestStreakRange ?? "";
 

@@ -215,12 +215,10 @@ export async function fetchContributions(
   );
 
   const now = new Date();
-  const to = now.toISOString();
-  
-  // Fetch all contributions from account creation (use a very old date)
-  // GitHub's GraphQL API supports fetching from any date
-  const from = new Date('2008-01-01T00:00:00Z'); // GitHub founded in 2008
+  const from = new Date(now);
+  from.setFullYear(from.getFullYear() - 1);
   const fromStr = from.toISOString();
+  const toStr = now.toISOString();
 
   const query = `
     query($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -251,7 +249,7 @@ export async function fetchContributions(
     response = await fetchImpl(`${GITHUB_API}/graphql`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ query, variables: { login: username, from: fromStr, to } }),
+      body: JSON.stringify({ query, variables: { login: username, from: fromStr, to: toStr } }),
       signal: controller.signal,
     });
   } catch (err) {
