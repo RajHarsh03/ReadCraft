@@ -7,12 +7,6 @@ import {
 } from "./types.js";
 
 const GITHUB_API = "https://api.github.com";
-/**
- * Public contributions calendar API (grubersjoe/github-contributions-api).
- * GitHub's REST API does not expose contribution/streak data, so this
- * dependable public source is used to build the streak card honestly.
- */
-const CONTRIBUTIONS_API = "https://github-contributions-api.jogruber.de/v4";
 const DEFAULT_TIMEOUT_MS = 8000;
 
 /** Injectable fetch, so tests can supply a stub. */
@@ -179,22 +173,35 @@ export async function fetchRepos(
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Contributions calendar (separate public host)                             */
+/*  Contributions calendar (GitHub GraphQL API)                               */
 /* -------------------------------------------------------------------------- */
 
-const contributionsSchema = z.object({
-  contributions: z.array(
+const contributionWeekSchema = z.object({
+  contributionDays: z.array(
     z.object({
       date: z.string(),
-      count: z.number(),
+      contributionCount: z.number(),
     })
   ),
 });
 
+const graphqlContributionsSchema = z.object({
+  data: z.object({
+    user: z.object({
+      contributionsCollection: z.object({
+        contributionCalendar: z.object({
+          weeks: z.array(contributionWeekSchema),
+        }),
+      }),
+    }),
+  }),
+});
+
 /**
- * Fetch the full contributions calendar (all available years) as an ordered
- * list of day/count entries. Uses a public, token-free host distinct from the
- * GitHub REST API.
+ * Fetch the contributions calendar for the trailing year using GitHub's
+ * official GraphQL API. This replaces the third-party jogruber API which was
+ * unreliable and could return stale/incomplete data (causing current streak=0).
+ * Requires a GITHUB_TOKEN; falls back to an empty list on auth failure.
  */
 export async function fetchContributions(
   username: string,
@@ -207,38 +214,68 @@ export async function fetchContributions(
     options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   );
 
+  const query = `
+    query($login: String!) {
+      user(login: $login) {
+        contributionsCollection {
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "User-Agent": "ReadCraft",
+  };
+  if (options.token) headers.Authorization = `Bearer ${options.token}`;
+
   let response: Response;
   try {
-    response = await fetchImpl(
-      `${CONTRIBUTIONS_API}/${encodeURIComponent(username)}?y=all`,
-      { headers: { Accept: "application/json", "User-Agent": "ReadCraft" }, signal: controller.signal }
-    );
+    response = await fetchImpl(`${GITHUB_API}/graphql`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ query, variables: { login: username } }),
+      signal: controller.signal,
+    });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new GitHubError("timeout", "The contributions source did not respond in time.");
+      throw new GitHubError("timeout", "GitHub did not respond in time.");
     }
-    throw new GitHubError("unavailable", "Could not reach the contributions source.");
+    throw new GitHubError("unavailable", "Could not reach GitHub.");
   } finally {
     clearTimeout(timeout);
   }
 
-  if (response.status === 404) {
-    throw new GitHubError("not_found", "No contribution data for that username.");
-  }
-  if (!response.ok) {
-    throw new GitHubError("unavailable", `Contributions source error (${response.status}).`);
-  }
+  if (!response.ok) throw classify(response);
 
   let body: unknown;
   try {
     body = await response.json();
   } catch {
-    throw new GitHubError("unavailable", "Contributions source returned an unreadable body.");
+    throw new GitHubError("unavailable", "GitHub returned an unreadable body.");
   }
 
-  const parsed = contributionsSchema.safeParse(body);
+  const parsed = graphqlContributionsSchema.safeParse(body);
   if (!parsed.success) {
-    throw new GitHubError("unavailable", "Unexpected contributions response.");
+    throw new GitHubError("unavailable", "Unexpected GitHub contributions response.");
   }
-  return parsed.data.contributions.map((d) => ({ date: d.date, count: d.count }));
+
+  const weeks =
+    parsed.data.data.user.contributionsCollection.contributionCalendar.weeks;
+
+  return weeks.flatMap((week) =>
+    week.contributionDays.map((d) => ({
+      date: d.date,
+      count: d.contributionCount,
+    }))
+  );
 }
