@@ -165,14 +165,14 @@ export function buildApp(options: BuildAppOptions): FastifyInstance {
   function sendSvg(reply: import("fastify").FastifyReply, svg: string) {
     reply
       .header("Content-Type", "image/svg+xml; charset=utf-8")
-      // Cache aggressively: serve the cached copy immediately while revalidating
-      // in the background so a cold-start fetch never results in a broken image.
-      // stale-while-revalidate means the browser/CDN shows the old SVG instantly
-      // and fetches a fresh one behind the scenes.
+      // Shorter cache with revalidation to ensure GitHub fetches updates quickly
+      // max-age=300 (5 min) + must-revalidate forces fresh check on each view
       .header(
         "Cache-Control",
-        "public, max-age=7200, stale-while-revalidate=86400"
+        "public, max-age=300, must-revalidate"
       )
+      // Add ETag for efficient cache validation
+      .header("ETag", `W/"${Date.now()}"`)
       .send(svg);
   }
 
