@@ -84,13 +84,13 @@ export const TEMPLATES: Template[] = [
     id: "minimal",
     name: "Minimal",
     description: "Just the essentials, left-aligned and quiet. Green accent.",
-    layout: ["profile", "social", "headline", "tech"],
+    layout: ["profile", "social", "headline", "tech", "metrics"],
     style: {
       headingStyle: "plain",
       align: "left",
       techStyle: "code",
       accent: "2ea043",
-      divider: "blank",
+      divider: "line",
     },
   },
   {
@@ -168,7 +168,7 @@ export const TEMPLATES: Template[] = [
     name: "Monochrome",
     description:
       "Quiet, left-aligned, code chips in slate grey. Maximum focus on content.",
-    layout: ["profile", "social", "headline", "focus", "tech", "pinned"],
+    layout: ["profile", "social", "headline", "focus", "tech", "pinned", "metrics"],
     style: {
       headingStyle: "plain",
       align: "left",
