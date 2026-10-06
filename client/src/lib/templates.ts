@@ -168,7 +168,15 @@ export const TEMPLATES: Template[] = [
     name: "Monochrome",
     description:
       "Quiet, left-aligned, code chips in slate grey. Maximum focus on content.",
-    layout: ["profile", "social", "headline", "focus", "tech", "pinned", "metrics"],
+    layout: [
+      "profile",
+      "social",
+      "headline",
+      "focus",
+      "tech",
+      "pinned",
+      "metrics",
+    ],
     style: {
       headingStyle: "plain",
       align: "left",
