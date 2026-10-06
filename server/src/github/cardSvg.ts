@@ -68,7 +68,7 @@ export function renderStatsSvg(
     ["Following", compact(profile.following)],
   ];
 
-  const width = 260;
+  const width = 330;
   const height = 165;
   const startY = 62;
   const lineH = 24;
@@ -100,9 +100,6 @@ export function renderLanguagesSvg(
   languages: LanguageStat[],
   accent: string = DEFAULT_ACCENT
 ): string {
-  // Full-width bar banner: the top three languages as an inline summary line
-  // and a single normalized bar underneath. Wide viewBox so it scales cleanly
-  // when stretched to the README width.
   const top = languages.slice(0, 3);
   const width = 840;
   const height = 74;
@@ -117,10 +114,8 @@ export function renderLanguagesSvg(
 
   const summary = top.map((l) => `${l.language} ${l.percent}%`).join("  ·  ");
 
-  // Normalize the shown languages so their segments fill the whole bar.
   const sum = top.reduce((s, l) => s + l.percent, 0) || 1;
   let offset = 0;
-  // First segment uses the template accent; the rest cycle the palette.
   const palette = [accent, ...LANG_COLORS];
   const segments = top
     .map((l, i) => {
@@ -154,50 +149,60 @@ export function renderStreakSvg(
   streak: StreakStats,
   accent: string = DEFAULT_ACCENT
 ): string {
-  const width = 420;   // Wider for better spacing
-  const height = 180;  // Taller for comfortable layout
-  
-  // Three column layout like reference
-  const col1 = 70;     // Total (left)
-  const col2 = 210;    // Current streak (center)
-  const col3 = 350;    // Longest (right)
+  const width = 330;
+  const height = 165;
+
+  const col1 = width / 6;
+  const col2 = width / 2;
+  const col3 = (width * 5) / 6;
 
   const totalRange = streak.firstDate
     ? `Since ${new Date(streak.firstDate).getFullYear()}`
     : "This Year";
-  const currentRange = streak.currentStreakRange ?? "";
+  const currentRange =
+    streak.currentStreakRange?.trim() ||
+    fmtDate(new Date().toISOString().slice(0, 10));
   const longestRange = streak.longestStreakRange ?? "";
 
   const body = [
     // Title
-    `<text x="${width / 2}" y="28" fill="${accent}" font-size="16" font-weight="600" text-anchor="middle">Contribution Streak</text>`,
-    `<line x1="20" y1="42" x2="${width - 20}" y2="42" stroke="${BORDER}"/>`,
+    `<text x="${width / 2}" y="26" fill="${accent}" font-size="16" font-weight="600" text-anchor="middle">Contribution Streak</text>`,
+    `<line x1="16" y1="38" x2="${width - 16}" y2="38" stroke="${BORDER}"/>`,
 
     // Vertical dividers
-    `<line x1="${width / 3}" y1="50" x2="${width / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
-    `<line x1="${(width * 2) / 3}" y1="50" x2="${(width * 2) / 3}" y2="${height - 15}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
+    `<line x1="${width / 3}" y1="45" x2="${width / 3}" y2="${height - 14}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
+    `<line x1="${(width * 2) / 3}" y1="45" x2="${(width * 2) / 3}" y2="${height - 14}" stroke="${BORDER}" stroke-dasharray="3,3" opacity="0.5"/>`,
 
     // LEFT: Total Contributions
-    `<text x="${col1}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
-    `<text x="${col1}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Total Contributions</text>`,
-    totalRange ? `<text x="${col1}" y="135" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(totalRange)}</text>` : "",
+    `<text x="${col1}" y="99" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.total)}</text>`,
+    `<text x="${col1}" y="122" fill="${MUTED}" font-size="11" text-anchor="middle">Total Contributions</text>`,
+    totalRange
+      ? `<text x="${col1}" y="136" fill="${MUTED}" font-size="9" text-anchor="middle">${esc(totalRange)}</text>`
+      : "",
 
-    // CENTER: Current streak with flame on top
-    `<circle cx="${col2}" cy="100" r="32" fill="none" stroke="${accent}" stroke-width="3.5" opacity="0.9"/>`,
-    // Flame at 12 o'clock position
-    `<g transform="translate(${col2}, 64)">
-      <path d="M0,-9 C-2.5,-5 -4,-1.5 -4,2.5 C-4,7 -2.5,10 0,10 C2.5,10 4,7 4,2.5 C4,-1.5 2.5,-5 0,-9 Z 
-               M-1.2,1 C-1.2,1 -2.3,3 -2.3,4.2 C-2.3,5.8 -1.2,7 0,7 C1.2,7 2.3,5.8 2.3,4.2 C2.3,3 1.2,1 1.2,1 C1.2,2 0,3 0,3 C0,3 -1.2,2 -1.2,1 Z" 
-            fill="${accent}"/>
+    // CENTER: Current Streak
+    `<defs>
+      <mask id="current-streak-ring-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}">
+        <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"/>
+        <ellipse cx="${col2}" cy="53" rx="10" ry="14" fill="#000"/>
+      </mask>
+    </defs>`,
+    `<g mask="url(#current-streak-ring-mask)">
+      <circle cx="${col2}" cy="87" r="31" fill="none" stroke="${accent}" stroke-width="5"/>
     </g>`,
-    `<text x="${col2}" y="113" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.currentStreak)}</text>`,
-    `<text x="${col2}" y="150" fill="${accent}" font-size="13" font-weight="600" text-anchor="middle">Current Streak</text>`,
-    currentRange ? `<text x="${col2}" y="166" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(currentRange)}</text>` : "",
+    `<g transform="translate(${col2}, 43.2)">
+      <path d="M 1.5 0.67 C 1.5 0.67 2.24 3.32 2.24 5.47 C 2.24 7.53 0.89 9.2 -1.17 9.2 C -3.23 9.2 -4.79 7.53 -4.79 5.47 L -4.76 5.11 C -6.78 7.51 -8 10.62 -8 13.99 C -8 18.41 -4.42 22 0 22 C 4.42 22 8 18.41 8 13.99 C 8 8.6 5.41 3.79 1.5 0.67 Z M -0.29 19 C -2.07 19 -3.51 17.6 -3.51 15.86 C -3.51 14.24 -2.46 13.1 -0.7 12.74 C 1.07 12.38 2.9 11.53 3.92 10.16 C 4.31 11.45 4.51 12.81 4.51 14.2 C 4.51 16.85 2.36 19 -0.29 19 Z" fill="${accent}"/>
+    </g>`,
+    `<text x="${col2}" y="91" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle" dominant-baseline="middle">${compact(streak.currentStreak)}</text>`,
+    `<text x="${col2}" y="140" fill="${accent}" font-size="12" font-weight="600" text-anchor="middle">Current Streak</text>`,
+    `<text x="${col2}" y="157" fill="${MUTED}" font-size="9" text-anchor="middle">${esc(currentRange)}</text>`,
 
     // RIGHT: Longest Streak
-    `<text x="${col3}" y="95" fill="${TEXT}" font-size="36" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
-    `<text x="${col3}" y="120" fill="${MUTED}" font-size="12" text-anchor="middle">Longest Streak</text>`,
-    longestRange ? `<text x="${col3}" y="135" fill="${MUTED}" font-size="10" text-anchor="middle">${esc(longestRange)}</text>` : "",
+    `<text x="${col3}" y="99" fill="${TEXT}" font-size="32" font-weight="700" text-anchor="middle">${compact(streak.longestStreak)}</text>`,
+    `<text x="${col3}" y="122" fill="${MUTED}" font-size="11" text-anchor="middle">Longest Streak</text>`,
+    longestRange
+      ? `<text x="${col3}" y="136" fill="${MUTED}" font-size="9" text-anchor="middle">${esc(longestRange)}</text>`
+      : "",
   ].join("");
 
   return frame(width, height, "Contribution streak", body);
@@ -206,7 +211,11 @@ export function renderStreakSvg(
 // Helper for formatting dates
 function fmtDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export { fmtDate };
