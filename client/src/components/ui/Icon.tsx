@@ -16,7 +16,7 @@ export function Icon({
   name,
   size = 18,
   filled = false,
-  weight = 400,
+  weight = 600,
   className,
 }: IconProps) {
   const style: CSSProperties = {

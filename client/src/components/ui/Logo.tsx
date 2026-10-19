@@ -6,7 +6,7 @@ interface LogoProps {
 /**
  * The ReadCraft mark: a Satisfy-script "#", slightly tilted with a soft glow.
  * No tile or background - the glyph stands on its own and sits snugly next to
- * the wordmark. Tinted with the theme's violet accent for a cohesive look.
+ * the wordmark.
  */
 export function Logo({ size = 32, className }: LogoProps) {
   return (
