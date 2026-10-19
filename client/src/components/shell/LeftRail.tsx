@@ -47,8 +47,15 @@ const NAV_AFTER: NavItem[] = [
   },
 ];
 
+interface LeftRailProps {
+  /** When true the rail shrinks to an icon-only strip. */
+  collapsed: boolean;
+  /** Toggle the collapsed state (owned by the shell so content can reflow). */
+  onToggleCollapse: () => void;
+}
+
 /** Fixed left workspace rail (Section Editor / Templates / Badge Studio / …). */
-export function LeftRail() {
+export function LeftRail({ collapsed, onToggleCollapse }: LeftRailProps) {
   const { route, navigate } = useRouter();
   const [prefsOpen, setPrefsOpen] = useState(false);
   const [savedOpen, setSavedOpen] = useState(false);
@@ -57,39 +64,60 @@ export function LeftRail() {
   const renderNavItem = useCallback(
     (item: NavItem) => {
       const active = item.activeFor.includes(route.name);
+      const inner = (
+        <>
+          <Icon name={item.icon} size={18} className="shrink-0" />
+          {!collapsed && <span>{item.label}</span>}
+        </>
+      );
       return active ? (
         <span
           key={item.label}
           aria-current="page"
-          className="relative flex items-center gap-2.5 border-l-2 border-primary-container bg-surface-container-high/60 py-2 pl-3 pr-3 text-label-md font-semibold text-on-surface"
+          aria-label={item.label}
+          title={item.label}
+          className={cn(
+            "flex w-full items-center rounded-[4px] border-2 border-ink bg-primary-container py-2 font-mono text-label-md font-bold uppercase tracking-wide text-on-primary",
+            collapsed ? "justify-center px-0" : "gap-2.5 px-3"
+          )}
         >
-          <Icon name={item.icon} size={18} className="text-primary" />
-          <span>{item.label}</span>
+          {inner}
         </span>
       ) : (
         <button
           key={item.label}
           type="button"
           onClick={() => navigate(item.to)}
-          className="flex items-center gap-2.5 border-l-2 border-transparent py-2 pl-3 pr-3 text-left text-label-md text-on-surface-variant transition-colors hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
+          aria-label={item.label}
+          title={item.label}
+          className={cn(
+            "flex w-full items-center rounded-[4px] border-2 border-transparent py-2 font-mono text-label-md uppercase tracking-wide text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface",
+            collapsed ? "justify-center px-0" : "gap-2.5 px-3"
+          )}
         >
-          <Icon name={item.icon} size={18} />
-          <span>{item.label}</span>
+          {inner}
         </button>
       );
     },
-    [route.name, navigate]
+    [route.name, navigate, collapsed]
   );
 
   return (
-    <aside className="fixed bottom-0 left-0 top-14 z-40 hidden w-56 flex-col justify-between border-r border-outline-variant/60 bg-surface py-4 lg:flex">
+    <aside
+      className={cn(
+        "fixed bottom-0 left-0 top-16 z-40 hidden flex-col justify-between border-r-2 border-ink bg-surface py-4 transition-[width] duration-200 lg:flex",
+        collapsed ? "w-16" : "w-60"
+      )}
+    >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 px-4">
-          <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
-            Workspace
-          </span>
-        </div>
-        <nav className="flex flex-col">
+        {!collapsed && (
+          <div className="flex items-center px-3">
+            <span className="font-mono text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+              Workspace
+            </span>
+          </div>
+        )}
+        <nav className="flex flex-col gap-1 px-2">
           {NAV_BEFORE.map(renderNavItem)}
 
           {/* Saved Profiles: opens a popover of per-username saved drafts. */}
@@ -107,16 +135,19 @@ export function LeftRail() {
               type="button"
               aria-haspopup="dialog"
               aria-expanded={savedOpen}
+              aria-label="Saved Profiles"
+              title="Saved Profiles"
               onClick={() => setSavedOpen((v) => !v)}
               className={cn(
-                "flex w-full items-center gap-2.5 border-l-2 py-2 pl-3 pr-3 text-left text-label-md transition-colors",
+                "flex w-full items-center rounded-[4px] py-2 font-mono text-label-md uppercase tracking-wide transition-colors",
+                collapsed ? "justify-center px-0" : "gap-2.5 px-3",
                 savedOpen
-                  ? "border-primary-container bg-surface-container-high/60 text-on-surface"
-                  : "border-transparent text-on-surface-variant hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
+                  ? "border-2 border-ink bg-primary-container font-bold text-on-primary"
+                  : "border-2 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
               )}
             >
-              <Icon name="folder_open" size={18} />
-              <span>Saved Profiles</span>
+              <Icon name="folder_open" size={18} className="shrink-0" />
+              {!collapsed && <span>Saved Profiles</span>}
             </button>
           </div>
 
@@ -124,26 +155,48 @@ export function LeftRail() {
         </nav>
       </div>
 
-      <div data-rc-prefs className="relative flex flex-col">
+      <div data-rc-prefs className="relative flex flex-col gap-1 px-2">
         <PreferencesDialog
           open={prefsOpen}
           onClose={() => setPrefsOpen(false)}
         />
-        <button
-          type="button"
-          aria-haspopup="dialog"
-          aria-expanded={prefsOpen}
-          onClick={() => setPrefsOpen((v) => !v)}
+        <div
           className={cn(
-            "flex items-center gap-2.5 border-l-2 py-2 pl-3 pr-3 text-left text-label-md transition-colors",
-            prefsOpen
-              ? "border-primary-container bg-surface-container-high/60 text-on-surface"
-              : "border-transparent text-on-surface-variant hover:border-outline-variant hover:bg-surface-container-lowest hover:text-on-surface"
+            "flex items-center gap-1",
+            collapsed ? "flex-col" : "flex-row"
           )}
         >
-          <Icon name="tune" size={18} />
-          <span>Preferences</span>
-        </button>
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded={prefsOpen}
+            aria-label="Preferences"
+            title="Preferences"
+            onClick={() => setPrefsOpen((v) => !v)}
+            className={cn(
+              "flex items-center rounded-[4px] py-2 font-mono text-label-md uppercase tracking-wide transition-colors",
+              collapsed ? "w-full justify-center px-0" : "flex-1 gap-2.5 px-3",
+              prefsOpen
+                ? "border-2 border-ink bg-primary-container font-bold text-on-primary"
+                : "border-2 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+            )}
+          >
+            <Icon name="tune" size={18} className="shrink-0" />
+            {!collapsed && <span>Preferences</span>}
+          </button>
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+            title={collapsed ? "Expand navigation" : "Collapse navigation"}
+            className="nb-press-sm flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border-2 border-ink bg-surface-container-lowest text-on-surface-variant hover:text-on-surface"
+          >
+            <Icon
+              name={collapsed ? "chevron_right" : "chevron_left"}
+              size={18}
+            />
+          </button>
+        </div>
       </div>
     </aside>
   );
