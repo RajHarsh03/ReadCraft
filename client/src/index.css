@@ -1,74 +1,188 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   ReadCraft design tokens
+   ReadCraft design tokens — Neo-Brutalist Editorial
 
-   Ported from the project DESIGN.md: a dark, technical developer-tool theme
-   (Linear / Raycast / GitHub lineage) with a single warm-amber accent. Every
-   surface, line and text colour is a semantic token so components never
-   hard-code a hex value.
+   Ported from DESIGN.md: warm paper surfaces, everything outlined in hard
+   ink, zero-blur offset shadows, and mechanical click physics. Serif for the
+   editorial voice, sans for UI, mono for every piece of metadata. Components
+   consume semantic tokens (bg-surface-container, text-on-surface) and never
+   hard-code a hex value — the only literal colors live in the always-dark
+   terminal chrome.
    ========================================================================== */
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* --------------------------------------------------------------------------
-     Indigo Aurora — a dark, glassy, premium developer-tool theme. Near-black
-     indigo surfaces with a violet→indigo primary and a cyan secondary. Every
-     surface, line and text colour is a semantic token so components never
-     hard-code a hex value.
+     Fonts — Newsreader (serif display/prose), Plus Jakarta Sans (UI), and
+     JetBrains Mono (all technical metadata).
      -------------------------------------------------------------------------- */
-
-  /* Surfaces (back to front) — a clean, even dark slate (low blue-cast) so the
-     background stays neutral and doesn't tint the UI; panels step up in clear,
-     readable layers. Kept a touch darker for a deeper, focused feel. */
-  --color-surface: #1a1e26;
-  --color-surface-dim: #141820;
-  --color-surface-bright: #4a5160;
-  --color-surface-container-lowest: #171b22; /* inset fields — just below base */
-  --color-surface-container-low: #21252f;
-  --color-surface-container: #282d38;
-  --color-surface-container-high: #323845;
-  --color-surface-container-highest: #3d4453;
-
-  /* Text — near-white with a cool grey variant */
-  --color-on-surface: #f0f3f9;
-  --color-on-surface-variant: #a8b3c4;
-  --color-on-background: #f0f3f9;
-  --color-background: #1a1e26;
-
-  /* Lines */
-  --color-outline: #7d8899;
-  --color-outline-variant: #262d38;
-  --color-border-strong: #3c4552;
-
-  /* Warm amber accent — the original ReadCraft identity, refined */
-  --color-primary: #ffd28b;
-  --color-primary-container: #f7a718;
-  --color-primary-hover: #dd8a08;
-  --color-on-primary: #2a1800;
-  --color-on-primary-container: #241500;
-  --color-primary-fixed-dim: #ffc362;
-
-  /* Support hues — warm amber-tinted text, cool teal for contrast, error */
-  --color-secondary: #d9c3a0;
-  --color-secondary-container: #574a34;
-  --color-tertiary: #7be0d0;
-  --color-tertiary-container: #1f9e88;
-  --color-error: #ffb4ab;
-  --color-error-container: #93000a;
-
-  /* Fonts */
-  --font-sans:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display:
-    "Sora", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-brand: "Satisfy", "Segoe Script", cursive;
-  --font-mono:
+  --font-newsreader: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+  --font-jakarta:
+    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-jetbrains:
     "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas",
     monospace;
 
-  /* Radius scale - tight, engineered */
-  --radius-rc: 0.375rem; /* 6px base for controls */
-  --radius-rc-lg: 0.5rem; /* 8px for containers */
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-newsreader);
+  --font-brand: "Satisfy", "Segoe Script", cursive;
+  --font-mono: var(--font-jetbrains);
+
+  /* --------------------------------------------------------------------------
+     Core semantic accents — Material-style pairs.
+     -------------------------------------------------------------------------- */
+  --color-primary: #ab2f00;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #d53e02;
+  --color-on-primary-container: #fffbff;
+  --color-primary-fixed: #ffdbd1;
+  --color-on-primary-fixed: #3a0a00;
+  /* Slightly deeper vermilion — the hover fill for a primary-container button. */
+  --color-primary-fixed-dim: #bf3401;
+
+  --color-secondary: #0058be;
+  --color-secondary-container: #2170e4;
+  --color-on-secondary-container: #ffffff;
+  --color-secondary-fixed: #d8e2ff;
+  --color-on-secondary-fixed: #001a44;
+
+  --color-tertiary: #006947;
+  --color-tertiary-container: #00855b;
+  --color-on-tertiary-container: #ffffff;
+  --color-tertiary-fixed: #6ffbbe;
+  --color-on-tertiary-fixed: #005236;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  /* --------------------------------------------------------------------------
+     Surfaces — a warm paper ramp, back to front.
+     -------------------------------------------------------------------------- */
+  --color-background: #fbf8fc;
+  --color-on-background: #1b1b1e;
+  --color-surface: #fbf8fc;
+  --color-on-surface: #1b1b1e;
+  --color-on-surface-variant: #5b4139;
+  --color-surface-dim: #f0edf1;
+  --color-surface-bright: #eae7eb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f2f7;
+  --color-surface-container: #f0edf1;
+  --color-surface-container-high: #eae7eb;
+  --color-surface-container-highest: #e4e1e6;
+
+  --color-outline: #8f7067;
+  --color-outline-variant: #e4beb4;
+  --color-border-strong: #8f7067;
+
+  /* --------------------------------------------------------------------------
+     Brutalist ink/paper + signal colors. Borders and shadows both reference
+     `ink`, so inverting it in .dark flips the entire chrome for free.
+     -------------------------------------------------------------------------- */
+  --color-ink: #18181b;
+  --color-paper: #faf8f5;
+  --color-cream: #faf8f2;
+  --color-signal: #f95721;
+
+  --color-mint: #10b981;
+  --color-mint-soft: #d1fae5;
+  --color-mint-ink: #065f46;
+
+  /* Badge palette — chip fills with ink-colored text. */
+  --color-badge-blue: #e0e7ff;
+  --color-badge-blue-ink: #1e40af;
+  --color-badge-amber: #fef3c7;
+  --color-badge-amber-ink: #92400e;
+  --color-badge-red: #fee2e2;
+  --color-badge-red-ink: #991b1b;
+  --color-badge-cyan: #cffafe;
+  --color-badge-cyan-ink: #155e75;
+  --color-badge-pink: #fce7f3;
+  --color-badge-pink-ink: #9d174d;
+
+  /* Radii — keep corners nearly square. */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 8px;
+}
+
+/* ==========================================================================
+   Dark theme — class-based overrides. Flip surfaces/ink; accents persist.
+   Because every border and shadow references --color-ink, the brutalist chrome
+   inverts for free.
+   ========================================================================== */
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+.dark {
+  --color-primary: #ffb59f;
+  --color-on-primary: #3a0a00;
+  --color-primary-container: #d53e02;
+  --color-on-primary-container: #fffbff;
+  --color-primary-fixed: #862300;
+  --color-on-primary-fixed: #ffdbd1;
+  --color-primary-fixed-dim: #e8551b;
+
+  --color-secondary: #aec6ff;
+  --color-secondary-container: #2170e4;
+  --color-secondary-fixed: #004395;
+  --color-on-secondary-fixed: #d8e2ff;
+
+  --color-tertiary: #6ffbbe;
+  --color-tertiary-container: #00855b;
+  --color-tertiary-fixed: #005236;
+  --color-on-tertiary-fixed: #6ffbbe;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+
+  --color-background: #1b1b1f;
+  --color-on-background: #d6d3d7;
+  --color-surface: #1e1e22;
+  --color-surface-dim: #19191d;
+  --color-surface-bright: #323237;
+  --color-surface-container-lowest: #19191d;
+  --color-surface-container-low: #232327;
+  --color-surface-container: #27272b;
+  --color-surface-container-high: #323237;
+  --color-surface-container-highest: #3d3d42;
+  --color-on-surface: #d6d3d7;
+  --color-on-surface-variant: #d9b5ac;
+
+  --color-outline: #8f7067;
+  --color-outline-variant: #5b4139;
+  --color-border-strong: #8f7067;
+
+  /* Borders + shadows become light on dark. */
+  --color-ink: #c9c6cb;
+  --color-paper: #202024;
+  --color-cream: #232327;
+  --color-mint-soft: #06483a;
+  --color-mint-ink: #6ffbbe;
+
+  /* Badge fills go deep, badge inks go bright. */
+  --color-badge-blue: #1e2a4a;
+  --color-badge-blue-ink: #adc6ff;
+  --color-badge-amber: #3a2c07;
+  --color-badge-amber-ink: #fcd34d;
+  --color-badge-red: #3f1414;
+  --color-badge-red-ink: #fca5a5;
+  --color-badge-cyan: #08363f;
+  --color-badge-cyan-ink: #67e8f9;
+  --color-badge-pink: #3d1023;
+  --color-badge-pink-ink: #f9a8d4;
 }
 
 /* ==========================================================================
@@ -93,70 +207,40 @@ body {
   overscroll-behavior: none;
 }
 
-/* Shared atmosphere: an indigo-black base lit by an aurora of violet + cyan
-   glows, so the accent feels like part of the environment rather than paint. */
+/* The page base is a flat warm paper surface (no glows, no gradients). */
 .rc-app-shell {
   min-height: 100%;
-  /* A single faint top glow only — kept subtle so the background stays an even
-     neutral dark and doesn't tint the UI. */
-  background:
-    radial-gradient(
-      1200px 460px at 50% -200px,
-      rgb(247 167 24 / 0.08),
-      transparent 70%
-    ),
-    var(--color-surface);
+  background: var(--color-surface);
 }
 
+/* A faint ink grid for the landing hero band — hard lines, no fade to a glow. */
 .rc-landing-grid {
   background-image:
-    linear-gradient(rgb(148 140 210 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(148 140 210 / 0.07) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(
-    120% 90% at 50% 0%,
-    black,
-    rgb(0 0 0 / 0.35) 55%,
-    transparent 82%
-  );
+    linear-gradient(rgb(24 24 27 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(24 24 27 / 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
+/* The fixed app header / footer band: paper fill with a hard ink rule. */
 .rc-nav-surface {
-  background: linear-gradient(
-    180deg,
-    rgb(23 28 38 / 0.85),
-    rgb(13 17 23 / 0.8)
-  );
-  backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.05),
-    0 1px 0 rgb(247 167 24 / 0.14),
-    0 14px 38px rgb(0 0 0 / 0.34);
+  background: var(--color-paper);
 }
 
+/* Elevated popovers: a hard, zero-blur offset shadow (the card border is
+   applied by the component via border-2 border-ink). */
 .rc-elevated {
-  box-shadow:
-    0 28px 80px -32px rgb(0 0 0 / 0.82),
-    0 0 0 1px rgb(247 167 24 / 0.06),
-    inset 0 1px rgb(255 255 255 / 0.045);
+  box-shadow: 4px 4px 0 0 var(--color-ink);
 }
 
-/* The warm amber accent glow, used across primary buttons. */
-.rc-amber-glow {
-  box-shadow:
-    0 14px 34px -14px rgb(247 167 24 / 0.6),
-    0 0 0 1px rgb(247 167 24 / 0.18);
-}
-
-/* A reusable glassy card surface for popovers and elevated panels. */
+/* Solid brutalist surface used in place of the old frosted glass panels. */
 .rc-glass {
-  background: linear-gradient(
-    180deg,
-    rgb(30 36 45 / 0.72),
-    rgb(17 21 27 / 0.72)
-  );
-  backdrop-filter: blur(16px) saturate(1.3);
-  border: 1px solid rgb(247 167 24 / 0.12);
+  background: var(--color-surface-container-lowest);
+  border: 2px solid var(--color-ink);
+}
+
+/* Offset ink shadow used on prominent CTAs (replaces the old amber glow). */
+.rc-amber-glow {
+  box-shadow: 4px 4px 0 0 var(--color-ink);
 }
 
 /* The ReadCraft wordmark - the Satisfy script used everywhere the brand name
@@ -171,35 +255,38 @@ body {
   background: var(--color-surface);
 }
 
-/* Tabular figures + slashed zero for all monospace (DESIGN.md requirement) */
+/* Tabular figures + slashed zero for all monospace metadata. */
 code,
 kbd,
+pre,
 .font-mono,
+[style*="mono"],
 [class*="font-mono"] {
   font-feature-settings:
     "tnum" 1,
     "zero" 1;
 }
 
+/* Focus is ink-outlined (border + hard shadow does most of the work in the
+   components); keep a clean ink ring for keyboard users on everything else. */
 :focus-visible {
-  outline: 2px solid var(--color-primary-container);
+  outline: 2px solid var(--color-ink);
   outline-offset: 1px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-/* Text inputs/areas provide their own focus affordance via their wrapper's
-   `focus-within` border, so the global ring would double up. Suppress it for
-   them and keep it for buttons, links, and other controls. */
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus-visible {
   outline: none;
 }
 
 ::selection {
-  background: rgb(247 167 24 / 0.28);
+  background: var(--color-primary-fixed);
+  color: var(--color-on-primary-fixed);
 }
 
-/* Thin, unobtrusive scrollbars for the dense workbench */
+/* Thin ink scrollbars for the dense workbench. */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-surface-container-highest) transparent;
@@ -226,7 +313,7 @@ textarea:focus-visible {
 }
 
 /* ==========================================================================
-   Material Symbols
+   Material Symbols — outlined glyphs, weighted up to sit against 2px ink.
    ========================================================================== */
 
 .material-symbols-outlined {
@@ -244,67 +331,83 @@ textarea:focus-visible {
   -webkit-font-smoothing: antialiased;
   font-variation-settings:
     "FILL" 0,
-    "wght" 400,
+    "wght" 500,
     "GRAD" 0,
     "opsz" 24;
 }
 
 /* ==========================================================================
-   Typography scale (DESIGN.md)
+   Typography scale
+   Headings/prose in serif, UI in sans, all metadata in mono.
    ========================================================================== */
 
+.text-display {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
 .text-headline-xl {
   font-family: var(--font-display);
   font-size: 2.25rem;
   line-height: 2.75rem;
-  letter-spacing: -0.025em;
-  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-weight: 650;
 }
 .text-headline-lg {
   font-family: var(--font-display);
   font-size: 1.5rem;
   line-height: 2rem;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-weight: 650;
 }
 .text-headline-md {
   font-family: var(--font-display);
   font-size: 1.25rem;
   line-height: 1.75rem;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   font-weight: 600;
 }
 .text-headline-sm {
   font-family: var(--font-display);
   font-size: 1rem;
   line-height: 1.5rem;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   font-weight: 600;
 }
 .text-body-lg {
+  font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6rem;
 }
 .text-body-md {
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1.45rem;
 }
 .text-body-sm {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   line-height: 1.25rem;
-  letter-spacing: 0.005em;
 }
 .text-code-lg {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.5rem;
-  letter-spacing: -0.01em;
   font-weight: 500;
 }
 .text-code-sm {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1.25rem;
+}
+.text-label-lg {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.15rem;
+  letter-spacing: 0.02em;
+  font-weight: 600;
 }
 .text-label-md {
   font-family: var(--font-mono);
@@ -322,7 +425,72 @@ textarea:focus-visible {
 }
 
 /* ==========================================================================
-   Animation - short and purposeful
+   Component primitives — the press mechanic + hard ink geometry.
+   ========================================================================== */
+
+@layer components {
+  /* The signature interaction: hover lifts toward the light, press sinks in. */
+  .nb-press {
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .nb-press:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--color-ink);
+  }
+  .nb-press:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 var(--color-ink);
+  }
+
+  /* Small icon buttons: gentler lift/sink. */
+  .nb-press-sm {
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .nb-press-sm:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 0 var(--color-ink);
+  }
+  .nb-press-sm:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 var(--color-ink);
+  }
+
+  /* Hard ink outlines used across every surface and control. */
+  .nb-border {
+    border: 2px solid var(--color-ink);
+  }
+  .nb-shadow-sm {
+    box-shadow: 2px 2px 0 0 var(--color-ink);
+  }
+  .nb-shadow {
+    box-shadow: 4px 4px 0 0 var(--color-ink);
+  }
+  .nb-shadow-lg {
+    box-shadow: 6px 6px 0 0 var(--color-ink);
+  }
+
+  /* Editorial drop cap for the lead paragraph of prose. */
+  .nb-dropcap::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    line-height: 0.8;
+    font-weight: 600;
+    color: var(--color-primary);
+    float: left;
+    padding-right: 0.5rem;
+  }
+}
+
+/* ==========================================================================
+   Animation — short and purposeful
    ========================================================================== */
 
 @keyframes rc-fade-in {
@@ -343,16 +511,16 @@ textarea:focus-visible {
 @keyframes rc-toast-in {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.98);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
 .rc-toast {
-  animation: rc-toast-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: rc-toast-in 220ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -369,10 +537,17 @@ textarea:focus-visible {
     scroll-behavior: auto !important;
   }
 
-  /* Neutralize decorative transform-based motion (waving hand, hover lift,
-     spinners) so nothing keeps moving as a status cue. */
+  /* Neutralize the press lift/sink and any decorative motion. */
+  .nb-press:hover,
+  .nb-press:active,
+  .nb-press-sm:hover,
+  .nb-press-sm:active {
+    transform: none !important;
+  }
+
   .animate-bounce,
   .animate-spin,
+  .animate-ping,
   .animate-pulse {
     animation: none !important;
   }
@@ -387,7 +562,6 @@ textarea:focus-visible {
    leave a large gap before the trailing content. */
 .rc-markdown-preview.markdown-body {
   background: transparent;
-  color: inherit;
 }
 
 /* Inline-block keeps images that share a Markdown line side by side (GitHub's
@@ -409,13 +583,94 @@ textarea:focus-visible {
   margin-bottom: 0;
 }
 
-/* Loading skeletons: a soft shimmer used while lazily-loaded route chunks
-   fetch. The chrome (top nav + left rail) stays mounted; only the page content
-   shows these placeholders, so it reads like cards rendering into place. */
+/* Dark-mode README preview. github-markdown-light.css bakes hex straight into
+   its element rules (no variables), and the adaptive build only follows the
+   OS prefers-color-scheme — so neither tracks our class-based theme. Override
+   the visible element colors to GitHub's dark palette whenever the app is in
+   dark mode. The surrounding card flips to #0d1117 (GitHub's dark canvas). */
+.dark .markdown-body {
+  color-scheme: dark;
+  color: #e6edf3;
+  --borderColor-muted: #3d444d;
+}
+.dark .markdown-body a {
+  color: #4493f8;
+}
+.dark .markdown-body h1,
+.dark .markdown-body h2 {
+  border-bottom-color: #3d444d;
+}
+.dark .markdown-body h6 {
+  color: #9198a1;
+}
+.dark .markdown-body blockquote {
+  color: #9198a1;
+  border-left-color: #3d444d;
+}
+.dark .markdown-body hr {
+  border-bottom-color: #3d444d;
+}
+.dark .markdown-body code,
+.dark .markdown-body tt {
+  color: #e6edf3;
+  background-color: rgb(101 108 118 / 0.2);
+}
+.dark .markdown-body pre,
+.dark .markdown-body .highlight pre {
+  color: #e6edf3;
+  background-color: #151b23;
+}
+.dark .markdown-body pre code {
+  color: #e6edf3;
+  background-color: transparent;
+}
+.dark .markdown-body kbd {
+  color: #e6edf3;
+  background-color: #151b23;
+  border-color: #3d444d;
+  box-shadow: inset 0 -1px 0 #3d444d;
+}
+.dark .markdown-body table th,
+.dark .markdown-body table td {
+  border-color: #3d444d;
+}
+.dark .markdown-body table tr {
+  background-color: #0d1117;
+  border-top-color: #3d444d;
+}
+.dark .markdown-body table tr:nth-child(2n) {
+  background-color: #151b23;
+}
+/* Common prettylights syntax tokens, retuned for the dark code surface. */
+.dark .markdown-body .pl-c {
+  color: #9198a1;
+}
+.dark .markdown-body .pl-k {
+  color: #ff7b72;
+}
+.dark .markdown-body .pl-c1 {
+  color: #79c0ff;
+}
+.dark .markdown-body .pl-s,
+.dark .markdown-body .pl-s .pl-pds {
+  color: #a5d6ff;
+}
+.dark .markdown-body .pl-en,
+.dark .markdown-body .pl-e {
+  color: #d2a8ff;
+}
+.dark .markdown-body .pl-smi,
+.dark .markdown-body .pl-s .pl-s1 {
+  color: #e6edf3;
+}
+
+/* Loading skeletons: a flat ink-outlined placeholder (no shimmer glow) used
+   while lazily-loaded route chunks fetch. */
 .rc-skeleton {
   position: relative;
   overflow: hidden;
-  background: var(--color-surface-container-high, #1b2330);
+  background: var(--color-surface-container-high);
+  border-radius: 4px;
 }
 .rc-skeleton::after {
   content: "";
@@ -425,8 +680,7 @@ textarea:focus-visible {
   background: linear-gradient(
     90deg,
     transparent,
-    rgb(247 167 24 / 0.08),
-    rgb(255 255 255 / 0.05),
+    rgb(24 24 27 / 0.05),
     transparent
   );
   animation: rc-shimmer 1.4s ease-in-out infinite;
