@@ -20,10 +20,11 @@ const DEFAULT_SPEC: BadgeSpec = {
 };
 
 const inputClass =
-  "w-full rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 " +
-  "text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none";
+  "w-full rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1.5 " +
+  "font-mono text-code-sm text-on-surface placeholder:text-outline focus:shadow-[3px_3px_0_0_var(--color-ink)] focus:outline-none";
 
-const labelClass = "text-label-sm text-on-surface-variant";
+const labelClass =
+  "font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant";
 
 interface BadgeStudioProps {
   /** When provided, shows an "Add to README" action wired to this handler. */
@@ -64,7 +65,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
               key={preset.name}
               type="button"
               onClick={() => setSpec({ logo: "", link: "", ...preset.spec })}
-              className="shrink-0 rounded-[6px] border border-outline-variant bg-surface-container px-3 py-2 text-label-sm text-on-surface transition-colors hover:border-primary-container hover:bg-surface-container-high"
+              className="nb-press-sm shrink-0 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-2 font-mono text-label-sm font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container"
               title={preset.name}
             >
               {preset.name}
@@ -107,7 +108,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
                       set({ message: "message" });
                     }
                   }}
-                  className="h-5 w-5 shrink-0 cursor-pointer rounded border-outline-variant accent-primary-container"
+                  className="h-5 w-5 shrink-0 cursor-pointer rounded-[4px] border-2 border-ink accent-primary-container"
                   title="Show message segment"
                 />
               </div>
@@ -131,7 +132,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
                   onChange={(e) =>
                     set({ color: e.target.value.replace(/^#/, "") })
                   }
-                  className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container p-1"
+                  className="h-9 w-9 shrink-0 cursor-pointer rounded-[4px] border-2 border-ink bg-surface-container-lowest p-1"
                 />
               </div>
             </Field>
@@ -172,7 +173,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
           <button
             type="button"
             onClick={copy}
-            className="flex w-full items-center justify-center gap-2 rounded-[6px] border border-outline-variant bg-surface-container px-4 py-3 text-label-lg text-on-surface transition-colors hover:border-border-strong hover:bg-surface-container-high"
+            className="nb-press flex w-full items-center justify-center gap-2 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-4 py-3 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface shadow-[4px_4px_0_0_var(--color-ink)] hover:bg-surface-container"
           >
             <Icon name="content_copy" size={18} /> Copy Markdown
           </button>
@@ -183,7 +184,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
           {/* Live preview */}
           <div className="flex flex-1 flex-col gap-2">
             <span className={labelClass}>Preview</span>
-            <div className="flex flex-1 items-center justify-center rounded-[8px] border border-outline-variant bg-surface-container p-6">
+            <div className="flex flex-1 items-center justify-center rounded-[4px] border-2 border-ink bg-surface-container-low p-6">
               <img
                 src={imageUrl}
                 alt="Badge preview"
@@ -198,7 +199,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
           {/* Markdown output */}
           <div className="flex flex-col gap-1">
             <span className={labelClass}>Markdown</span>
-            <pre className="overflow-x-auto rounded-[6px] border border-outline-variant bg-surface-container p-3 text-code-sm text-on-surface">
+            <pre className="overflow-x-auto rounded-[4px] border-2 border-ink bg-surface-container-lowest p-3 font-mono text-code-sm text-on-surface">
               {markdown}
             </pre>
           </div>
@@ -208,7 +209,7 @@ export function BadgeStudio({ onAdd }: BadgeStudioProps) {
             <button
               type="button"
               onClick={() => onAdd(spec)}
-              className="flex w-full items-center justify-center gap-2 rounded-[6px] bg-primary-container px-4 py-3 text-label-lg font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+              className="nb-press flex w-full items-center justify-center gap-2 rounded-[4px] border-2 border-ink bg-primary-container px-4 py-3 font-mono text-label-md font-bold uppercase tracking-wide text-on-primary-container shadow-[4px_4px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
             >
               <Icon name="add" size={18} /> Add to README
             </button>
