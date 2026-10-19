@@ -83,11 +83,11 @@ export function SavedProfilesPopover({
       role="dialog"
       aria-modal="false"
       aria-label="Saved profiles"
-      className="rc-elevated rc-fade-in absolute left-full top-0 z-50 ml-2 max-h-[70vh] w-72 origin-top-left overflow-hidden border border-outline-variant/70 bg-surface-container-low"
+      className="rc-elevated rc-fade-in absolute left-full top-0 z-50 ml-2 max-h-[70vh] w-72 origin-top-left overflow-hidden rounded-[4px] border-2 border-ink bg-surface-container-lowest"
     >
-      <header className="flex items-center gap-2 border-b border-outline-variant px-4 py-3">
+      <header className="flex items-center gap-2 border-b-2 border-ink px-4 py-3">
         <Icon name="folder_open" size={16} className="text-primary-container" />
-        <span className="text-label-lg font-semibold text-on-surface">
+        <span className="font-mono text-label-lg font-bold uppercase tracking-wide text-on-surface">
           Saved Profiles
         </span>
       </header>
@@ -114,11 +114,11 @@ export function SavedProfilesPopover({
                     onClose();
                   }}
                   className={cn(
-                    "flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-2 text-left",
+                    "flex min-w-0 flex-1 items-center gap-2.5 rounded-[4px] px-2 py-2 text-left",
                     "transition-colors hover:bg-surface-container"
                   )}
                 >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-primary-container">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink bg-primary-fixed text-on-primary-fixed">
                     <Icon name="person" size={16} />
                   </span>
                   <span className="min-w-0 flex-1">

@@ -59,11 +59,11 @@ export function PreferencesDialog({ open, onClose }: PreferencesDialogProps) {
       role="dialog"
       aria-modal="false"
       aria-label="Preferences"
-      className="rc-elevated rc-fade-in absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden border border-outline-variant/70 bg-surface-container-low"
+      className="rc-elevated rc-fade-in absolute bottom-full left-2 z-50 mb-2 w-72 origin-bottom-left overflow-hidden rounded-[4px] border-2 border-ink bg-surface-container-lowest"
     >
-      <header className="flex items-center gap-2 border-b border-outline-variant px-4 py-3">
+      <header className="flex items-center gap-2 border-b-2 border-ink px-4 py-3">
         <Icon name="tune" size={16} className="text-primary-container" />
-        <span className="text-label-lg font-semibold text-on-surface">
+        <span className="font-mono text-label-lg font-bold uppercase tracking-wide text-on-surface">
           Preferences
         </span>
       </header>
@@ -98,11 +98,11 @@ export function PreferencesDialog({ open, onClose }: PreferencesDialogProps) {
         </Row>
       </div>
 
-      <footer className="border-t border-outline-variant px-2 py-1">
+      <footer className="border-t-2 border-ink px-2 py-1">
         <button
           type="button"
           onClick={reset}
-          className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+          className="flex w-full items-center gap-2 rounded-[4px] px-2 py-2 text-left font-mono text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
         >
           <Icon name="restart_alt" size={16} />
           Reset to defaults
@@ -154,7 +154,7 @@ function Segmented({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="flex items-center gap-0.5 border border-outline-variant bg-surface-container-low p-0.5">
+    <div className="flex items-center gap-0.5 rounded-[4px] border-2 border-ink bg-surface-container-low p-0.5">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -167,9 +167,9 @@ function Segmented({
             title={opt.label}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "inline-flex h-7 w-7 items-center justify-center transition-colors",
+              "inline-flex h-7 w-7 items-center justify-center rounded-[2px] transition-colors",
               active
-                ? "bg-surface-container-high text-primary-container"
+                ? "bg-primary-container text-on-primary"
                 : "text-on-surface-variant hover:text-on-surface"
             )}
           >
@@ -199,14 +199,14 @@ function Switch({
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={cn(
-        "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150",
+        "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-ink transition-colors duration-150",
         checked ? "bg-primary-container" : "bg-surface-container-highest"
       )}
     >
       <span
         className={cn(
-          "absolute h-3.5 w-3.5 rounded-full bg-surface-container-lowest shadow transition-transform duration-150",
-          checked ? "translate-x-[18px]" : "translate-x-[3px]"
+          "absolute h-3.5 w-3.5 rounded-full border border-ink bg-surface-container-lowest transition-transform duration-150",
+          checked ? "translate-x-[18px]" : "translate-x-[2px]"
         )}
       />
     </button>

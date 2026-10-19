@@ -13,8 +13,8 @@ export function PageSkeleton() {
     >
       {/* Heading block */}
       <div className="mb-8">
-        <div className="rc-skeleton h-8 w-56 rounded-lg" />
-        <div className="rc-skeleton mt-3 h-4 w-full max-w-xl rounded" />
+        <div className="rc-skeleton h-8 w-56 rounded-[4px]" />
+        <div className="rc-skeleton mt-3 h-4 w-full max-w-xl rounded-[4px]" />
       </div>
 
       {/* Card grid */}
@@ -22,13 +22,13 @@ export function PageSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rc-skeleton-card flex flex-col gap-3 border border-outline-variant/60 bg-surface-container-lowest p-4"
+            className="rc-skeleton-card flex flex-col gap-3 rounded-[4px] border-2 border-ink bg-surface-container-lowest p-4"
             style={{ animationDelay: `${i * 80}ms` }}
           >
-            <div className="rc-skeleton h-24 w-full rounded-lg" />
-            <div className="rc-skeleton h-4 w-2/3 rounded" />
-            <div className="rc-skeleton h-3 w-full rounded" />
-            <div className="rc-skeleton h-3 w-5/6 rounded" />
+            <div className="rc-skeleton h-24 w-full rounded-[4px]" />
+            <div className="rc-skeleton h-4 w-2/3 rounded-[4px]" />
+            <div className="rc-skeleton h-3 w-full rounded-[4px]" />
+            <div className="rc-skeleton h-3 w-5/6 rounded-[4px]" />
           </div>
         ))}
       </div>

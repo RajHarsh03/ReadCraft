@@ -39,7 +39,7 @@ export class ErrorBoundary extends Component<
       <div className="rc-app-shell flex min-h-screen items-center justify-center p-6 text-on-surface">
         <div
           role="alert"
-          className="flex max-w-md flex-col gap-3 rounded-[12px] border border-outline-variant bg-surface-container-lowest p-6 text-center"
+          className="nb-shadow flex max-w-md flex-col gap-3 rounded-[4px] border-2 border-ink bg-surface-container-lowest p-6 text-center"
         >
           <span
             className="material-symbols-outlined mx-auto text-error"
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<
           >
             error
           </span>
-          <h1 className="text-headline-md font-semibold">
+          <h1 className="font-display text-headline-md font-semibold">
             Something went wrong
           </h1>
           <p className="text-body-md text-on-surface-variant">
@@ -58,7 +58,7 @@ export class ErrorBoundary extends Component<
           <button
             type="button"
             onClick={this.handleReload}
-            className="rc-amber-glow mx-auto mt-1 inline-flex items-center justify-center gap-1.5 rounded-[6px] bg-primary-container px-4 py-2 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+            className="nb-press mx-auto mt-1 inline-flex items-center justify-center gap-1.5 rounded-[4px] border-2 border-ink bg-primary-container px-4 py-2 font-mono text-label-md font-bold uppercase tracking-wide text-on-primary-container shadow-[4px_4px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
           >
             Reload the app
           </button>
