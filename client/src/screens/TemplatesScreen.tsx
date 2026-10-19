@@ -96,7 +96,11 @@ export function TemplatesScreen() {
                   type="button"
                   onClick={() => openWithTemplate(template.id)}
                   className="nb-press-sm mt-4 inline-flex items-center justify-center gap-1.5 rounded-[4px] border-2 px-3 py-2 font-mono text-label-md font-bold uppercase tracking-wide transition-colors"
-                  style={{ borderColor: "var(--color-ink)", color: accent, backgroundColor: "var(--color-surface-container-lowest)" }}
+                  style={{
+                    borderColor: "var(--color-ink)",
+                    color: accent,
+                    backgroundColor: "var(--color-surface-container-lowest)",
+                  }}
                 >
                   Use template
                 </button>

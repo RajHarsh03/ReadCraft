@@ -32,7 +32,9 @@ export function ThemeToggle({ className, size = 16 }: ThemeToggleProps) {
     <button
       type="button"
       onClick={toggle}
-      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={
+        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+      }
       title={theme === "dark" ? "Light mode" : "Dark mode"}
       className={cn(
         "nb-border nb-press-sm inline-flex h-8 w-8 items-center justify-center",

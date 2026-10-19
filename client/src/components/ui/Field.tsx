@@ -49,7 +49,10 @@ export function Field({
             invalid && errorRing
           )}
         >
-          <span className="font-mono text-code-sm text-on-surface-variant" aria-hidden>
+          <span
+            className="font-mono text-code-sm text-on-surface-variant"
+            aria-hidden
+          >
             {prefix}
           </span>
           <input

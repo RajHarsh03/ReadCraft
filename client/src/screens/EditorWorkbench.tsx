@@ -242,7 +242,9 @@ function SubHeader() {
     <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b-2 border-ink px-4 py-2.5 lg:px-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <span className="font-mono text-code-sm font-bold text-primary-container">#</span>
+          <span className="font-mono text-code-sm font-bold text-primary-container">
+            #
+          </span>
           <span className="font-mono text-code-sm text-on-surface">
             readme-{fileSlug}.md
           </span>

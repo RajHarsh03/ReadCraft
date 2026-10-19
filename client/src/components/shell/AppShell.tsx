@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { TopNav } from "./TopNav";
 import { LeftRail } from "./LeftRail";
 import { useRouter } from "../../router";
