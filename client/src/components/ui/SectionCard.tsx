@@ -31,7 +31,7 @@ export function SectionCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="group border border-outline-variant/70 bg-surface-container-low transition-colors hover:border-border-strong">
+    <div className="group border-2 border-ink rounded-[4px] bg-surface-container-lowest shadow-[4px_4px_0_0_var(--color-ink)] transition-colors hover:shadow-[6px_6px_0_0_var(--color-ink)]">
       <div className="flex w-full items-center justify-between gap-3 p-4">
         <button
           type="button"
@@ -39,8 +39,8 @@ export function SectionCard({
           className="flex min-w-0 flex-1 items-center gap-3 text-left"
           aria-expanded={open}
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-outline-variant/70 text-on-surface-variant transition-colors group-hover:border-primary-container/60 group-hover:text-primary">
-            <Icon name={icon} size={17} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-ink rounded-[4px] bg-surface-container-low text-on-surface-variant transition-colors group-hover:text-primary-container">
+            <Icon name={icon} size={18} />
           </span>
           <div className="flex min-w-0 flex-col">
             <span className="text-headline-sm text-on-surface">{title}</span>
@@ -60,7 +60,7 @@ export function SectionCard({
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="rounded p-0.5 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+            className="nb-border nb-press-sm flex h-8 w-8 items-center justify-center rounded-[4px] bg-surface-container-lowest text-on-surface-variant hover:text-on-surface"
             aria-label={`${open ? "Collapse" : "Expand"} ${title}`}
             aria-expanded={open}
           >
@@ -77,7 +77,7 @@ export function SectionCard({
       </div>
 
       {open && (
-        <div className="flex flex-col gap-2 border-t border-outline-variant/70 px-4 pb-4 pt-3">
+        <div className="flex flex-col gap-2 border-t-2 border-ink px-4 pb-4 pt-3">
           {children}
         </div>
       )}
