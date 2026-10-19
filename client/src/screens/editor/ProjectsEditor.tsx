@@ -11,8 +11,8 @@ function makeProjectId(): string {
 }
 
 const inputClass =
-  "w-full rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 " +
-  "text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none";
+  "w-full rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1.5 font-mono text-code-sm text-on-surface " +
+  "placeholder:text-outline focus:shadow-[3px_3px_0_0_var(--color-ink)] focus:outline-none";
 
 /** Pinned-projects editor: add, edit, remove, reorder, restore suggested. */
 export function ProjectsEditor() {
@@ -60,14 +60,14 @@ export function ProjectsEditor() {
         <button
           type="button"
           onClick={add}
-          className="inline-flex items-center gap-1.5 rounded-[6px] bg-primary-container px-3 py-1.5 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+          className="nb-press inline-flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-primary-container px-3 py-1.5 font-mono text-label-md font-bold uppercase tracking-wide text-on-primary-container shadow-[3px_3px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
         >
           <Icon name="add" size={15} /> Add project
         </button>
         <button
           type="button"
           onClick={restore}
-          className="inline-flex items-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container px-3 py-1.5 text-label-md text-on-surface-variant transition-colors hover:border-border-strong hover:text-on-surface"
+          className="nb-press-sm inline-flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-1.5 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container"
         >
           <Icon name="restart_alt" size={15} /> Restore suggested
         </button>
@@ -92,7 +92,7 @@ function ProjectRow({
   onMove: (direction: -1 | 1) => void;
 }) {
   return (
-    <div className="rounded-[8px] border border-outline-variant bg-surface-container-low p-2.5">
+    <div className="rounded-[4px] border-2 border-ink bg-surface-container-lowest p-2.5">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-0.5">
           <button
@@ -133,7 +133,7 @@ function ProjectRow({
             aria-label="Project name"
             onChange={(e) => onChange({ name: e.target.value })}
           />
-          <div className="flex w-24 shrink-0 items-center gap-1 rounded-[6px] border border-outline-variant bg-surface-container px-2 focus-within:border-primary-container">
+          <div className="flex w-24 shrink-0 items-center gap-1 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2 focus-within:shadow-[3px_3px_0_0_var(--color-ink)]">
             <Icon name="star" size={13} className="text-primary-container" />
             <input
               className="w-full bg-transparent py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:outline-none focus-visible:outline-none"

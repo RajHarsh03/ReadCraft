@@ -24,7 +24,7 @@ export function SocialEditor() {
           {links.map((link, i) => (
             <li
               key={link.id}
-              className="flex items-center gap-2 rounded-[6px] border border-outline-variant/70 bg-surface-container p-2"
+              className="flex items-center gap-2 rounded-[4px] border-2 border-ink bg-surface-container-lowest p-2"
             >
               <img
                 src={link.badgeUrl}
@@ -41,7 +41,7 @@ export function SocialEditor() {
                 onClick={() =>
                   dispatch({ type: "moveSocial", id: link.id, direction: -1 })
                 }
-                className="rounded p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface disabled:pointer-events-none disabled:opacity-40"
+                className="nb-press-sm rounded-[4px] border-2 border-transparent p-1 text-on-surface-variant hover:border-ink hover:bg-surface-container hover:text-on-surface disabled:pointer-events-none disabled:opacity-40"
               >
                 <Icon name="keyboard_arrow_up" size={16} />
               </button>
@@ -52,7 +52,7 @@ export function SocialEditor() {
                 onClick={() =>
                   dispatch({ type: "moveSocial", id: link.id, direction: 1 })
                 }
-                className="rounded p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface disabled:pointer-events-none disabled:opacity-40"
+                className="nb-press-sm rounded-[4px] border-2 border-transparent p-1 text-on-surface-variant hover:border-ink hover:bg-surface-container hover:text-on-surface disabled:pointer-events-none disabled:opacity-40"
               >
                 <Icon name="keyboard_arrow_down" size={16} />
               </button>
@@ -60,7 +60,7 @@ export function SocialEditor() {
                 type="button"
                 aria-label={`Remove ${link.label}`}
                 onClick={() => dispatch({ type: "removeSocial", id: link.id })}
-                className="rounded p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-error"
+                className="nb-press-sm rounded-[4px] border-2 border-transparent p-1 text-on-surface-variant hover:border-ink hover:bg-surface-container hover:text-error"
               >
                 <Icon name="close" size={16} />
               </button>
@@ -72,7 +72,7 @@ export function SocialEditor() {
       <button
         type="button"
         onClick={() => navigate({ name: "badges" })}
-        className="mt-1 inline-flex items-center justify-center gap-1.5 self-start rounded-[6px] border border-outline-variant bg-surface-container-low px-3 py-1.5 text-label-md text-on-surface transition-colors hover:border-border-strong"
+        className="nb-press-sm mt-1 inline-flex items-center justify-center gap-1.5 self-start rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-1.5 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container"
       >
         <Icon name="add" size={15} />
         Add a social badge
