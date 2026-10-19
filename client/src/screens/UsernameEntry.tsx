@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Icon } from "../components/ui/Icon";
 import { Logo } from "../components/ui/Logo";
+import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { useRouter } from "../router";
 
 const SAMPLES = ["shadcn", "leerob", "antfu"];
 
-/** Editorial feature index — rendered as a numbered list, not cards. */
+/** Editorial feature index — rendered as a numbered, ruled list. */
 const FEATURES = [
   {
     n: "01",
@@ -52,7 +53,7 @@ interface UsernameEntryProps {
   onGenerate: (username: string) => void;
 }
 
-/** Landing / username-entry screen — editorial, left-aligned, type-led. */
+/** Landing / username-entry screen — neo-brutalist editorial, full-bleed. */
 export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
   const [value, setValue] = useState("");
   const { navigate } = useRouter();
@@ -65,34 +66,35 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
-      {/* Header — sticky rule-under bar, full width */}
-      <header className="sticky top-0 z-50 border-b border-outline-variant/60 bg-surface/90 backdrop-blur-md">
-        <div className="flex h-14 items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-1.5">
-            <Logo size={24} />
+      {/* Header — paper band with a hard ink rule, full width */}
+      <header className="rc-nav-surface sticky top-0 z-50 border-b-2 border-ink">
+        <div className="flex h-16 items-center justify-between px-5 sm:px-8">
+          <div className="flex items-center gap-2">
+            <Logo size={26} />
             <span className="rc-brand text-[1.35rem] leading-none">
               ReadCraft
             </span>
           </div>
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-3 sm:gap-5">
             <button
               type="button"
               onClick={() => navigate({ name: "templates" })}
-              className="text-label-md font-semibold text-on-surface transition-colors hover:text-primary"
+              className="hidden font-mono text-label-md font-bold uppercase tracking-wide text-on-surface transition-colors hover:text-primary sm:inline"
             >
               Templates
             </button>
             <button
               type="button"
               onClick={() => navigate({ name: "docs" })}
-              className="hidden text-label-md font-semibold text-on-surface transition-colors hover:text-primary sm:inline"
+              className="hidden font-mono text-label-md font-bold uppercase tracking-wide text-on-surface transition-colors hover:text-primary sm:inline"
             >
               Docs
             </button>
+            <ThemeToggle />
             <button
               type="button"
               onClick={() => onGenerate("alexrivera")}
-              className="inline-flex items-center gap-1.5 border border-on-surface/80 px-4 py-1.5 text-label-md font-semibold text-on-surface transition-colors hover:bg-on-surface hover:text-surface"
+              className="nb-press inline-flex items-center gap-2 rounded-[4px] border-2 border-ink bg-primary-container px-4 py-2 font-mono text-label-sm font-bold uppercase tracking-wider text-on-primary-container shadow-[4px_4px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
             >
               Launch Studio
             </button>
@@ -100,19 +102,26 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         </div>
       </header>
 
-      {/* HERO — asymmetric 2-column, type-led */}
-      <section className="border-b border-outline-variant/60">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-x-10 px-6 lg:grid-cols-12 lg:px-10">
+      {/* HERO — asymmetric split, serif display heading + marker highlight */}
+      <section className="rc-landing-grid border-b-2 border-ink">
+        <div className="grid grid-cols-1 gap-x-10 px-5 py-14 sm:px-8 lg:grid-cols-12 lg:py-20">
           {/* Left: the statement */}
-          <div className="col-span-1 flex flex-col justify-center py-12 lg:col-span-7 lg:border-r lg:border-outline-variant/60 lg:py-16 lg:pr-10">
-            <span className="mb-6 flex items-center gap-3 text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
-              <span className="text-primary">01</span>
-              <span className="h-px w-4 bg-outline-variant" />
-              GitHub profile README studio
+          <div className="flex flex-col justify-center lg:col-span-7 lg:border-r-2 lg:border-ink lg:pr-10">
+            <span className="nb-shadow-sm mb-6 inline-flex w-fit items-center gap-2 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-1">
+              <span className="h-2 w-2 rounded-full bg-primary-container" />
+              <span className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
+                GitHub profile README studio
+              </span>
             </span>
-            <h1 className="font-display text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.02] tracking-tight text-on-surface">
+            <h1 className="relative font-display text-[clamp(2.4rem,5vw,3.5rem)] font-[650] leading-[1.04] tracking-tight text-on-surface">
               Craft a profile README worthy of your{" "}
-              <span className="italic text-primary">code.</span>
+              <span className="relative inline-block">
+                <span
+                  aria-hidden
+                  className="absolute inset-x-[-2px] bottom-1 z-0 h-4 -rotate-1 rounded-[2px] bg-secondary-fixed opacity-80"
+                />
+                <span className="relative z-10 text-primary">code.</span>
+              </span>
             </h1>
             <p className="mt-5 max-w-md text-body-lg leading-relaxed text-on-surface-variant">
               A live editor with true GitHub-Flavored Markdown preview,
@@ -120,20 +129,20 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               boilerplate.
             </p>
 
-            {/* Prompt — a single underlined input line, editorial */}
+            {/* Prompt — a bordered card with the username line + Generate */}
             <form onSubmit={submit} className="mt-8 max-w-md">
-              <label className="mb-2 block text-label-sm uppercase tracking-widest text-on-surface-variant">
+              <label className="mb-2 block font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                 Start with a username
               </label>
-              <div className="flex items-end gap-3 border-b-2 border-border-strong pb-2 transition-colors focus-within:border-primary-container">
-                <span className="select-none text-headline-md font-semibold text-on-surface-variant">
+              <div className="nb-shadow flex items-center gap-2 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-2 focus-within:shadow-[3px_3px_0_0_var(--color-ink)]">
+                <span className="select-none whitespace-nowrap font-mono text-code-sm font-semibold text-on-surface-variant">
                   github.com/
                 </span>
                 <input
                   autoComplete="off"
                   spellCheck={false}
                   aria-label="GitHub username"
-                  className="min-w-0 flex-1 bg-transparent text-headline-md font-semibold tracking-tight text-on-surface placeholder:font-semibold placeholder:text-on-surface-variant/70 focus:outline-none"
+                  className="min-w-0 flex-1 bg-transparent font-mono text-body-md font-semibold text-on-surface placeholder:text-outline focus:outline-none"
                   placeholder="torvalds"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
@@ -141,14 +150,14 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                 <button
                   type="submit"
                   aria-label="Generate profile"
-                  className="mb-1 inline-flex shrink-0 items-center gap-1.5 bg-primary-container px-4 py-2 text-label-md font-bold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+                  className="nb-press inline-flex shrink-0 items-center gap-1.5 rounded-[4px] border-2 border-ink bg-primary-container px-4 py-2 font-mono text-label-sm font-bold uppercase tracking-wider text-on-primary-container shadow-[2px_2px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
                 >
                   Generate
                   <Icon name="arrow_forward" size={16} />
                 </button>
               </div>
-              <div className="mt-3 flex items-center gap-3 text-label-sm">
-                <span className="font-semibold uppercase tracking-widest text-on-surface-variant">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                   Try
                 </span>
                 {SAMPLES.map((s) => (
@@ -156,7 +165,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                     key={s}
                     type="button"
                     onClick={() => setValue(s)}
-                    className="font-semibold text-on-surface underline decoration-border-strong underline-offset-4 transition-colors hover:text-primary hover:decoration-primary-container"
+                    className="nb-press-sm rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1 font-mono text-label-sm font-semibold text-on-surface hover:bg-surface-container"
                   >
                     {s}
                   </button>
@@ -165,25 +174,29 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
             </form>
           </div>
 
-          {/* Right: a single, calm preview specimen */}
-          <div className="col-span-1 hidden flex-col justify-center py-16 [perspective:1200px] lg:col-span-5 lg:flex lg:pl-10">
-            <div className="-rotate-[1.5deg] border border-outline-variant/70 bg-surface-container-lowest shadow-[0_30px_70px_-40px_rgb(0_0_0_/_0.9)] transition-transform duration-500 ease-out hover:rotate-0">
-              <div className="flex items-center justify-between border-b border-outline-variant/70 px-4 py-2.5">
-                <span className="flex items-center gap-2 text-code-sm text-on-surface-variant">
-                  <Icon name="description" size={13} className="text-primary" />
+          {/* Right: a single preview specimen card */}
+          <div className="hidden flex-col justify-center lg:col-span-5 lg:flex lg:pl-10">
+            <div className="nb-shadow-lg -rotate-[1.5deg] overflow-hidden rounded-[4px] border-2 border-ink bg-surface-container-lowest transition-transform duration-500 ease-out hover:rotate-0">
+              <div className="flex items-center justify-between border-b-2 border-ink bg-paper px-4 py-2.5">
+                <span className="flex items-center gap-2 font-mono text-code-sm text-on-surface">
+                  <Icon
+                    name="description"
+                    size={14}
+                    className="text-primary-container"
+                  />
                   README.md
                 </span>
-                <span className="text-label-sm uppercase tracking-widest text-outline-variant">
+                <span className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                   preview
                 </span>
               </div>
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/20 text-headline-sm font-bold text-primary">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-ink bg-primary-fixed text-headline-sm font-bold text-on-primary-fixed">
                     AR
                   </div>
                   <div>
-                    <div className="text-headline-sm font-bold text-on-surface">
+                    <div className="font-display text-headline-sm font-bold text-on-surface">
                       Alex Rivera
                     </div>
                     <div className="text-body-sm text-on-surface-variant">
@@ -191,8 +204,8 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                     </div>
                   </div>
                 </div>
-                <div className="h-px w-full bg-outline-variant/50" />
-                <div className="space-y-2 text-code-sm">
+                <div className="h-0.5 w-full bg-ink" />
+                <div className="space-y-2 font-mono text-code-sm">
                   <Row k="commits (2025)" v="2,481" />
                   <Row k="pull requests" v="312" vClass="text-primary" />
                   <Row k="repositories" v="43" vClass="text-tertiary" />
@@ -202,7 +215,7 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                     (t) => (
                       <span
                         key={t}
-                        className="border border-outline-variant/70 px-2 py-0.5 text-code-sm text-on-surface-variant"
+                        className="rounded-[4px] border-2 border-ink bg-surface-container-low px-2 py-0.5 font-mono text-label-sm font-semibold text-on-surface-variant"
                       >
                         {t}
                       </span>
@@ -210,36 +223,36 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
                   )}
                 </div>
               </div>
-              <div className="h-0.5 w-full bg-primary-container" />
+              <div className="h-1 w-full bg-primary-container" />
             </div>
-            <p className="mt-3 text-right text-label-sm text-on-surface-variant">
+            <p className="mt-3 font-mono text-label-sm uppercase tracking-wider text-on-surface-variant">
               output: 100% standard markdown
             </p>
           </div>
         </div>
       </section>
 
-      {/* FEATURE INDEX — a numbered editorial list, ruled rows */}
-      <section className="border-b border-outline-variant/60">
-        <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10">
-          <div className="mb-12 flex items-baseline justify-between">
+      {/* FEATURE INDEX — numbered editorial list, ruled rows */}
+      <section className="border-b-2 border-ink">
+        <div className="px-5 py-16 sm:px-8 sm:py-20">
+          <div className="mb-10 flex items-baseline justify-between">
             <h2 className="font-display text-headline-lg font-bold tracking-tight text-on-surface">
               What it does
             </h2>
-            <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+            <span className="font-mono text-label-sm font-bold uppercase tracking-[0.25em] text-on-surface-variant">
               02 — Capabilities
             </span>
           </div>
-          <div className="divide-y divide-outline-variant/50 border-y border-outline-variant/50">
+          <div className="border-y-2 border-ink">
             {FEATURES.map((f) => (
               <div
                 key={f.n}
-                className="group grid grid-cols-12 items-baseline gap-4 py-6 transition-colors hover:bg-surface-container-lowest/40"
+                className="group grid grid-cols-12 items-baseline gap-4 border-b border-ink/20 py-6 transition-colors last:border-b-0 hover:bg-surface-container-low"
               >
-                <span className="col-span-2 font-display text-headline-md font-bold text-outline-variant transition-colors group-hover:text-primary md:col-span-1">
+                <span className="col-span-2 font-mono text-headline-md font-bold text-outline transition-colors group-hover:text-primary md:col-span-1">
                   {f.n}
                 </span>
-                <h3 className="col-span-10 text-headline-sm font-semibold text-on-surface md:col-span-4">
+                <h3 className="col-span-10 font-display text-headline-sm font-semibold text-on-surface md:col-span-4">
                   {f.title}
                 </h3>
                 <p className="col-span-12 max-w-xl text-body-md text-on-surface-variant md:col-span-7">
@@ -251,24 +264,27 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         </div>
       </section>
 
-      {/* HOW IT WORKS — three ruled columns */}
-      <section className="border-b border-outline-variant/60">
-        <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10">
-          <div className="mb-12 flex items-baseline justify-between">
+      {/* HOW IT WORKS — three offset-shadow cards */}
+      <section className="border-b-2 border-ink">
+        <div className="px-5 py-16 sm:px-8 sm:py-20">
+          <div className="mb-10 flex items-baseline justify-between">
             <h2 className="font-display text-headline-lg font-bold tracking-tight text-on-surface">
               How it works
             </h2>
-            <span className="text-label-sm uppercase tracking-[0.25em] text-on-surface-variant">
+            <span className="font-mono text-label-sm font-bold uppercase tracking-[0.25em] text-on-surface-variant">
               03 — Workflow
             </span>
           </div>
-          <div className="grid grid-cols-1 gap-px overflow-hidden border border-outline-variant/50 bg-outline-variant/50 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {STEPS.map((s) => (
-              <div key={s.n} className="bg-surface p-8">
-                <span className="font-display text-[2.5rem] font-bold leading-none text-primary/80">
+              <div
+                key={s.n}
+                className="nb-press rounded-[4px] border-2 border-ink bg-surface-container-lowest p-6 shadow-[4px_4px_0_0_var(--color-ink)]"
+              >
+                <span className="font-display text-[2.5rem] font-bold leading-none text-primary">
                   {s.n}
                 </span>
-                <h3 className="mt-4 text-headline-sm font-semibold text-on-surface">
+                <h3 className="mt-4 font-display text-headline-sm font-semibold text-on-surface">
                   {s.title}
                 </h3>
                 <p className="mt-1.5 text-body-md text-on-surface-variant">
@@ -280,16 +296,16 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         </div>
       </section>
 
-      {/* CTA — a bold full-width statement bar */}
-      <section className="border-b border-outline-variant/60">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 py-16 lg:flex-row lg:items-center lg:px-10">
-          <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold leading-tight tracking-tight text-on-surface">
+      {/* CTA — a bold, boxed statement bar */}
+      <section className="border-b-2 border-ink">
+        <div className="flex flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 lg:flex-row lg:items-center">
+          <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-[650] leading-tight tracking-tight text-on-surface">
             Ready to craft your README?
           </h2>
           <button
             type="button"
             onClick={() => onGenerate("alexrivera")}
-            className="inline-flex shrink-0 items-center gap-2 bg-primary-container px-7 py-3.5 text-headline-sm font-bold text-on-primary-container transition-colors hover:bg-primary-fixed-dim"
+            className="nb-press inline-flex shrink-0 items-center gap-2 rounded-[4px] border-2 border-ink bg-primary-container px-6 py-3 font-mono text-label-md font-bold uppercase tracking-wider text-on-primary-container shadow-[4px_4px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim"
           >
             Launch Studio
             <Icon name="arrow_forward" size={18} />
@@ -297,22 +313,22 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-outline-variant/60">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-4 text-body-sm text-on-surface-variant sm:flex-row sm:items-center lg:px-10">
+      {/* Footer — paper band */}
+      <footer className="rc-nav-surface border-t-2 border-ink">
+        <div className="flex flex-col items-start justify-between gap-4 px-5 py-6 text-body-sm text-on-surface-variant sm:flex-row sm:items-center sm:px-8">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span className="flex items-center gap-2">
-              <Logo size={20} />
+              <Logo size={22} />
               <span className="rc-brand text-on-surface">ReadCraft</span>
             </span>
-            <span className="text-outline-variant">·</span>
+            <span className="text-outline">·</span>
             <span>
               Built by{" "}
               <a
                 href="https://github.com/RajHarsh03"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-on-surface underline decoration-outline-variant underline-offset-4 transition-colors hover:text-primary hover:decoration-primary-container"
+                className="font-semibold text-primary underline decoration-primary underline-offset-4 hover:text-primary-container"
               >
                 Harsh
               </a>
@@ -326,12 +342,12 @@ export function UsernameEntry({ onGenerate }: UsernameEntryProps) {
               rel="noreferrer"
               aria-label="ReadCraft on GitHub"
               title="RajHarsh03/ReadCraft"
-              className="inline-flex items-center gap-2 border border-outline-variant/70 px-3 py-1.5 text-code-sm text-on-surface transition-colors hover:border-primary-container/60 hover:text-primary"
+              className="nb-press-sm inline-flex items-center gap-2 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-1.5 font-mono text-code-sm text-on-surface hover:bg-surface-container"
             >
               <GitHubMark className="h-4 w-4" />
               ReadCraft
             </a>
-            <span className="uppercase tracking-widest text-on-surface-variant">
+            <span className="font-mono text-label-sm uppercase tracking-wider text-on-surface-variant">
               100% client-side · no data stored
             </span>
           </div>
