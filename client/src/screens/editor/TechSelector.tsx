@@ -52,7 +52,7 @@ export function TechSelector() {
         {state.tech.map((t) => (
           <span
             key={t.name}
-            className="inline-flex items-center gap-1.5 rounded bg-surface-container-high px-2 py-0.5 text-label-sm text-on-surface"
+            className="inline-flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container px-2 py-0.5 font-mono text-label-sm text-on-surface"
           >
             {t.badgeUrl ? (
               <img src={t.badgeUrl} alt="" className="h-3 w-3 rounded-sm" />
@@ -76,7 +76,7 @@ export function TechSelector() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 focus-within:border-primary-container">
+      <div className="flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1.5 focus-within:shadow-[3px_3px_0_0_var(--color-ink)]">
         <Icon name="search" size={16} className="text-on-surface-variant" />
         <input
           value={query}
@@ -107,8 +107,8 @@ export function TechSelector() {
               onClick={() => setFilter(g)}
               className={
                 filter === g
-                  ? "rounded bg-surface-container-high px-2 py-1 text-label-sm font-semibold text-primary"
-                  : "rounded px-2 py-1 text-label-sm text-on-surface-variant transition-colors hover:bg-surface-container"
+                  ? "rounded-[4px] border-2 border-ink bg-primary-container px-2 py-1 font-mono text-label-sm font-bold uppercase tracking-wide text-on-primary"
+                  : "rounded-[4px] border-2 border-transparent px-2 py-1 font-mono text-label-sm uppercase tracking-wide text-on-surface-variant transition-colors hover:bg-surface-container"
               }
             >
               {g}
@@ -131,7 +131,7 @@ export function TechSelector() {
               key={entry.name}
               type="button"
               onClick={() => add({ name: entry.name, color: entry.color })}
-              className="inline-flex items-center gap-1.5 rounded border border-outline-variant bg-surface-container-low px-2 py-0.5 text-label-sm text-on-surface-variant transition-colors hover:border-border-strong hover:text-on-surface"
+              className="inline-flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2 py-0.5 font-mono text-label-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
             >
               <span
                 className="h-2 w-2 rounded-full"
@@ -145,7 +145,7 @@ export function TechSelector() {
       </div>
 
       {/* Custom technology */}
-      <div className="rounded-[6px] border border-outline-variant/70 bg-surface-container p-2.5">
+      <div className="rounded-[4px] border-2 border-ink bg-surface-container-low p-2.5">
         <button
           type="button"
           onClick={() => setCustomOpen((v) => !v)}
@@ -210,7 +210,7 @@ function CustomTechForm({
   };
 
   return (
-    <div className="mt-2.5 flex flex-col gap-2 border-t border-outline-variant/60 pt-2.5">
+    <div className="mt-2.5 flex flex-col gap-2 border-t-2 border-ink pt-2.5">
       <div className="flex items-center gap-2">
         <input
           value={name}
@@ -218,14 +218,14 @@ function CustomTechForm({
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Technology name"
           aria-label="Custom technology name"
-          className="flex-1 rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
+          className="flex-1 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1.5 font-mono text-code-sm text-on-surface placeholder:text-outline focus:shadow-[3px_3px_0_0_var(--color-ink)] focus:outline-none"
         />
         <input
           type="color"
           value={color}
           onChange={(e) => setColor(e.target.value)}
           aria-label="Badge colour"
-          className="h-9 w-9 shrink-0 cursor-pointer rounded-[6px] border border-outline-variant bg-surface-container p-1"
+          className="h-9 w-9 shrink-0 cursor-pointer rounded-[4px] border-2 border-ink bg-surface-container-lowest p-1"
         />
       </div>
       <input
@@ -234,7 +234,7 @@ function CustomTechForm({
         onKeyDown={(e) => e.key === "Enter" && submit()}
         placeholder="Badge image URL (optional)"
         aria-label="Custom badge image URL"
-        className="rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-code-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus-visible:outline-none"
+        className="rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1.5 font-mono text-code-sm text-on-surface placeholder:text-outline focus:shadow-[3px_3px_0_0_var(--color-ink)] focus:outline-none"
       />
       {duplicate && (
         <span className="text-body-sm text-error">
@@ -245,7 +245,7 @@ function CustomTechForm({
         type="button"
         onClick={submit}
         disabled={!canAdd}
-        className="inline-flex items-center justify-center gap-1.5 rounded-[6px] bg-primary-container px-3 py-1.5 text-label-md font-semibold text-on-primary-container transition-colors hover:bg-primary-fixed-dim disabled:pointer-events-none disabled:opacity-40"
+        className="nb-press inline-flex items-center justify-center gap-1.5 rounded-[4px] border-2 border-ink bg-primary-container px-3 py-1.5 font-mono text-label-md font-bold uppercase tracking-wide text-on-primary-container shadow-[3px_3px_0_0_var(--color-ink)] hover:bg-primary-fixed-dim disabled:pointer-events-none disabled:opacity-40"
       >
         <Icon name="add" size={15} /> Add technology
       </button>

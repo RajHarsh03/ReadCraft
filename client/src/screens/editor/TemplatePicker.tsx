@@ -52,20 +52,20 @@ export function TemplatePicker() {
         return (
           <div
             key={template.id}
-            className={`rounded-[8px] border p-3 transition-colors ${
+            className={`rounded-[4px] border-2 p-3 transition-colors ${
               active
-                ? "border-primary-container/60 bg-primary-container/5"
-                : "border-outline-variant bg-surface-container hover:border-border-strong"
+                ? "border-ink bg-primary-fixed/40 shadow-[4px_4px_0_0_var(--color-ink)]"
+                : "border-ink bg-surface-container-lowest hover:bg-surface-container-low"
             }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-body-md font-semibold text-on-surface">
+                  <span className="font-display text-body-md font-semibold text-on-surface">
                     {template.name}
                   </span>
                   {active && (
-                    <span className="inline-flex items-center gap-0.5 rounded bg-primary-container/15 px-1.5 py-0.5 text-label-sm text-primary-container">
+                    <span className="inline-flex items-center gap-0.5 rounded-[4px] border border-ink bg-primary-container px-1.5 py-0.5 font-mono text-label-sm font-bold uppercase tracking-wide text-on-primary">
                       <Icon name="check" size={12} /> Active
                     </span>
                   )}
@@ -78,7 +78,7 @@ export function TemplatePicker() {
                 type="button"
                 onClick={() => apply(template)}
                 disabled={active}
-                className="shrink-0 rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1 text-label-md text-on-surface transition-colors hover:border-border-strong hover:bg-surface-container-high disabled:pointer-events-none disabled:opacity-40"
+                className="nb-press-sm shrink-0 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container disabled:pointer-events-none disabled:opacity-40"
               >
                 {active ? "Applied" : "Apply"}
               </button>
@@ -89,7 +89,7 @@ export function TemplatePicker() {
               {template.layout.map((id) => (
                 <span
                   key={id}
-                  className="rounded bg-surface-container-high px-1.5 py-0.5 text-label-sm text-on-surface-variant"
+                  className="rounded-[4px] border border-ink bg-surface-container px-1.5 py-0.5 font-mono text-label-sm text-on-surface-variant"
                 >
                   {SECTION_META[id].label}
                 </span>
@@ -101,7 +101,7 @@ export function TemplatePicker() {
       <button
         type="button"
         onClick={() => navigate({ name: "templates" })}
-        className="mt-1 inline-flex items-center justify-center gap-1.5 rounded-[6px] border border-outline-variant bg-surface-container-low px-3 py-2 text-label-md text-on-surface transition-colors hover:border-border-strong hover:bg-surface-container"
+        className="nb-press mt-1 inline-flex items-center justify-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-2 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface shadow-[3px_3px_0_0_var(--color-ink)] hover:bg-surface-container"
       >
         <Icon name="grid_view" size={15} />
         Browse all {TEMPLATES.length} templates

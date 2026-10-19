@@ -32,14 +32,14 @@ export function SectionsEditor() {
       </SectionCard>
 
       {/* Editor header */}
-      <div className="flex items-center justify-between pb-1">
+      <div className="flex items-center justify-between border-b-2 border-ink pb-2">
         <div className="flex items-center gap-1.5">
-          <Icon name="tune" size={18} className="text-primary" />
-          <span className="text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
+          <Icon name="tune" size={18} className="text-primary-container" />
+          <span className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
             Document Sections ({activeCount})
           </span>
         </div>
-        <span className="text-code-sm text-on-surface-variant">
+        <span className="font-mono text-code-sm text-on-surface-variant">
           Live Synced
         </span>
       </div>

@@ -30,11 +30,11 @@ export function GitHubConnectionCard() {
   }, [state, dispatch]);
 
   return (
-    <div className="border border-outline-variant/70 border-l-2 border-l-primary-container bg-surface-container-low p-4">
+    <div className="nb-shadow rounded-[4px] border-2 border-ink bg-surface-container-lowest p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-outline-variant/70 text-primary">
-            <Icon name="hub" size={17} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border-2 border-ink bg-primary-fixed text-on-primary-fixed">
+            <Icon name="hub" size={18} />
           </span>
           <div className="flex flex-col">
             <span className="text-headline-sm text-on-surface">
@@ -49,7 +49,7 @@ export function GitHubConnectionCard() {
           <button
             type="button"
             onClick={refetch}
-            className="flex items-center gap-1.5 rounded px-2 py-1 text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+            className="nb-press-sm flex items-center gap-1.5 rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container"
           >
             <Icon name="refresh" size={15} />
             {state.status === "success" ? "Refresh" : "Retry"}
@@ -65,7 +65,7 @@ export function GitHubConnectionCard() {
         )}
         {state.status === "loading" && <ConnectionSkeleton />}
         {state.status === "error" && (
-          <div className="flex flex-col gap-2 rounded-[6px] border border-error/40 bg-error-container/10 p-3">
+          <div className="flex flex-col gap-2 rounded-[4px] border-2 border-error bg-error-container/40 p-3">
             <div className="flex items-start gap-2">
               <Icon name="error" size={16} className="mt-0.5 text-error" />
               <div className="flex flex-col">
@@ -81,7 +81,7 @@ export function GitHubConnectionCard() {
             <button
               type="button"
               onClick={refetch}
-              className="self-start rounded bg-surface-container-high px-2.5 py-1 text-label-md text-on-surface transition-colors hover:bg-surface-bright"
+              className="nb-press-sm self-start rounded-[4px] border-2 border-ink bg-surface-container-lowest px-2.5 py-1 font-mono text-label-md font-bold uppercase tracking-wide text-on-surface hover:bg-surface-container"
             >
               Try again
             </button>
@@ -116,7 +116,7 @@ function ConnectionSuccess({ bundle }: { bundle: GitHubBundle }) {
         <img
           src={profile.avatarUrl}
           alt={`${profile.login}'s avatar`}
-          className="h-12 w-12 rounded-full border border-outline-variant"
+          className="h-12 w-12 rounded-full border-2 border-ink"
           loading="lazy"
         />
         <div className="min-w-0 flex-1">
