@@ -15,7 +15,7 @@ interface PageShellProps {
 export function PageShell({ title, description, children }: PageShellProps) {
   return (
     <main className="mx-auto max-w-5xl px-6 pb-24 pt-12 lg:px-10">
-      <div className="mb-12 border-b border-outline-variant/60 pb-8">
+      <div className="mb-12 border-b-2 border-ink pb-8">
         <h1 className="font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.05] tracking-tight text-on-surface">
           {title}
         </h1>
