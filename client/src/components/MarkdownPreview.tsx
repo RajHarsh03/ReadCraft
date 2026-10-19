@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { marked } from "marked";
-import "github-markdown-css/github-markdown-dark.css";
+import "github-markdown-css/github-markdown-light.css";
 
 /**
  * Renders Markdown exactly the way GitHub does, using GitHub's own stylesheet
