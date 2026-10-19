@@ -51,8 +51,9 @@ const MONTHS = [
   "Dec",
 ];
 
-/** GitHub-like green ramp, from empty to most active. */
-const LEVEL_COLORS = ["#1b1f24", "#0e4429", "#006d32", "#26a641", "#39d353"];
+/** GitHub-like green ramp, from empty to most active (rendered on the
+ *  always-light README preview card, so the base cell uses GitHub's light gray). */
+const LEVEL_COLORS = ["#ebedf0", "#0e4429", "#006d32", "#26a641", "#39d353"];
 
 interface Cell {
   day: ContributionDay;

@@ -26,13 +26,13 @@ export function DocsScreen() {
       title="Documentation"
       description="Everything you need to build and export your profile README."
     >
-      <div className="divide-y divide-outline-variant/50 border-y border-outline-variant/50">
+      <div className="divide-y divide-ink/20 border-y-2 border-ink">
         {SECTIONS.map((s, i) => (
           <div
             key={s.q}
-            className="group grid grid-cols-12 items-baseline gap-4 py-7 transition-colors hover:bg-surface-container-lowest/40"
+            className="group grid grid-cols-12 items-baseline gap-4 py-7 transition-colors hover:bg-surface-container-low"
           >
-            <span className="col-span-2 font-display text-headline-md font-bold text-outline-variant transition-colors group-hover:text-primary md:col-span-1">
+            <span className="col-span-2 font-mono text-headline-md font-bold text-outline transition-colors group-hover:text-primary md:col-span-1">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div className="col-span-10 md:col-span-11">
