@@ -23,7 +23,7 @@ export function PreviewPanel() {
   return (
     <div className="flex h-full flex-col bg-surface">
       {/* Tab switch bar */}
-      <div className="z-10 flex items-center justify-between border-b border-outline-variant/60 bg-surface px-4">
+      <div className="z-10 flex items-center justify-between border-b-2 border-ink bg-surface px-4">
         <div className="flex items-center gap-6">
           <TabButton
             icon="visibility"
@@ -38,20 +38,20 @@ export function PreviewPanel() {
             onClick={() => setTab("markdown")}
           />
         </div>
-        <div className="flex items-center gap-1.5 text-label-sm uppercase tracking-widest text-on-surface-variant">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary-container" />
+        <div className="flex items-center gap-1.5 font-mono text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
+          <span className="h-2 w-2 rounded-full border border-ink bg-primary-container" />
           <span>GitHub preview</span>
         </div>
       </div>
 
       {/* Canvas */}
-      <div className="relative flex-1 overflow-y-auto bg-surface-dim/40 p-4 lg:p-8">
+      <div className="relative flex-1 overflow-y-auto bg-surface-dim p-4 lg:p-8">
         {tab === "preview" ? (
-          <div className="relative z-10 mx-auto w-full max-w-3xl overflow-hidden border border-outline-variant/70 bg-surface-container-low p-4 shadow-[0_30px_80px_-50px_rgb(0_0_0_/_0.9)] sm:p-8">
+          <div className="relative z-10 mx-auto w-full max-w-3xl overflow-hidden rounded-[4px] border-2 border-ink bg-white p-4 shadow-[6px_6px_0_0_var(--color-ink)] sm:p-8 dark:bg-[#0d1117]">
             <MarkdownPreview markdown={markdown} />
           </div>
         ) : (
-          <pre className="relative z-10 mx-auto w-full max-w-3xl whitespace-pre-wrap break-words border border-outline-variant/70 bg-surface-container-low p-6 text-code-sm text-on-surface">
+          <pre className="relative z-10 mx-auto w-full max-w-3xl whitespace-pre-wrap break-words rounded-[4px] border-2 border-ink bg-surface-container-lowest p-6 font-mono text-code-sm text-on-surface shadow-[6px_6px_0_0_var(--color-ink)]">
             {markdown}
           </pre>
         )}
@@ -76,9 +76,9 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative flex items-center gap-1.5 border-b-2 py-3 text-label-md transition-colors",
+        "relative flex items-center gap-1.5 border-b-2 py-3 font-mono text-label-md font-bold uppercase tracking-wide transition-colors",
         active
-          ? "border-primary-container text-on-surface"
+          ? "border-primary-container text-primary"
           : "border-transparent text-on-surface-variant hover:text-on-surface"
       )}
     >

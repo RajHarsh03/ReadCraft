@@ -150,7 +150,7 @@ function ResizableWorkbench() {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col lg:h-[calc(100vh-6.5rem)] lg:flex-row"
+      className="flex flex-col lg:h-[calc(100vh-7rem)] lg:flex-row"
     >
       <aside
         className="rc-editor-pane w-full shrink-0 overflow-y-auto p-4 lg:h-full"
@@ -165,17 +165,17 @@ function ResizableWorkbench() {
         aria-orientation="vertical"
         aria-label="Resize editor and preview"
         onPointerDown={onPointerDown}
-        className={`group relative hidden w-px shrink-0 cursor-col-resize bg-outline-variant lg:block ${
-          dragging ? "bg-primary-container" : "hover:bg-primary-container/70"
+        className={`group relative hidden w-0.5 shrink-0 cursor-col-resize bg-ink lg:block ${
+          dragging ? "bg-primary-container" : "hover:bg-primary-container"
         }`}
       >
         {/* Wider invisible hit area for easy grabbing */}
         <span className="absolute inset-y-0 -left-1.5 -right-1.5" />
         {/* Grip indicator */}
         <span
-          className={`absolute left-1/2 top-1/2 flex h-8 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-outline-variant bg-surface-container transition-colors ${
+          className={`absolute left-1/2 top-1/2 flex h-9 w-3.5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[4px] border-2 border-ink bg-surface-container-lowest transition-opacity ${
             dragging
-              ? "border-primary-container"
+              ? "shadow-[2px_2px_0_0_var(--color-ink)]"
               : "opacity-0 group-hover:opacity-100"
           }`}
         >
@@ -239,21 +239,21 @@ function SubHeader() {
   const fileSlug = state.basics.username || "profile";
 
   return (
-    <section className="relative z-20 flex items-center justify-between border-b border-outline-variant/60 bg-surface px-4 py-2.5 lg:px-8">
+    <section className="rc-nav-surface relative z-20 flex items-center justify-between border-b-2 border-ink px-4 py-2.5 lg:px-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <span className="text-code-sm font-bold text-primary">#</span>
-          <span className="text-code-sm text-on-surface">
+          <span className="font-mono text-code-sm font-bold text-primary-container">#</span>
+          <span className="font-mono text-code-sm text-on-surface">
             readme-{fileSlug}.md
           </span>
         </div>
         <span
-          className="hidden items-center gap-1.5 text-label-sm uppercase tracking-widest text-on-surface-variant sm:flex"
+          className="hidden items-center gap-1.5 font-mono text-label-sm font-bold uppercase tracking-widest text-on-surface-variant sm:flex"
           title={savedAt ? new Date(savedAt).toLocaleString() : undefined}
         >
           <span
-            className={`h-1.5 w-1.5 rounded-full ${
-              savedAt ? "bg-primary-container" : "bg-outline-variant"
+            className={`h-2 w-2 rounded-full border border-ink ${
+              savedAt ? "bg-primary-container" : "bg-surface-container-highest"
             }`}
           />
           {savedAt ? "Saved locally" : "Not saved"}
