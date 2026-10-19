@@ -8,7 +8,7 @@ interface ToggleProps {
   stopPropagation?: boolean;
 }
 
-/** Linear-style 28×16 switch with a 12px thumb sliding 12px. */
+/** Brutalist switch: a 2px ink-outlined track whose fill signals the state. */
 export function Toggle({
   checked,
   onChange,
@@ -26,14 +26,14 @@ export function Toggle({
         onChange(!checked);
       }}
       className={cn(
-        "relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors duration-150",
+        "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-ink transition-colors duration-150",
         checked ? "bg-primary-container" : "bg-surface-container-highest"
       )}
     >
       <span
         className={cn(
-          "absolute h-3 w-3 rounded-full bg-surface-container-lowest transition-transform duration-150",
-          checked ? "translate-x-[14px]" : "translate-x-[2px]"
+          "absolute h-3 w-3 rounded-full border border-ink bg-surface-container-lowest transition-transform duration-150",
+          checked ? "translate-x-[18px]" : "translate-x-[2px]"
         )}
       />
     </button>

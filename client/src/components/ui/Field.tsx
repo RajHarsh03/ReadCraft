@@ -1,9 +1,11 @@
 import { useId } from "react";
 import { cn } from "../../lib/cn";
 
+// §6.7: full-width inputs carry a 2px ink border and a hard offset shadow on
+// focus (the border + shadow do the focus work; no default ring).
 const inputBase =
-  "w-full rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 text-on-surface " +
-  "placeholder:text-outline focus:border-primary-container focus:outline-none";
+  "w-full rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-2 text-on-surface " +
+  "placeholder:text-outline focus:shadow-[3px_3px_0_0_var(--color-ink)] focus:outline-none";
 
 interface FieldProps {
   label: string;
@@ -18,7 +20,7 @@ interface FieldProps {
   error?: string | null;
 }
 
-const errorRing = "border-error/70 focus:border-error/70";
+const errorRing = "border-error focus:shadow-[3px_3px_0_0_var(--color-error)]";
 
 export function Field({
   label,
@@ -34,17 +36,20 @@ export function Field({
   const invalid = Boolean(error);
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-label-sm text-on-surface-variant">
+      <label
+        htmlFor={id}
+        className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant"
+      >
         {label}
       </label>
       {prefix ? (
         <div
           className={cn(
-            "flex items-center rounded-[6px] border border-outline-variant bg-surface-container px-2.5 py-1.5 focus-within:border-primary-container",
+            "flex items-center rounded-[4px] border-2 border-ink bg-surface-container-lowest px-3 py-2 focus-within:shadow-[3px_3px_0_0_var(--color-ink)]",
             invalid && errorRing
           )}
         >
-          <span className="text-code-sm text-on-surface-variant" aria-hidden>
+          <span className="font-mono text-code-sm text-on-surface-variant" aria-hidden>
             {prefix}
           </span>
           <input
@@ -99,7 +104,10 @@ export function TextField({
   const id = useId();
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-label-sm text-on-surface-variant">
+      <label
+        htmlFor={id}
+        className="font-mono text-label-sm font-bold uppercase tracking-wider text-on-surface-variant"
+      >
         {label}
       </label>
       <textarea
@@ -125,9 +133,9 @@ export function ToggleRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-[6px] border border-outline-variant/50 bg-surface-container p-2">
+    <div className="flex items-center justify-between rounded-[4px] border-2 border-ink bg-surface-container-lowest p-2.5">
       <div className="flex flex-col">
-        <span className="text-body-md font-medium text-on-surface">
+        <span className="text-body-md font-semibold text-on-surface">
           {title}
         </span>
         <span className="text-body-sm text-on-surface-variant">

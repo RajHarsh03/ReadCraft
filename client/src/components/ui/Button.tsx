@@ -4,20 +4,23 @@ import { Icon } from "./Icon";
 
 type Variant = "primary" | "secondary" | "ghost";
 
+// Every control carries a 2px ink border + a hard 4px offset shadow, and uses
+// the press mechanic (hover lift, active sink). Primary = vermilion fill;
+// secondary = paper fill; ghost = borderless, for low-emphasis actions.
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-primary-container text-on-primary-container font-semibold hover:-translate-y-px hover:bg-primary-fixed-dim shadow-[0_10px_24px_-12px_rgb(247_167_24_/_0.8)]",
+    "nb-press border-2 border-ink rounded-[4px] bg-primary-container text-on-primary-container shadow-[4px_4px_0_0_var(--color-ink)] font-bold uppercase tracking-wider hover:bg-primary-fixed-dim",
   secondary:
-    "bg-surface-container-low text-on-surface border border-outline-variant hover:bg-surface-container hover:border-border-strong",
+    "nb-press border-2 border-ink rounded-[4px] bg-surface-container-lowest text-on-surface shadow-[4px_4px_0_0_var(--color-ink)] font-bold uppercase tracking-wider hover:bg-surface-container",
   ghost:
-    "bg-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface",
+    "border-2 border-transparent rounded-[4px] bg-transparent text-on-surface-variant font-bold uppercase tracking-wider transition-colors hover:bg-surface-container hover:text-on-surface",
 };
 
 type Size = "sm" | "md";
 
 const SIZES: Record<Size, string> = {
-  sm: "h-7 gap-1 rounded-[5px] px-2.5 text-code-sm",
-  md: "h-8 gap-1.5 rounded-[6px] px-4 text-label-md",
+  sm: "h-8 gap-1.5 px-2.5 text-[11px]",
+  md: "h-9 gap-2 px-4 text-label-md",
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -43,8 +46,8 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap",
-        "transition-colors duration-150 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center whitespace-nowrap font-mono",
+        "disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none",
         SIZES[size],
         VARIANTS[variant],
         className
@@ -52,7 +55,7 @@ export function Button({
       {...rest}
     >
       {icon && (
-        <Icon name={icon} size={size === "sm" ? 14 : 16} filled={iconFilled} />
+        <Icon name={icon} size={size === "sm" ? 15 : 16} filled={iconFilled} />
       )}
       {children}
     </button>

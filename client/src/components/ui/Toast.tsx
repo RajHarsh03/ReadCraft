@@ -82,14 +82,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             role="status"
-            className="rc-toast pointer-events-auto flex items-start gap-2.5 rounded-[8px] border border-outline-variant bg-surface-container-high px-3.5 py-2.5 shadow-lg"
+            className="rc-toast pointer-events-auto flex items-start gap-2.5 border-2 border-ink rounded-[4px] bg-surface-container-lowest px-3.5 py-2.5 shadow-[4px_4px_0_0_var(--color-ink)]"
           >
             <Icon
               name={ICONS[toast.kind]}
               size={18}
               className={`mt-px shrink-0 ${ACCENTS[toast.kind]}`}
             />
-            <span className="flex-1 text-body-sm text-on-surface">
+            <span className="flex-1 text-label-md text-on-surface">
               {toast.message}
             </span>
             <button
